@@ -1,10 +1,8 @@
-const CACHE_NAME = 'amar-madan-v4';
+const CACHE_NAME = 'amar-madan-v5';
 // Derive the deploy base from where this service worker is served:
 // "/sw.js" locally, "/amar-madan/sw.js" on GitHub Pages.
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const STATIC_ASSETS = [
-  BASE || '/',
-  BASE + '/index.html',
   BASE + '/manifest.json',
   BASE + '/icons/icon-192.png',
   BASE + '/icons/icon-512.png',
@@ -14,7 +12,7 @@ const STATIC_ASSETS = [
   BASE + '/images/town.jpg'
 ];
 
-const DYNAMIC_CACHE = 'amar-madan-dynamic-v4';
+const DYNAMIC_CACHE = 'amar-madan-dynamic-v5';
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
@@ -50,6 +48,10 @@ self.addEventListener('fetch', (event) => {
 
   // Skip chrome-extension and other non-http requests
   if (!url.protocol.startsWith('http')) return;
+
+  // Never cache navigations or the ?p= deep-link handoff: index.html changes
+  // on every deploy and a cached copy would point to stale JS chunk names.
+  if (request.mode === 'navigate' || url.searchParams.has('p')) return;
 
   // Network first strategy for API-like requests
   event.respondWith(
