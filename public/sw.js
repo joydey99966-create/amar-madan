@@ -1,17 +1,20 @@
-const CACHE_NAME = 'amar-madan-v3';
+const CACHE_NAME = 'amar-madan-v4';
+// Derive the deploy base from where this service worker is served:
+// "/sw.js" locally, "/amar-madan/sw.js" on GitHub Pages.
+const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/images/haor.jpg',
-  '/images/institution.jpg',
-  '/images/market.jpg',
-  '/images/town.jpg'
+  BASE || '/',
+  BASE + '/index.html',
+  BASE + '/manifest.json',
+  BASE + '/icons/icon-192.png',
+  BASE + '/icons/icon-512.png',
+  BASE + '/images/haor.jpg',
+  BASE + '/images/institution.jpg',
+  BASE + '/images/market.jpg',
+  BASE + '/images/town.jpg'
 ];
 
-const DYNAMIC_CACHE = 'amar-madan-dynamic-v3';
+const DYNAMIC_CACHE = 'amar-madan-dynamic-v4';
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
@@ -73,7 +76,7 @@ self.addEventListener('fetch', (event) => {
 
           // Return offline page for navigation requests
           if (request.mode === 'navigate') {
-            return caches.match('/index.html');
+            return caches.match(BASE + '/index.html');
           }
 
           return new Response('Offline', { status: 503 });

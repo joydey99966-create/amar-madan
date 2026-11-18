@@ -1,6 +1,25 @@
 import { ViewId } from '../types'
 
 /**
+ * The deploy base. Vite injects "/" on the dev server and "/amar-madan/" in a
+ * GitHub Pages build. Keeping it here means every route works in both places.
+ */
+export const BASE_PATH = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
+
+/** Adds the deploy base to an app route, e.g. "/bazar" -> "/amar-madan/bazar". */
+export function withBase(path: string): string {
+  return `${BASE_PATH}${path.startsWith('/') ? path : `/${path}`}` || '/'
+}
+
+/** Removes the deploy base from a pathname so route matching works everywhere. */
+export function stripBase(pathname: string): string {
+  if (!BASE_PATH) return pathname
+  if (pathname === BASE_PATH) return '/'
+  if (pathname.startsWith(`${BASE_PATH}/`)) return pathname.slice(BASE_PATH.length)
+  return pathname
+}
+
+/**
  * Real, shareable URLs for every section of the app.
  *
  * The path is the single source of truth for "which section am I on", so the
@@ -85,9 +104,9 @@ export const ROUTE_META: Record<ViewId, { title: string; description: string }> 
 
 /** Extracts the notice id from a /news/:id deep link. */
 export function noticeIdFromPath(pathname: string): string | null {
-  let path = pathname
+  let path = stripBase(pathname)
   try {
-    path = decodeURIComponent(pathname)
+    path = decodeURIComponent(path)
   } catch {
     // keep the raw path when it is not valid percent-encoding
   }
@@ -113,14 +132,14 @@ export function pathForView(
   if (group) search.set('group', group)
   if (tab) search.set('tab', tab)
   const queryString = search.toString()
-  return queryString ? `${path}?${queryString}` : path
+  return withBase(queryString ? `${path}?${queryString}` : path)
 }
 
 /** Resolves a pathname (e.g. "/bazar/") to a known section id. */
 export function viewFromPath(pathname: string): ViewId | null {
-  let path = pathname
+  let path = stripBase(pathname)
   try {
-    path = decodeURIComponent(pathname)
+    path = decodeURIComponent(path)
   } catch {
     // keep the raw path when it is not valid percent-encoding
   }

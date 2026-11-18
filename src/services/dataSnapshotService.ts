@@ -11,7 +11,7 @@ import { notifyDataChanged } from './dataEvents'
  * That way admin changes reach every visitor without a server.
  */
 
-export const SNAPSHOT_URL = '/data/snapshot.json'
+export const SNAPSHOT_URL = `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/data/snapshot.json`
 export const SNAPSHOT_VERSION = 1
 
 export interface DataSnapshot {
