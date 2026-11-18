@@ -55,7 +55,7 @@ export function ModalShell({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`flex max-h-[90dvh] w-full ${maxWidthClass} flex-col overflow-hidden rounded-t-[28px] bg-white shadow-2xl dark:bg-[#0f1411] sm:max-h-[calc(90dvh-2rem)] sm:rounded-[32px]`}
+        className={`lg-glass flex max-h-[90dvh] w-full ${maxWidthClass} flex-col overflow-hidden rounded-t-[28px] sm:max-h-[calc(90dvh-2rem)] sm:rounded-[32px]`}
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 px-5 py-4 dark:border-white/10 sm:px-6">

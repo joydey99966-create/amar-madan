@@ -65,8 +65,8 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-[#0e1513]/85">
-      <div className="mx-auto flex h-[76px] max-w-6xl flex-nowrap items-center justify-between gap-2 px-3 sm:gap-3 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 px-3 pt-3 sm:px-6 lg:px-8 lg:pt-4">
+      <div className="lg-glass lg-glass-hover mx-auto flex h-[64px] max-w-6xl flex-nowrap items-center justify-between gap-2 rounded-[22px] px-3 sm:gap-3 sm:px-4 lg:h-[72px] lg:rounded-full lg:px-5">
         <a
           href="#home"
           onClick={(e) => {
@@ -75,14 +75,14 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
           }}
           className="group flex shrink-0 items-center gap-3 whitespace-nowrap tap-scale"
         >
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-forest text-white shadow-forest transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-forest text-white shadow-[0_6px_20px_rgba(23,92,70,0.35)] transition-transform duration-500 group-hover:scale-105 lg:h-11 lg:w-11 lg:rounded-2xl">
             <MapPin size={22} strokeWidth={2.2} />
           </div>
           <div className="min-w-0">
-            <div className="whitespace-nowrap text-[20px] font-bold leading-6 tracking-tight text-slate-900 transition-colors dark:text-white group-hover:text-forest dark:group-hover:text-emerald-400">
+            <div className="lg-heading whitespace-nowrap text-[19px] font-extrabold leading-6 text-[#111827] transition-colors dark:text-white sm:text-[21px]">
               আমার মদন
             </div>
-            <div className="mt-0.5 hidden whitespace-nowrap text-[11px] font-medium text-slate-500 transition-colors dark:text-slate-400 xs:block">
+            <div className="mt-0.5 hidden whitespace-nowrap text-xs font-medium text-slate-600/70 transition-colors dark:text-white/70 xs:block">
               মদন উপজেলা সেবা ও তথ্য
             </div>
           </div>
@@ -96,10 +96,10 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
               onClick={() => handleNavClick(item.id)}
               title={item.label}
               aria-current={activeNav === item.id ? 'page' : undefined}
-              className={`tap-scale whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-semibold transition-all duration-200 lg:px-4 ${
+              className={`tap-scale whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-500 lg:px-4 ${
                 activeNav === item.id
-                  ? 'bg-forest/10 text-forest shadow-sm dark:bg-emerald-950/60 dark:text-emerald-300'
-                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white'
+                  ? 'bg-white/70 text-forest shadow-[inset_0_1px_0_0_rgba(255,255,255,0.6),0_4px_14px_rgba(0,0,0,0.1)] dark:bg-white/15 dark:text-white'
+                  : 'text-slate-700/80 hover:bg-white/15 hover:text-[#111827] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
               }`}
             >
               {item.shortLabel ?? item.label}
@@ -112,7 +112,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
           <button
             type="button"
             onClick={() => handleNavClick('profile')}
-            className="tap-scale flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-slate-50/80 text-slate-600 transition-all duration-200 hover:border-slate-300 hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-white/20 dark:hover:bg-white/10"
+            className="tap-scale flex h-10 w-10 items-center justify-center rounded-[14px] border border-white/25 bg-white/40 text-slate-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] transition-all duration-500 hover:bg-white/60 hover:text-[#111827] dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/20 dark:hover:text-white"
             title="প্রোফাইল"
             aria-label="প্রোফাইল"
           >
@@ -124,7 +124,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
             type="button"
             aria-label={darkMode ? 'লাইট মোড চালু করুন' : 'ডার্ক মোড চালু করুন'}
             onClick={toggleTheme}
-            className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-slate-50/80 text-slate-700 shadow-soft-sm transition-all duration-300 hover:border-slate-300 hover:bg-slate-100 hover:shadow-sm active:scale-90 dark:border-white/10 dark:bg-white/5 dark:text-amber-300 dark:hover:border-white/20 dark:hover:bg-white/10"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-[14px] border border-white/25 bg-white/40 text-slate-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] transition-all duration-500 hover:bg-white/60 active:scale-90 dark:bg-white/10 dark:text-amber-300 dark:hover:bg-white/20"
             title={darkMode ? 'লাইট মোডে পরিবর্তন করুন' : 'ডার্ক মোডে পরিবর্তন করুন'}
           >
             <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:rotate-45">
@@ -145,7 +145,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
 
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 text-slate-700 hover:bg-slate-100 active:scale-90 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10 nav:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-white/25 bg-white/40 text-slate-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] transition-all duration-500 hover:bg-white/60 active:scale-90 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/20 nav:hidden"
             aria-label="মেনু"
             aria-expanded={menuOpen}
           >
@@ -156,7 +156,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
 
       {/* Mobile Drawer */}
       {menuOpen && (
-        <div className="border-t border-slate-100 bg-white/95 px-4 py-4 backdrop-blur-xl animate-slide-up dark:border-white/10 dark:bg-[#0e1513]/95 nav:hidden">
+        <div className="lg-glass mx-2 mt-2 rounded-[24px] px-3 py-4 animate-slide-up sm:mx-4 nav:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1.5">
             {orderedNav.map((item) => (
               <button

@@ -168,7 +168,7 @@ export function SuggestPriceModal({ isOpen, onClose }: SuggestPriceModalProps) {
         aria-modal="true"
         aria-labelledby="suggest-price-title"
         tabIndex={-1}
-        className="max-h-[92vh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-[28px] bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl outline-none animate-slide-up dark:bg-[#0f1411] sm:rounded-[28px] sm:p-6 sm:pb-6"
+        className="lg-glass max-h-[92vh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-[28px] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] outline-none animate-slide-up sm:rounded-[28px] sm:p-6 sm:pb-6"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-white/15 sm:hidden" />

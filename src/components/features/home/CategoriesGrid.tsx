@@ -50,7 +50,7 @@ export function CategoriesGrid({
             <button
               key={category.id}
               onClick={() => onSelectCategory(getTargetView(category.id), category.id)}
-              className="group hover-lift tap-scale relative flex min-h-[128px] flex-col items-center justify-center rounded-[24px] border border-slate-200/70 bg-white px-2.5 py-3 text-center shadow-soft-sm transition-all duration-300 hover:border-forest/30 hover:shadow-soft dark:border-white/[0.08] dark:bg-[#182420] dark:hover:border-emerald-500/30 sm:min-h-[160px] sm:px-3 sm:py-4"
+              className="lg-card group hover-lift tap-scale relative flex min-h-[128px] flex-col items-center justify-center rounded-[24px] bg-white px-2.5 py-3 text-center transition-all duration-500 hover:bg-white/90 dark:bg-[#182420] dark:hover:bg-[#1f2e29] sm:min-h-[160px] sm:px-3 sm:py-4"
             >
               {liveCount !== undefined && (
                 <span

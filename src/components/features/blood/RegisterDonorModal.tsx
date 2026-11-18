@@ -100,7 +100,7 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
         role="dialog"
         aria-modal="true"
         aria-labelledby="register-donor-title"
-        className="flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[28px] bg-white shadow-2xl dark:bg-[#0f1411] sm:max-h-[calc(90dvh-1rem)] sm:rounded-[32px]"
+        className="lg-glass flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[28px] sm:max-h-[calc(90dvh-1rem)] sm:rounded-[32px]"
         onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Sticky close bar */}
