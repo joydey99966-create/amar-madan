@@ -1,0 +1,54 @@
+{
+  "name": "আমার মদন",
+  "short_name": "আমার মদন",
+  "description": "মদন উপজেলার জরুরি সেবা, রক্তদাতা ও স্থানীয় তথ্য ডিরেক্টরি",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#059669",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "bn",
+  "categories": ["utilities", "health", "local"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "রক্তদাতা",
+      "short_name": "রক্ত",
+      "url": "/rokto?tab=blood"
+    },
+    {
+      "name": "জরুরি হটলাইন",
+      "short_name": "হটলাইন",
+      "url": "/rokto"
+    },
+    {
+      "name": "হাসপাতাল",
+      "short_name": "হাসপাতাল",
+      "url": "/directory?tab=hospitals"
+    },
+    {
+      "name": "নাগরিক সেবা",
+      "short_name": "নাগরিক",
+      "url": "/nagorik-seba"
+    },
+    {
+      "name": "বাজার দর",
+      "short_name": "বাজার",
+      "url": "/bazar"
+    }
+  ]
+}
