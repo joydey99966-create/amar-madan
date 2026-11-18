@@ -20,29 +20,26 @@ function restoreDeepLink() {
 }
 restoreDeepLink()
 
-// Seed an empty browser from a published snapshot before the app renders, so
-// admin-published data reaches every visitor on a static host. A short timeout
-// guarantees first paint is never blocked by a slow or missing file.
-const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T> =>
-  Promise.race([promise, new Promise<T>((resolve) => setTimeout(() => resolve(undefined as T), ms))])
+// Render immediately — never block first paint on a network fetch.
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </React.StrictMode>,
+)
 
-const renderApp = () => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </React.StrictMode>,
-  )
-}
+// Seed an empty browser from a published snapshot in the background, so
+// admin-published data reaches every visitor on a static host without a server.
+// applyPublished() notifies listeners if it seeds anything.
+dataSnapshotService.applyPublished()
 
-withTimeout(dataSnapshotService.applyPublished(), 1500).finally(renderApp)
-
-// Register Service Worker for PWA
+// Register Service Worker for PWA (base-aware for GitHub Pages).
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    const sw = `${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/sw.js`
     navigator.serviceWorker
-      .register('/sw.js')
+      .register(sw)
       .then((registration) => console.log('SW registered:', registration.scope))
       .catch((error) => console.log('SW registration failed:', error))
   })

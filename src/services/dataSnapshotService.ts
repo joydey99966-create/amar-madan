@@ -85,6 +85,7 @@ export const dataSnapshotService = {
           seeded += 1
         }
       })
+      if (seeded > 0) notifyDataChanged()
       return seeded
     } catch {
       return 0
