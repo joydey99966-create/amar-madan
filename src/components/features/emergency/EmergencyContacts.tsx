@@ -1,15 +1,12 @@
 import { useState } from 'react'
-import { Check, Copy, MessageCircle } from 'lucide-react'
+import { Ambulance, AlertTriangle, Banknote, Info, MapPin, Phone, ShieldAlert, Stethoscope, Wrench } from 'lucide-react'
 import { ServiceProvider } from '../../../types'
-import { copyToClipboard } from '../../../utils/clipboard'
-import { useToast } from '../../../context/ToastContext'
-import { cleanPhone } from '../../../utils/formatters'
-import { CallButton, CopyPhoneButton } from '../../common/ContactActions'
-import { EmptyState } from '../../common/EmptyState'
-import { ListingMeta } from '../../common/ListingMeta'
 import { useEmergencyContacts } from '../../../hooks/useEmergencyContacts'
 import { emergencyVisual } from '../../../constants'
+import { EmptyState } from '../../common/EmptyState'
 import { PillRow } from '../../common/PillRow'
+import { CallButton, CopyPhoneButton, WhatsAppButton } from '../../common/ContactActions'
+import { ContactListCard } from './ContactListCard'
 
 interface EmergencyContactsProps {
   ambulances: ServiceProvider[]
@@ -26,275 +23,148 @@ const fareEstimates = [
 
 type EmergencyTab = 'hotlines' | 'ambulances' | 'doctors' | 'technicians' | 'fares'
 
+/** Shared notice strip with a lucide icon — replaces the old emoji banners. */
+function Notice({ tone, icon: Icon, children }: { tone: 'red' | 'emerald' | 'blue' | 'amber' | 'purple' | 'orange'; icon: typeof Info; children: React.ReactNode }) {
+  const tones = {
+    red: 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-200',
+    emerald: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200',
+    blue: 'bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200',
+    amber: 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
+    purple: 'bg-purple-50 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200',
+    orange: 'bg-orange-50 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200',
+  }
+  return (
+    <div className={`flex items-start gap-2 rounded-2xl p-4 text-sm ${tones[tone]}`}>
+      <Icon size={17} className="mt-0.5 shrink-0" />
+      <div>{children}</div>
+    </div>
+  )
+}
+
 export function EmergencyContacts({ ambulances, doctors, technicians }: EmergencyContactsProps) {
   const contacts = useEmergencyContacts()
   const [activeTab, setActiveTab] = useState<EmergencyTab>('hotlines')
-  const [copiedPhone, setCopiedPhone] = useState<string | null>(null)
-  const { addToast } = useToast()
 
-  const handleCopy = (phone: string) => {
-    copyToClipboard(
-      phone,
-      () => {
-        setCopiedPhone(phone)
-        addToast('নম্বর কপি করা হয়েছে!', 'success')
-        setTimeout(() => setCopiedPhone(null), 2000)
-      },
-      () => addToast('কপি করতে ব্যর্থ হয়েছে', 'error'),
-    )
-  }
-
-  const tabButtons: { id: EmergencyTab; label: string }[] = [
-    { id: 'hotlines', label: '🆘 জরুরি হটলাইন' },
-    { id: 'ambulances', label: '🚑 অ্যাম্বুলেন্স' },
-    { id: 'doctors', label: '👨‍⚕️ ডাক্তার' },
-    { id: 'technicians', label: '🔧 প্লাম্বার/মিস্ত্রি' },
-    { id: 'fares', label: '💰 ভাড়া তালিকা' },
+  const tabs: { id: EmergencyTab; label: string; icon: typeof Info }[] = [
+    { id: 'hotlines', label: 'জরুরি হটলাইন', icon: Phone },
+    { id: 'ambulances', label: 'অ্যাম্বুলেন্স', icon: Ambulance },
+    { id: 'doctors', label: 'ডাক্তার', icon: Stethoscope },
+    { id: 'technicians', label: 'মিস্ত্রি', icon: Wrench },
+    { id: 'fares', label: 'ভাড়া তালিকা', icon: Banknote },
   ]
 
   return (
-    <section className="scroll-mt-24 space-y-6">
-      <div className="sticky top-20 z-20 rounded-[24px] bg-white p-3 shadow-md dark:bg-[#1a2420] sm:p-4">
-        <PillRow trackClassName="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {tabButtons.map((tab) => (
-            <button
-              key={tab.id}
-              data-active={activeTab === tab.id ? 'true' : 'false'}
-              onClick={() => setActiveTab(tab.id)}
-              className={`shrink-0 whitespace-nowrap rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-4 sm:py-2.5 sm:text-sm ${
-                activeTab === tab.id
-                  ? 'bg-rose-500 text-white'
-                  : 'border border-slate-200 text-slate-600 hover:border-rose-300 dark:border-white/10 dark:text-slate-300'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+    <section className="space-y-5 sm:space-y-6">
+      <div className="sticky top-16 z-20 rounded-2xl bg-white p-2.5 shadow-md dark:bg-[#1a2420] sm:rounded-[24px] sm:p-4">
+        <PillRow>
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            const active = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                data-active={active ? 'true' : 'false'}
+                onClick={() => setActiveTab(tab.id)}
+                className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest ${
+                  active
+                    ? 'bg-rose-500 text-white'
+                    : 'border border-slate-200 text-slate-600 hover:border-forest dark:border-white/10 dark:text-slate-300'
+                }`}
+              >
+                <Icon size={16} /> {tab.label}
+              </button>
+            )
+          })}
         </PillRow>
       </div>
 
       {activeTab === 'hotlines' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-red-50 p-4 text-xs text-red-800 dark:bg-red-900/30 dark:text-red-200">
-            ⚠️ <strong>জরুরি পরিস্থিতিতে নিম্নলিখিত নম্বরে অবিলম্বে ফোন করুন:</strong>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Notice tone="red" icon={AlertTriangle}>
+              <strong>জরুরি পরিস্থিতিতে নিচের নম্বরে অবিলম্বে কল করুন।</strong>
+            </Notice>
           </div>
-
-          {contacts.map((contact) => (
-            <div
-              key={contact.id}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-rose-100 bg-white p-4 dark:border-rose-900/30 dark:bg-[#1a2420] sm:p-5"
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <div className="text-2xl">{emergencyVisual(contact.category).emoji}</div>
-                <div className="flex-1">
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">{contact.name}</h3>
-                  <div className="mt-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
-                    {contact.phone}
-                  </div>
+          {contacts.map((contact) => {
+            const { icon: Icon } = emergencyVisual(contact.category)
+            return (
+              <div key={contact.id} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft-sm dark:border-white/10 dark:bg-[#1a2420]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300">
+                  <Icon size={20} />
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">{contact.name}</h3>
+                  <div className="mt-1 text-sm font-semibold text-rose-600 dark:text-rose-400">{contact.phone}</div>
+                </div>
+                <div className="mt-auto flex flex-wrap gap-2 border-t border-slate-100 pt-3 dark:border-white/10">
+                  <CallButton phone={contact.phone} dial={contact.dial} />
+                  <CopyPhoneButton phone={contact.phone} />
                 </div>
               </div>
-
-              <div className="flex flex-col gap-2">
-                <CallButton phone={contact.phone} dial={contact.dial} />
-                <CopyPhoneButton phone={contact.phone} copied={copiedPhone === contact.phone} />
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
       {activeTab === 'ambulances' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-emerald-50 p-4 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
-            🚑 ২৪ ঘণ্টা অ্যাম্বুলেন্স সেবা উপলব্ধ
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Notice tone="emerald" icon={Ambulance}>২৪ ঘণ্টা অ্যাম্বুলেন্স সেবা উপলব্ধ।</Notice>
           </div>
-
           {ambulances.length === 0 ? (
-            <EmptyState
-              title="অ্যাম্বুলেন্স পাওয়া যায়নি"
-              description="বর্তমানে কোনো অ্যাম্বুলেন্স তালিকাভুক্ত নেই।"
-            />
-          ) : (
-            ambulances.map((amb) => (
-              <div
-                key={amb.id}
-                className="flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-white p-4 dark:border-emerald-900/30 dark:bg-[#1a2420] sm:p-5"
-              >
-                <div>
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">{amb.name}</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{amb.details}</p>
-                </div>
-
-                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                  <span className="text-base">📍</span>
-                  <span>{amb.area}</span>
-                </div>
-
-                <ListingMeta listing={amb.name} section="জরুরি সেবা (অ্যাম্বুলেন্স)" />
-
-                <div className="flex flex-wrap gap-2 border-t border-emerald-100 pt-3 dark:border-emerald-900/30">
-                  <CallButton phone={amb.phone} />
-                  <button
-                    onClick={() => handleCopy(amb.phone)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 dark:border-emerald-900/40 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
-                    title="নম্বর কপি করুন"
-                    aria-label="নম্বর কপি করুন"
-                  >
-                    {copiedPhone === amb.phone ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                  </button>
-                  <a
-                    href={`https://wa.me/${cleanPhone(amb.phone)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-emerald-200 text-emerald-600 transition hover:bg-emerald-50 dark:border-emerald-900/40 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
-                    title="WhatsApp"
-                    aria-label="WhatsApp"
-                  >
-                    <MessageCircle size={15} />
-                  </a>
-                </div>
-              </div>
-            ))
-          )}
+            <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+              <EmptyState title="অ্যাম্বুলেন্স পাওয়া যায়নি" description="বর্তমানে কোনো অ্যাম্বুলেন্স তালিকাভুক্ত নেই।" />
+            </div>
+          ) : ambulances.map((amb) => (
+            <ContactListCard key={amb.id} name={amb.name} details={amb.details} area={amb.area} phone={amb.phone} section="জরুরি সেবা (অ্যাম্বুলেন্স)" accent="emerald" />
+          ))}
         </div>
       )}
 
       {activeTab === 'doctors' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-blue-50 p-4 text-xs text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
-            👨‍⚕️ জরুরি চিকিৎসা সেবার জন্য নিকটতম ডাক্তার
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Notice tone="blue" icon={Stethoscope}>জরুরি চিকিৎসার জন্য নিকটতম ডাক্তার।</Notice>
           </div>
-
           {doctors.length === 0 ? (
-            <EmptyState
-              title="ডাক্তার পাওয়া যায়নি"
-              description="বর্তমানে কোনো জরুরি ডাক্তারের তালিকা উপলব্ধ নেই।"
-            />
-          ) : (
-            doctors.map((doc) => (
-              <div
-                key={doc.id}
-                className="flex flex-col gap-3 rounded-2xl border border-blue-100 bg-white p-4 dark:border-blue-900/30 dark:bg-[#1a2420] sm:p-5"
-              >
-                <div>
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">{doc.name}</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{doc.details}</p>
-                </div>
-
-                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                  <span className="text-base">📍</span>
-                  <span>{doc.area}</span>
-                </div>
-
-                <ListingMeta listing={doc.name} section="জরুরি সেবা (ডাক্তার)" />
-
-                <div className="flex flex-wrap gap-2 border-t border-blue-100 pt-3 dark:border-blue-900/30">
-                  <CallButton phone={doc.phone} />
-                  <button
-                    onClick={() => handleCopy(doc.phone)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 text-blue-700 transition hover:bg-blue-50 dark:border-blue-900/40 dark:text-blue-400 dark:hover:bg-blue-900/20"
-                    title="নম্বর কপি করুন"
-                    aria-label="নম্বর কপি করুন"
-                  >
-                    {copiedPhone === doc.phone ? <Check size={14} className="text-blue-600" /> : <Copy size={14} />}
-                  </button>
-                  <a
-                    href={`https://wa.me/${cleanPhone(doc.phone)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-emerald-200 text-emerald-600 transition hover:bg-emerald-50 dark:border-emerald-900/40 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
-                    title="WhatsApp"
-                    aria-label="WhatsApp"
-                  >
-                    <MessageCircle size={15} />
-                  </a>
-                </div>
-              </div>
-            ))
-          )}
+            <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+              <EmptyState title="ডাক্তার পাওয়া যায়নি" description="বর্তমানে কোনো জরুরি ডাক্তারের তথ্য নেই।" />
+            </div>
+          ) : doctors.map((doc) => (
+            <ContactListCard key={doc.id} name={doc.name} details={doc.details} area={doc.area} phone={doc.phone} section="জরুরি সেবা (ডাক্তার)" accent="blue" />
+          ))}
         </div>
       )}
 
       {activeTab === 'technicians' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-amber-50 p-4 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
-            🔧 দ্রুত মেরামত ও রক্ষণাবেক্ষণ সেবা
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Notice tone="amber" icon={Wrench}>দ্রুত মেরামত ও রক্ষণাবেক্ষণ সেবা।</Notice>
           </div>
-
           {technicians.length === 0 ? (
-            <EmptyState
-              title="টেকনিশিয়ান পাওয়া যায়নি"
-              description="বর্তমানে কোনো টেকনিশিয়ানের তথ্য উপলব্ধ নেই।"
-            />
-          ) : (
-            technicians.map((tech) => (
-              <div
-                key={tech.id}
-                className="flex flex-col gap-3 rounded-2xl border border-amber-100 bg-white p-4 dark:border-amber-900/30 dark:bg-[#1a2420] sm:p-5"
-              >
-                <div>
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">{tech.name}</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{tech.details}</p>
-                </div>
-
-                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                  <span className="text-base">📍</span>
-                  <span>{tech.area}</span>
-                </div>
-
-                <ListingMeta listing={tech.name} section="প্লাম্বার ও মিস্ত্রি" />
-
-                <div className="flex flex-wrap gap-2 border-t border-amber-100 pt-3 dark:border-amber-900/30">
-                  <CallButton phone={tech.phone} />
-                  <button
-                    onClick={() => handleCopy(tech.phone)}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-amber-200 text-amber-700 transition hover:bg-amber-50 dark:border-amber-900/40 dark:text-amber-400 dark:hover:bg-amber-900/20"
-                    title="নম্বর কপি করুন"
-                    aria-label="নম্বর কপি করুন"
-                  >
-                    {copiedPhone === tech.phone ? <Check size={14} className="text-amber-600" /> : <Copy size={14} />}
-                  </button>
-                  <a
-                    href={`https://wa.me/${cleanPhone(tech.phone)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-emerald-200 text-emerald-600 transition hover:bg-emerald-50 dark:border-emerald-900/40 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
-                    title="WhatsApp"
-                    aria-label="WhatsApp"
-                  >
-                    <MessageCircle size={15} />
-                  </a>
-                </div>
-              </div>
-            ))
-          )}
+            <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+              <EmptyState title="টেকনিশিয়ান পাওয়া যায়নি" description="বর্তমানে কোনো টেকনিশিয়ানের তথ্য নেই।" />
+            </div>
+          ) : technicians.map((tech) => (
+            <ContactListCard key={tech.id} name={tech.name} details={tech.details} area={tech.area} phone={tech.phone} section="প্লাম্বার ও মিস্ত্রি" accent="amber" />
+          ))}
         </div>
       )}
 
       {activeTab === 'fares' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-purple-50 p-4 text-xs text-purple-800 dark:bg-purple-900/30 dark:text-purple-200">
-            💰 <strong>অ্যাম্বুলেন্স ভাড়া তালিকা (আনুমানিক):</strong> বাস্তব দর অ্যাম্বুলেন্স প্রদানকারীর সাথে নিশ্চিত করুন।
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Notice tone="purple" icon={Banknote}>অ্যাম্বুলেন্স ভাড়া (আনুমানिक) — বাস্তব দর প্রদানকারীর সাথে নিশ্চিত করুন।</Notice>
           </div>
-
-          {fareEstimates.map((estimate, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-purple-100 bg-white p-4 dark:border-purple-900/30 dark:bg-[#1a2420] sm:p-5"
-            >
-              <div className="flex-1">
-                <h3 className="text-sm font-semibold text-slate-800 dark:text-white">{estimate.route}</h3>
-                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">দূরত্ব: {estimate.distance}</div>
-              </div>
-
-              <div className="text-right">
-                <div className="text-sm font-bold text-purple-600 dark:text-purple-400">{estimate.fare}</div>
-              </div>
+          {fareEstimates.map((estimate) => (
+            <div key={estimate.route} className="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft-sm dark:border-white/10 dark:bg-[#1a2420]">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{estimate.route}</h3>
+              <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400"><MapPin size={14} /> দূরত্ব: {estimate.distance}</div>
+              <div className="mt-auto pt-2 text-base font-bold text-forest dark:text-emerald-300">{estimate.fare}</div>
             </div>
           ))}
-
-          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-xs text-orange-800 dark:border-orange-900/40 dark:bg-orange-900/20 dark:text-orange-200">
-            📌 <strong>নোট:</strong> দাম যানবাহনের ধরন, সময় ও জরুরি পরিস্থিতির উপর নির্ভর করে পরিবর্তনশীল। অ্যাম্বুলেন্স প্রদানকারীকে সরাসরি যোগাযোগ করুন।
+          <div className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Notice tone="orange" icon={Info}>দাম যানবাহনের ধরন ও সময়ের উপর নির্ভর করে পরিবর্তনশীল।</Notice>
           </div>
         </div>
       )}

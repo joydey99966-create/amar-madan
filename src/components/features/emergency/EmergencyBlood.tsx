@@ -48,8 +48,8 @@ export function EmergencyBlood({
     <section className="space-y-6">
       <SubTabBar
         tabs={[
-          { id: 'emergency', label: '🆘 জরুরি সেবা' },
-          { id: 'blood', label: '🩸 রক্তদাতা' },
+          { id: 'emergency', label: 'জরুরি সেবা' },
+          { id: 'blood', label: 'রক্তদাতা' },
         ]}
         activeId={currentTab}
         onChange={handleTabChange}

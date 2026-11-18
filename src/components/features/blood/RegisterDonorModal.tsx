@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { BloodDonor, BloodGroup } from '../../../types'
 import { bloodGroups, unionAreas } from '../../../constants'
@@ -230,7 +230,7 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
           </form>
 
           <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
-            💚 আপনার তথ্য সম্পূর্ণ নিরাপদ এবং শুধুমাত্র জরুরি অবস্থায় ব্যবহৃত হবে।
+            আপনার তথ্য সম্পূর্ণ নিরাপদ এবং শুধুমাত্র জরুরি অবস্থায় ব্যবহৃত হবে।
           </div>
         </div>
 
@@ -242,7 +242,7 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
             disabled={isSubmitting}
             className="w-full rounded-xl bg-forest px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#104b38] disabled:opacity-60"
           >
-            {isSubmitting ? 'যোগ করা হচ্ছে...' : '✓ আমাকে যোগ করুন'}
+            {isSubmitting ? 'যোগ করা হচ্ছে...' : 'আমাকে যোগ করুন'}
           </button>
 
           <button

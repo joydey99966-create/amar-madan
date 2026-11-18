@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { LostFoundItem } from '../../../types'
 import { useToast } from '../../../context/ToastContext'
 import { lostFoundService } from '../../../services/lostFoundService'
@@ -75,7 +75,7 @@ export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFou
             form="post-lostfound-form"
             className="w-full rounded-xl bg-forest px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#104b38]"
           >
-            ✓ বিজ্ঞপ্তি জমা দিন
+            বিজ্ঞপ্তি জমা দিন
           </button>
           <button
             type="button"
@@ -102,7 +102,7 @@ export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFou
                     : 'border-slate-200 text-slate-600 hover:border-forest dark:border-white/10 dark:text-slate-300'
                 }`}
               >
-                {type === 'হারানো' ? '😟 হারিয়ে গেছে' : '🙌 খুঁজে পেয়েছি'}
+                {type === 'হারানো' ? 'হারিয়ে গেছে' : 'খুঁজে পেয়েছি'}
               </button>
             ))}
           </div>

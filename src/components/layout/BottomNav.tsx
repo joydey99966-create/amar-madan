@@ -19,7 +19,7 @@ export function BottomNav({ activeNav, onNavigate }: BottomNavProps) {
   )
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/80 bg-white/95 px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] backdrop-blur-lg dark:border-white/10 dark:bg-[#111b18]/95 md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/80 bg-white/95 px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_24px_rgba(15,23,42,0.06)] backdrop-blur-lg dark:border-white/10 dark:bg-[#111b18]/95 lg:hidden"
       aria-label="মোবাইল নেভিগেশন"
     >
       <div
@@ -35,7 +35,7 @@ export function BottomNav({ activeNav, onNavigate }: BottomNavProps) {
               onClick={() => onNavigate(item.id)}
               aria-current={isActive ? 'page' : undefined}
               aria-label={item.label}
-              className={`tap-scale flex flex-col items-center gap-1 rounded-xl px-0.5 py-1.5 text-[10px] font-medium leading-tight transition-colors ${
+              className={`tap-scale flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl px-0.5 py-1.5 text-xs font-medium leading-tight transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest ${
                 isActive ? 'text-forest dark:text-emerald-300' : 'text-slate-400 dark:text-slate-500'
               }`}
             >

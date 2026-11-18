@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Briefcase, CalendarDays, MapPin, Plus, Wallet } from 'lucide-react'
 import { EducationInstitution, JobPosting } from '../../../types'
 import { SubTabBar } from '../../common/SubTabBar'
@@ -162,8 +162,8 @@ export function JobsTuitions({
     <section className="space-y-6">
       <SubTabBar
         tabs={[
-          { id: 'tuition', label: '🎓 টিউশনি ও কোচিং' },
-          { id: 'employment', label: '💼 কর্মসংস্থান' },
+          { id: 'tuition', label: 'টিউশনি ও কোচিং' },
+          { id: 'employment', label: 'কর্মসংস্থান' },
         ]}
         activeId={activeTab}
         onChange={(id) => setActiveTab(id as JobsTab)}
@@ -177,9 +177,9 @@ export function JobsTuitions({
       />
 
       {activeTab === 'tuition' && (
-        <div role="tabpanel" className="grid gap-3 sm:gap-4">
+        <div role="tabpanel" className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-xs text-cyan-800 dark:border-cyan-900/40 dark:bg-cyan-900/20 dark:text-cyan-200">
-            🎓 মোট {toBanglaNumber(tuitionPosts.length)} টি টিউশনি পোস্ট তালিকাভুক্ত।
+            মোট {toBanglaNumber(tuitionPosts.length)} টি টিউশনি পোস্ট তালিকাভুক্ত।
           </div>
 
           {tuitionPosts.length === 0 ? (
@@ -192,16 +192,16 @@ export function JobsTuitions({
           )}
 
           <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-xs text-cyan-800 dark:border-cyan-900/40 dark:bg-cyan-900/20 dark:text-cyan-200">
-            💡 আপনার এলাকার টিউশনি বা কোচিং সেবার তথ্য থাকলে আমাদের জানান — অনুমোদনের পর তালিকায় যুক্ত করা হবে।
+            আপনার এলাকার টিউশনি বা কোচিং সেবার তথ্য থাকলে আমাদের জানান — অনুমোদনের পর তালিকায় যুক্ত করা হবে।
           </div>
         </div>
       )}
 
       {activeTab === 'employment' && (
-        <div role="tabpanel" className="grid gap-3 sm:gap-4">
+        <div role="tabpanel" className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-200">
             <span>
-              💼 মোট {toBanglaNumber(activeListings.length)} টি সক্রিয় বিজ্ঞপ্তি
+              মোট {toBanglaNumber(activeListings.length)} টি সক্রিয় বিজ্ঞপ্তি
               {pendingCount > 0 && ` • ${toBanglaNumber(pendingCount)} টি অনুমোদনের অপেক্ষায়`}
             </span>
             <button

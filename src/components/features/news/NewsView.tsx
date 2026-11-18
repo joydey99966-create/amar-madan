@@ -1,4 +1,4 @@
-import { CalendarDays, MapPin, Newspaper } from 'lucide-react'
+﻿import { CalendarDays, MapPin, Newspaper } from 'lucide-react'
 import { Journalist, NewsItem } from '../../../types'
 import { ServiceCard } from '../../common/ContactCard'
 import { EmptyState } from '../../common/EmptyState'
@@ -43,7 +43,7 @@ export function NewsView({
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs text-sky-800 dark:border-sky-900/40 dark:bg-sky-900/20 dark:text-sky-200">
-        📰 মোট {toBanglaNumber(visibleNews.length)} টি সংবাদ ও {toBanglaNumber(visibleJournalists.length)} জন
+        মোট {toBanglaNumber(visibleNews.length)} টি সংবাদ ও {toBanglaNumber(visibleJournalists.length)} জন
         সাংবাদিক — প্রতিটি সংবাদে সূত্র ও প্রকাশের তারিখ দেওয়া আছে।
       </div>
 
@@ -132,7 +132,7 @@ export function NewsView({
       {visibleJournalists.length > 0 && (
         <div>
           <h3 className="mb-3 text-base font-bold text-slate-900 dark:text-white">প্রেস ক্লাবের সাংবাদিক</h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleJournalists.map((journalist) => (
               <ServiceCard
                 key={journalist.id}

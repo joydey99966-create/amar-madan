@@ -41,7 +41,7 @@ export function CategoriesGrid({
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="grid grid-cols-4 gap-2 sm:gap-3 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-8">
         {categories.map((category) => {
           const liveCount = counts[category.id]
           const unit = countUnits?.[category.id] ?? CATEGORY_COUNT_UNITS[category.id]
@@ -50,26 +50,27 @@ export function CategoriesGrid({
             <button
               key={category.id}
               onClick={() => onSelectCategory(getTargetView(category.id), category.id)}
-              className="group hover-lift tap-scale relative flex min-h-[128px] flex-col items-center justify-center rounded-[24px] border border-slate-200/70 bg-white px-2.5 py-3 text-center shadow-soft-sm transition-all duration-300 hover:border-forest/30 hover:shadow-soft dark:border-white/[0.08] dark:bg-[#182420] dark:hover:border-emerald-500/30 sm:min-h-[160px] sm:px-3 sm:py-4"
+              className="group hover-lift tap-scale relative flex min-h-[104px] flex-col items-center justify-center rounded-[20px] border border-slate-200/70 bg-white px-1 py-2.5 text-center shadow-soft-sm transition-all duration-300 hover:border-forest/30 hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest dark:border-white/[0.08] dark:bg-[#182420] dark:hover:border-emerald-500/30 sm:min-h-[150px] sm:rounded-[24px] sm:px-3 sm:py-4"
             >
               {liveCount !== undefined && (
                 <span
                   title={countDetails?.[category.id]}
-                  className="absolute right-2.5 top-2.5 rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 shadow-sm dark:bg-rose-950/60 dark:text-rose-300"
+                  className="absolute right-1 top-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-600 shadow-sm dark:bg-white/10 dark:text-slate-300 sm:right-2.5 sm:top-2.5 sm:bg-rose-50 sm:px-2 sm:text-[10px] sm:text-rose-600 sm:dark:bg-rose-950/60 sm:dark:text-rose-300"
                 >
                   {formatCount(liveCount, unit)}
                 </span>
               )}
               <span
-                className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 sm:mb-3 sm:h-[56px] sm:w-[56px]"
+                className="mb-1.5 flex h-9 w-9 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 sm:mb-3 sm:h-[56px] sm:w-[56px] sm:rounded-2xl"
                 style={{ backgroundColor: category.background }}
               >
-                <category.icon size={26} color={category.color} strokeWidth={1.8} />
+                <category.icon size={20} color={category.color} strokeWidth={1.8} className="sm:hidden" />
+                <category.icon size={26} color={category.color} strokeWidth={1.8} className="hidden sm:block" />
               </span>
-              <span className="text-[14px] font-bold leading-5 text-slate-800 transition-colors group-hover:text-forest dark:text-slate-100 dark:group-hover:text-emerald-300">
+              <span className="text-[11px] font-bold leading-4 text-slate-800 transition-colors group-hover:text-forest dark:text-slate-100 dark:group-hover:text-emerald-300 sm:text-[14px] sm:leading-5">
                 {category.name}
               </span>
-              <span className="mt-1 text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-500 dark:text-slate-500 dark:group-hover:text-slate-400">
+              <span className="mt-0.5 hidden text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-500 dark:text-slate-500 dark:group-hover:text-slate-400 sm:block">
                 {category.english}
               </span>
             </button>

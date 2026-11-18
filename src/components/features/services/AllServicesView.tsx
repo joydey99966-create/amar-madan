@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+﻿import { useMemo } from 'react'
 import { ChevronRight, Phone } from 'lucide-react'
 import { categories } from '../../../constants'
 import { useEmergencyContacts } from '../../../hooks/useEmergencyContacts'
@@ -59,10 +59,10 @@ export function AllServicesView({ counts, countDetails, countUnits, onSelectView
       )}
 
       <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-600 shadow-soft-sm dark:border-white/10 dark:bg-[#182420] dark:text-slate-300">
-        ℹ️ মোট {toBanglaNumber(ordered.length)} টি সেবা — প্রতিটির সাথে বর্তমান তথ্যের সংখ্যা দেওয়া হয়েছে।
+        মোট {toBanglaNumber(ordered.length)} টি সেবা — প্রতিটির সাথে বর্তমান তথ্যের সংখ্যা দেওয়া হয়েছে।
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {ordered.map((category) => {
           const view = CATEGORY_VIEW_MAP[category.id] ?? 'home'
           const count = counts[category.id]

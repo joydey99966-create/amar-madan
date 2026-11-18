@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useToast } from '../../context/ToastContext'
 import { formErrorClass, formFieldClass, formLabelClass, ModalShell } from './ModalShell'
 
@@ -120,7 +120,7 @@ export function ReportModal({ isOpen, target, onClose, onSubmit }: ReportModalPr
         </div>
 
         <p className="rounded-xl bg-emerald-50 p-3 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
-          🔎 অ্যাডমিন যাচাই করে তথ্য হালনাগাদ করবেন। আপনার নম্বর কোথাও প্রকাশ করা হবে না।
+          অ্যাডমিন যাচাই করে তথ্য হালনাগাদ করবেন। আপনার নম্বর কোথাও প্রকাশ করা হবে না।
         </p>
       </form>
     </ModalShell>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import {
   Users,
   TrendingUp,
@@ -588,7 +588,7 @@ export function AdminDashboard() {
         {!isAuthenticated ? (
           <div className="mx-auto flex max-w-md flex-col items-center justify-center px-4 py-20 text-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-forest dark:bg-emerald-900/30 dark:text-emerald-400">
-              <span className="text-2xl">🔒</span>
+              <span className="text-2xl"></span>
             </div>
             <h2 className="mb-2 text-xl font-bold text-slate-800 dark:text-white">
               অ্যাডমিন যাচাইকরণ প্রয়োজন

@@ -1,4 +1,4 @@
-import { Fish, Waves } from 'lucide-react'
+﻿import { Fish, Waves } from 'lucide-react'
 import { FishWholesaler, MarketPrice } from '../../../types'
 import { PriceCard, ServiceCard } from '../../common/ContactCard'
 import { EmptyState } from '../../common/EmptyState'
@@ -38,7 +38,7 @@ export function FishMarketView({
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-xs text-cyan-800 dark:border-cyan-900/40 dark:bg-cyan-900/20 dark:text-cyan-200">
-        🐟 নীল হাওরের মাছের {toBanglaNumber(visiblePrices.length)} টি দাম এবং {toBanglaNumber(visibleWholesalers.length)} টি মাছ আড়তের তথ্য।
+        নীল হাওরের মাছের {toBanglaNumber(visiblePrices.length)} টি দাম এবং {toBanglaNumber(visibleWholesalers.length)} টি মাছ আড়তের তথ্য।
       </div>
 
       <SearchFilterBanner
@@ -63,7 +63,7 @@ export function FishMarketView({
             onSuggest={setActiveQuery}
           />
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visiblePrices.map((price) => (
               <PriceCard
                 key={price.id}
@@ -85,7 +85,7 @@ export function FishMarketView({
           <h3 className="mb-3 flex items-center gap-2 text-base font-bold text-slate-900 dark:text-white">
             <Waves size={17} className="text-cyan-500" /> মাছ আড়ত ও ঠেলা
           </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleWholesalers.map((wholesaler) => (
               <ServiceCard
                 key={wholesaler.id}

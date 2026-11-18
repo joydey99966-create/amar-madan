@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { LostFoundItem } from '../../../types'
 import { ServiceCard } from '../../common/ContactCard'
@@ -70,7 +70,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
     <section className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
         <span>
-          🔎 মোট {toBanglaNumber(visibleItems.length)} টি অনুসন্ধান বিজ্ঞপ্তি — হারানো{' '}
+          মোট {toBanglaNumber(visibleItems.length)} টি অনুসন্ধান বিজ্ঞপ্তি — হারানো{' '}
           {toBanglaNumber(lost.length)} টি, প্রাপ্ত {toBanglaNumber(found.length)} টি
           {pendingCount > 0 && ` • ${toBanglaNumber(pendingCount)} টি অনুমোদনের অপেক্ষায়`}।
         </span>
@@ -96,7 +96,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
 
       {matches.length > 0 && (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-200">
-          🤝 {toBanglaNumber(matches.length)} টি সম্ভাব্য মিল পাওয়া গেছে — একই জিনিস হারানো ও পাওয়া দুই তালিকায় আছে কি না দেখে নিন।
+          {toBanglaNumber(matches.length)} টি সম্ভাব্য মিল পাওয়া গেছে — একই জিনিস হারানো ও পাওয়া দুই তালিকায় আছে কি না দেখে নিন।
         </div>
       )}
 
@@ -114,7 +114,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
           {lost.length > 0 && (
             <div>
               <h3 className="mb-3 text-base font-bold text-slate-900 dark:text-white">হারানো জিনিস</h3>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {lost.map((item) => (
                   <ServiceCard
                     key={item.id}
@@ -139,7 +139,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
           {found.length > 0 && (
             <div>
               <h3 className="mb-3 text-base font-bold text-slate-900 dark:text-white">পাওয়া গেছে</h3>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {found.map((item) => (
                   <ServiceCard
                     key={item.id}
@@ -164,7 +164,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
       )}
 
       <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-600 dark:border-white/10 dark:bg-[#182420] dark:text-slate-300">
-        💡 মূল্যবান জিনিস পাওয়ার ক্ষেত্রে মালিকের পরিচয় নিশ্চিত না করে কোথাও হস্তান্তর করবেন না।
+        মূল্যবান জিনিস পাওয়ার ক্ষেত্রে মালিকের পরিচয় নিশ্চিত না করে কোথাও হস্তান্তর করবেন না।
         পুলিশ বা ইউনিয়ন পরিষদে জানিয়ে রাখুন।
       </div>
 

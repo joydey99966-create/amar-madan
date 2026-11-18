@@ -70,7 +70,7 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {/* Contact */}
           <div className="space-y-3 rounded-2xl border border-slate-200/70 bg-white p-4 dark:border-white/10 dark:bg-[#182420]">
             <div className="flex items-center gap-2">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Plus, RefreshCw, Trash2, ChevronDown, Check, Eye, EyeOff, History } from 'lucide-react'
 import { MarketPrice } from '../../../types'
 import { formatBanglaToday, formatDate } from '../../../utils/formatters'
@@ -143,7 +143,7 @@ export function MarketAdminPanel({
 
       <div className="rounded-xl border border-slate-200 bg-amber-50 p-4 dark:border-amber-900/30 dark:bg-amber-900/20">
         <p className="text-sm text-amber-800 dark:text-amber-200">
-          💡 শেষ আপডেট: {today} (ইনলাইন এডিট করে সরাসরি মান, তারিখ ও দামের ইতিহাস পরিবর্তন করতে পারেন)
+          শেষ আপডেট: {today} (ইনলাইন এডিট করে সরাসরি মান, তারিখ ও দামের ইতিহাস পরিবর্তন করতে পারেন)
         </p>
       </div>
 

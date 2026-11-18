@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { BadgeCheck, Building, Clock, ExternalLink, FileCheck2, Search, Wallet, X } from 'lucide-react'
 import { CitizenService } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
@@ -94,7 +94,7 @@ export function CitizenServicesView({ services, query = '', onClearQuery }: Citi
           onSuggest={setSearchTerm}
         />
       ) : (
-        <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4 lg:grid-cols-2">
           {filtered.map((service) => (
             <article
               key={service.id}
@@ -154,7 +154,7 @@ export function CitizenServicesView({ services, query = '', onClearQuery }: Citi
 
               {service.note && (
                 <p className="mt-2 rounded-lg bg-amber-50 p-2.5 text-[11px] text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-                  ℹ️ {service.note}
+                  {service.note}
                 </p>
               )}
 
@@ -189,7 +189,7 @@ export function CitizenServicesView({ services, query = '', onClearQuery }: Citi
       )}
 
       <div className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-xs text-teal-900 dark:border-teal-900/40 dark:bg-teal-900/20 dark:text-teal-200">
-        ℹ️ সরকারি ফি ও সময় যেকোনো সময় পরিবর্তন হতে পারে। আবেদনের আগে সংশ্লিষ্ট অফিসে ফোন করে
+        সরকারি ফি ও সময় যেকোনো সময় পরিবর্তন হতে পারে। আবেদনের আগে সংশ্লিষ্ট অফিসে ফোন করে
         নিশ্চিত করুন। কোনো তথ্য ভুল মনে হলে প্রতিটি কার্ডের <strong>“ভুল তথ্য জানান”</strong> লিংকে ক্লিক করুন।
       </div>
     </section>

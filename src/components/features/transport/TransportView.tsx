@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Bike, Bus, Car, CarTaxiFront, Clock, MapPin, Phone, Ship } from 'lucide-react'
 import { ServiceProvider, TransportMode, TransportRoute } from '../../../types'
 import { ServiceCard } from '../../common/ContactCard'
@@ -127,7 +127,7 @@ export function TransportView({
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-xs text-indigo-800 dark:border-indigo-900/40 dark:bg-indigo-900/20 dark:text-indigo-200">
-        🚌 {toBanglaNumber(routes.length)} টি রুটের ভাড়া ও সময়সূচি — বাস, বোট, রিকশা, সিএনজি ও
+        {toBanglaNumber(routes.length)} টি রুটের ভাড়া ও সময়সূচি — বাস, বোট, রিকশা, সিএনজি ও
         মাইক্রোবাস। ভাড়া ও সময় পরিবর্তন হতে পারে, তাই যাত্রার আগে ফোনে নিশ্চিত করুন।
       </div>
 
@@ -143,7 +143,7 @@ export function TransportView({
                 : 'border border-slate-200 text-slate-600 hover:border-forest dark:border-white/10 dark:text-slate-300'
             }`}
           >
-            🚏 সব রুট
+            সব রুট
           </button>
           {modesWithRoutes.map((item) => {
             const Icon = MODE_ICONS[item]
@@ -275,7 +275,7 @@ export function TransportView({
             onSuggest={setActiveQuery}
           />
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleRoutes.map((route) => {
               const Icon = MODE_ICONS[route.mode]
               return (
@@ -337,7 +337,7 @@ export function TransportView({
 
                   {route.note && (
                     <p className="mt-2 rounded-lg bg-amber-50 p-2 text-[11px] text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-                      ℹ️ {route.note}
+                      {route.note}
                     </p>
                   )}
 
@@ -372,7 +372,7 @@ export function TransportView({
             description="অন্য নাম বা এলাকা লিখে আবার খুঁজুন।"
           />
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visibleProviders.map((provider) => (
               <ServiceCard
                 key={provider.id}

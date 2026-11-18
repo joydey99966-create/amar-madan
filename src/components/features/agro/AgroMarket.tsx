@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Tag, CalendarDays } from 'lucide-react'
+import { Tag, CalendarDays, ChartNoAxesColumnIncreasing, MapPin, Info, Wrench, BadgeCheck, Phone } from 'lucide-react'
 import { MarketPrice, ServiceProvider } from '../../../types'
 import { formatDate, toBanglaNumber, formatPrice } from '../../../utils/formatters'
 import { CallButton, CopyPhoneButton, WhatsAppButton } from '../../common/ContactActions'
@@ -77,7 +77,7 @@ export function AgroMarket({
 
   return (
     <section className={`scroll-mt-24 space-y-6 ${className}`}>
-      <div className="sticky top-20 z-20 rounded-[24px] bg-white p-3 shadow-md dark:bg-[#1a2420] sm:p-4">
+      <div className="sticky top-16 z-20 rounded-2xl bg-white p-2.5 shadow-md dark:bg-[#1a2420] sm:rounded-[24px] sm:p-4 lg:top-20">
         <PillRow trackClassName="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
           {(['prices', 'dealers', 'machinery'] as const).map((tab) => (
             <button
@@ -90,9 +90,9 @@ export function AgroMarket({
                   : 'border border-slate-200 text-slate-600 hover:border-forest dark:border-white/10 dark:text-slate-300'
               }`}
             >
-              {tab === 'prices' && '🛍️ বাজার দাম'}
-              {tab === 'dealers' && '🌾 BCIC ডিলার'}
-              {tab === 'machinery' && '⚙️ যন্ত্রপাতি ভাড়া'}
+              {tab === 'prices' && 'বাজার দাম'}
+              {tab === 'dealers' && 'BCIC ডিলার'}
+              {tab === 'machinery' && 'যন্ত্রপাতি ভাড়া'}
             </button>
           ))}
         </PillRow>
@@ -108,9 +108,9 @@ export function AgroMarket({
       />
 
       {activeTab === 'prices' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-amber-50 p-4 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
-            <span>📊 দৈনিক স্থানীয় বাজার দর — মোট {toBanglaNumber(filteredPrices.length)} টি পণ্য</span>
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-amber-50 p-4 text-sm text-amber-800 dark:bg-amber-900/30 dark:text-amber-200 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <span className="flex items-center gap-2"><ChartNoAxesColumnIncreasing size={16} /> দৈনিক স্থানীয় বাজার দর — মোট {toBanglaNumber(filteredPrices.length)} টি পণ্য</span>
             {onAddPrice && (
               <button
                 type="button"
@@ -131,16 +131,17 @@ export function AgroMarket({
             filteredPrices.map((item) => <PriceRow key={item.id} item={item} />)
           )}
 
-          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-xs text-blue-800 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-200">
-            💡 <strong>টিপস:</strong> মদন উপজেলার কৃষি সম্প্রসারণ কর্মকর্তার সাথে যোগাযোগ করে সর্বশেষ দাম নিশ্চিত করুন।
+          <div className="flex items-start gap-2 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-200 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Info size={16} className="mt-0.5 shrink-0" />
+            <span><strong>টিপস:</strong> মদন উপজেলার কৃষি সম্প্রসারণ কর্মকর্তার সাথে যোগাযোগ করে সর্বশেষ দাম নিশ্চিত করুন।</span>
           </div>
         </div>
       )}
 
       {activeTab === 'dealers' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-emerald-50 p-4 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
-            ✓ সত্যায়িত BCIC সার, বীজ ও কীটনাশক ডিলার — {toBanglaNumber(filteredDealers.length)} টি
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <BadgeCheck size={16} className="shrink-0" /> সত্যায়িত BCIC সার, বীজ ও কীটনাশক ডিলার — {toBanglaNumber(filteredDealers.length)} টি
           </div>
 
           {filteredDealers.length === 0 ? (
@@ -155,12 +156,12 @@ export function AgroMarket({
                 className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-4 dark:border-white/[0.07] dark:bg-[#1a2420] sm:p-5"
               >
                 <div>
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-white">{dealer.name}</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{dealer.details}</p>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">{dealer.name}</h3>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{dealer.details}</p>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                  <span className="text-base">📍</span>
+                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                  <MapPin size={15} className="shrink-0 text-forest dark:text-emerald-300" />
                   <span>{dealer.area}</span>
                 </div>
 
@@ -182,9 +183,9 @@ export function AgroMarket({
       )}
 
       {activeTab === 'machinery' && (
-        <div className="grid gap-3 sm:gap-4">
-          <div className="rounded-2xl bg-purple-50 p-4 text-xs text-purple-800 dark:bg-purple-900/30 dark:text-purple-200">
-            ⚙️ কৃষি যন্ত্রপাতি ভাড়া সেবা (ঋণপত্র স্বীকৃত) — {toBanglaNumber(filteredMachinery.length)} টি
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="flex items-center gap-2 rounded-2xl bg-purple-50 p-4 text-sm text-purple-800 dark:bg-purple-900/30 dark:text-purple-200 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Wrench size={16} className="shrink-0" /> কৃষি যন্ত্রপাতি ভাড়া সেবা (ঋণপত্র স্বীকৃত) — {toBanglaNumber(filteredMachinery.length)} টি
           </div>
 
           {filteredMachinery.length === 0 ? (
@@ -200,9 +201,9 @@ export function AgroMarket({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-slate-800 dark:text-white">{item.name}</h3>
-                    <div className="mt-2 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                      <span className="text-base">📍</span>
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">{item.name}</h3>
+                    <div className="mt-2 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                      <MapPin size={15} className="shrink-0 text-forest dark:text-emerald-300" />
                       <span>{item.area}</span>
                     </div>
                   </div>
@@ -215,7 +216,7 @@ export function AgroMarket({
                           ? 'text-emerald-600 dark:text-emerald-400'
                           : 'text-amber-600 dark:text-amber-400'
                       }`}>
-                        {item.availability === 'available' ? '✓ উপলব্ধ' : item.availability === 'busy' ? 'ব্যস্ত' : 'অফলাইন'}
+                        {item.availability === 'available' ? 'উপলব্ধ' : item.availability === 'busy' ? 'ব্যস্ত' : 'অফলাইন'}
                       </div>
                     )}
                   </div>
@@ -252,8 +253,8 @@ export function AgroMarket({
             ))
           )}
 
-          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-xs text-orange-800 dark:border-orange-900/40 dark:bg-orange-900/20 dark:text-orange-200">
-            📞 সরাসরি যোগাযোগ করুন বা আপনার ইউনিয়ন কৃষি অফিসে জানুন ভাড়া পাওয়ার বিস্তারিত তথ্যের জন্য।
+          <div className="flex items-start gap-2 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm text-orange-800 dark:border-orange-900/40 dark:bg-orange-900/20 dark:text-orange-200 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+            <Phone size={16} className="mt-0.5 shrink-0" /> সরাসরি যোগাযোগ করুন বা আপনার ইউনিয়ন কৃষি অফিসে জানুন ভাড়া পাওয়ার বিস্তারিত তথ্যের জন্য।
           </div>
         </div>
       )}

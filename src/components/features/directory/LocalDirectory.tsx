@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { EducationInstitution, Hospital, ServiceProvider } from '../../../types'
 import { formatDate } from '../../../utils/formatters'
 import { lostFoundService } from '../../../services/lostFoundService'
@@ -55,11 +55,11 @@ export function LocalDirectory({
     <section className="space-y-6">
       <SubTabBar
         tabs={[
-          { id: 'doctors', label: '👨‍⚕️ ডাক্তার' },
-          { id: 'hospitals', label: '🏥 হাসপাতাল' },
-          { id: 'education', label: '🎓 শিক্ষা প্রতিষ্ঠান' },
-          { id: 'transport', label: '🚗 গাড়ি ভাড়া' },
-          { id: 'lostfound', label: '🔎 হারানো ও প্রাপ্তি' },
+          { id: 'doctors', label: 'ডাক্তার' },
+          { id: 'hospitals', label: 'হাসপাতাল' },
+          { id: 'education', label: 'শিক্ষা প্রতিষ্ঠান' },
+          { id: 'transport', label: 'গাড়ি ভাড়া' },
+          { id: 'lostfound', label: 'হারানো ও প্রাপ্তি' },
         ]}
         activeId={currentTab}
         onChange={handleTabChange}
@@ -88,7 +88,7 @@ export function LocalDirectory({
       )}
 
       {currentTab === 'transport' && (
-        <div role="tabpanel" className="grid gap-3 sm:gap-4">
+        <div role="tabpanel" className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           {transport.length === 0 ? (
             <EmptyState
               title="কোনো গাড়ি ভাড়ার তথ্য পাওয়া যায়নি"
@@ -112,7 +112,7 @@ export function LocalDirectory({
       )}
 
       {currentTab === 'lostfound' && (
-        <div role="tabpanel" className="grid gap-3 sm:gap-4">
+        <div role="tabpanel" className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           {approvedLostFound.length === 0 ? (
             <EmptyState
               title="কোনো হারানো বা প্রাপ্ত জিনিস নেই"

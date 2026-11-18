@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { MapPin, X } from 'lucide-react'
 import { EducationInstitution } from '../../../types'
 import { CallButton, CopyPhoneButton, WhatsAppButton } from '../../common/ContactActions'
@@ -41,7 +41,7 @@ export function EducationDirectory({
     <section className="scroll-mt-24 space-y-6">
       <div className="sticky top-20 z-20 rounded-[24px] bg-white p-4 shadow-md dark:bg-[#1a2420] sm:p-6">
         <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f1411]">
-          <span className="text-slate-400 dark:text-slate-500">🔍</span>
+          <span className="text-slate-400 dark:text-slate-500"></span>
           <input
             type="text"
             value={searchTerm}
@@ -82,7 +82,7 @@ export function EducationDirectory({
         }}
       />
 
-      <div className="grid gap-3 sm:gap-4">
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.length === 0 ? (
           <EmptyState
             title="কোনো প্রতিষ্ঠান পাওয়া যায়নি"

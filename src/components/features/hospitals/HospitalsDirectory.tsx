@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Building2, Clock, X } from 'lucide-react'
 import { Hospital } from '../../../types'
 import { EmptyState } from '../../common/EmptyState'
@@ -38,7 +38,7 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
     <section className="space-y-5">
       <div className="rounded-[24px] bg-white p-4 shadow-md dark:bg-[#1a2420]">
         <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f1411]">
-          <span className="text-slate-400 dark:text-slate-500">🏥</span>
+          <span className="text-slate-400 dark:text-slate-500"></span>
           <input
             type="text"
             value={searchTerm}
@@ -91,7 +91,7 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
           onSuggest={setSearchTerm}
         />
       ) : (
-        <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4 lg:grid-cols-2">
           {filtered.map((hospital) => (
             <ContactCard
               key={hospital.id}
@@ -141,7 +141,7 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
       )}
 
       <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-xs text-blue-800 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-200">
-        💡 <strong>জরুরি অবস্থায়:</strong> সরাসরি {police?.phone ?? ''}-এ কল করুন। হাসপাতালে যাওয়ার আগে ফোন করে
+        <strong>জরুরি অবস্থায়:</strong> সরাসরি {police?.phone ?? ''}-এ কল করুন। হাসপাতালে যাওয়ার আগে ফোন করে
         শয্যা ও ডাক্তারের উপস্থিতি নিশ্চিত করুন।
       </div>
     </section>

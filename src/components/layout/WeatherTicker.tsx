@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSun, LucideIcon, MapPin, Snowflake, Sun } from 'lucide-react'
 import { defaultNotices } from '../../constants'
 import { noticeService } from '../../services/noticeService'
@@ -37,7 +37,7 @@ function readNotices(): string[] {
     const published = noticeService.getPublishedNotices()
     if (published.length > 0) {
       return published.map((notice) =>
-        notice.priority === 'urgent' ? `⚠️ ${notice.title}` : notice.title,
+        notice.priority === 'urgent' ? `${notice.title}` : notice.title,
       )
     }
   } catch {

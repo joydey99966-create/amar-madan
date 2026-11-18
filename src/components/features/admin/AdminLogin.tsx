@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Lock, LogOut } from 'lucide-react'
 import { useAdmin } from '../../../context/AdminContext'
 
@@ -26,7 +26,7 @@ export function AdminLogin({ onSuccess }: AdminLoginProps) {
   if (isAuthenticated) {
     return (
       <div className="flex items-center gap-2">
-        <span className="hidden text-xs text-slate-500 sm:inline">👨‍💻 অ্যাডমিন সক্রিয়</span>
+        <span className="hidden text-xs text-slate-500 sm:inline">অ্যাডমিন সক্রিয়</span>
         <button
           onClick={logout}
           className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-400 dark:hover:bg-white/5"

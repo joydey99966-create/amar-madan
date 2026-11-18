@@ -36,6 +36,8 @@ import {
   CategoriesGrid,
   NoticesSection,
   CommunityBanner,
+  EmergencyStrip,
+  TodayInfo,
   EmergencyBlood,
   LocalDirectory,
   JobsTuitions,
@@ -489,7 +491,7 @@ function AppContent() {
       </ErrorBoundary>
 
       <main
-        className={`mx-auto max-w-6xl px-4 pb-28 sm:px-6 sm:pt-8 md:pb-12 lg:px-8 ${
+        className={`mx-auto max-w-7xl px-4 pb-28 sm:px-6 sm:pt-8 lg:px-8 lg:pb-12 xl:px-10 ${
           activeView === 'home' ? 'pt-4' : 'pt-6'
         }`}
       >
@@ -501,54 +503,72 @@ function AppContent() {
           ) : (
             <>
               {activeView === 'home' && (
-                <>
-                  <Hero />
-                  <SearchBar
-                    value={searchInput}
-                    onChange={setSearchInput}
-                    onSubmit={submitSearch}
-                    resultCount={searchInput.trim() ? searchTotal : undefined}
-                    groups={suggestionGroups}
-                    onSelectHit={openSearchHit}
-                  />
-
-                  {searchInput.trim() && (
-                    <SearchResults
-                      query={searchInput.trim()}
-                      groups={searchGroups}
-                      total={searchTotal}
-                      intents={searchIntents}
-                      onSelectHit={openSearchHit}
-                      onSelectIntent={(intent) =>
-                        goTo(intent.view, { q: searchInput.trim(), tab: intent.tab ?? null })
-                      }
-                      onClear={() => setSearchInput('')}
-                      onSuggestQuery={setSearchInput}
+                <div className="mt-4 flex flex-col gap-4 sm:gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_380px]">
+                  <div className="lg:col-span-2">
+                    <Hero />
+                  </div>
+                  <div className="lg:col-span-2">
+                    <EmergencyStrip
+                      ambulancePhone={emergencyServices.ambulance[0]?.phone}
+                      onNavigate={(view, tab) => goTo(view, { tab: tab ?? null })}
                     />
-                  )}
-
-                  <CategoriesGrid
-                    categories={filteredCategories}
-                    counts={counts}
-                    countDetails={countDetails}
-                    countUnits={countUnits}
-                    onSelectCategory={handleSelectCategory}
-                  />
-
-                  <section
-                    id="notices"
-                    className="scroll-mt-24 mt-6 grid gap-4 sm:mt-9 sm:gap-5 lg:grid-cols-[1.3fr_0.7fr]"
-                  >
-                    <NoticesSection notices={notices} onSelectNotice={openNotice} />
-                    <CommunityBanner onRegisterDonor={() => setShowRegisterModal(true)} />
-                  </section>
-
-                  <div className="mt-3 sm:mt-9">
-                    <CulturalBanner />
+                  </div>
+                  <div className="lg:col-span-2">
+                    <SearchBar
+                      value={searchInput}
+                      onChange={setSearchInput}
+                      onSubmit={submitSearch}
+                      resultCount={searchInput.trim() ? searchTotal : undefined}
+                      groups={suggestionGroups}
+                      onSelectHit={openSearchHit}
+                    />
+                    {searchInput.trim() && (
+                      <SearchResults
+                        query={searchInput.trim()}
+                        groups={searchGroups}
+                        total={searchTotal}
+                        intents={searchIntents}
+                        onSelectHit={openSearchHit}
+                        onSelectIntent={(intent) =>
+                          goTo(intent.view, { q: searchInput.trim(), tab: intent.tab ?? null })
+                        }
+                        onClear={() => setSearchInput('')}
+                        onSuggestQuery={setSearchInput}
+                      />
+                    )}
                   </div>
 
-                  <PhotoGallery />
-                </>
+                  {/* Mobile: one column ordered by the `order-*` classes.
+                      Desktop: two independent columns (main + sidebar). */}
+                  <div className="contents lg:col-start-1 lg:row-start-4 lg:flex lg:flex-col lg:gap-6">
+                    <div className="order-2 lg:order-none">
+                      <CategoriesGrid
+                        categories={filteredCategories}
+                        counts={counts}
+                        countDetails={countDetails}
+                        countUnits={countUnits}
+                        onSelectCategory={handleSelectCategory}
+                      />
+                    </div>
+                    <div className="order-5 lg:order-none">
+                      <CulturalBanner />
+                    </div>
+                    <div className="order-6 lg:order-none">
+                      <PhotoGallery />
+                    </div>
+                  </div>
+                  <div className="contents lg:col-start-2 lg:row-start-4 lg:flex lg:flex-col lg:gap-6">
+                    <div className="order-1 lg:order-none">
+                      <TodayInfo price={marketPrices[0]} onOpenMarket={() => goTo('market', { tab: 'prices' })} />
+                    </div>
+                    <div id="notices" className="order-3 scroll-mt-24 lg:order-none">
+                      <NoticesSection notices={notices} onSelectNotice={openNotice} />
+                    </div>
+                    <div className="order-4 lg:order-none">
+                      <CommunityBanner onRegisterDonor={() => setShowRegisterModal(true)} />
+                    </div>
+                  </div>
+                </div>
               )}
 
               {activeView === 'market' && (

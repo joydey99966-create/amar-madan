@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { BadgeCheck, Clock, MapPin, Wallet, X } from 'lucide-react'
 import { ServiceProvider } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
@@ -52,7 +52,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
     <section className="scroll-mt-24 space-y-6">
       <div className="rounded-[24px] bg-white p-4 shadow-md dark:bg-[#1a2420] sm:p-5">
         <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f1411]">
-          <span className="text-slate-400 dark:text-slate-500">🔍</span>
+          <span className="text-slate-400 dark:text-slate-500"></span>
           <input
             type="text"
             value={searchTerm}
@@ -81,8 +81,8 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
               : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300'
           }`}
         >
-          <span>🗓️ আজ কোন ডাক্তার আছেন</span>
-          <span>{todayOnly ? 'দেখানো হচ্ছে ✓' : 'ফিল্টার করুন'}</span>
+          <span>আজ কোন ডাক্তার আছেন</span>
+          <span>{todayOnly ? 'দেখানো হচ্ছে' : 'ফিল্টার করুন'}</span>
         </button>
 
         <PillRow className="mt-3" trackClassName="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -131,7 +131,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
         }}
       />
 
-      <div className="grid gap-3 sm:gap-4">
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.length === 0 ? (
           <EmptyState
             title="কোনো ডাক্তার পাওয়া যায়নি"
@@ -180,7 +180,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
                 </div>
                 {doctor.visitingDays && (
                   <div className="flex items-center gap-2">
-                    <span className="text-[13px] leading-none" aria-hidden="true">🗓️</span>
+                    <span className="text-[13px] leading-none" aria-hidden="true"></span>
                     <span>চেম্বার: {doctor.visitingDays}</span>
                   </div>
                 )}

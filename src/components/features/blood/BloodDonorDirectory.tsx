@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Calendar, Search, X } from 'lucide-react'
+import { Calendar, MapPin, Search, X } from 'lucide-react'
 import { BloodDonor, BloodGroup } from '../../../types'
 import { bloodGroups, unionAreas } from '../../../constants'
 import { getDonorStatus } from '../../../services/bloodDonorService'
@@ -172,7 +172,7 @@ export function BloodDonorDirectory({
         onClear={handleReset}
       />
 
-      <div className="grid gap-3 sm:gap-4">
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.length === 0 ? (
           <EmptyState
             title="এই ফিল্টারে কোনো রক্তদাতা নেই"
@@ -213,7 +213,7 @@ export function BloodDonorDirectory({
                     </span>
                   </div>
                   <div className="mt-2 space-y-1 text-xs text-slate-500 dark:text-slate-400">
-                    <div>📍 {donor.unionArea}</div>
+                    <div className="flex items-center gap-1"><MapPin size={13} className="shrink-0 text-forest dark:text-emerald-300" /> {donor.unionArea}</div>
                     {donor.lastDonationDate ? (
                       <div className="flex items-center gap-1">
                         <Calendar size={13} />

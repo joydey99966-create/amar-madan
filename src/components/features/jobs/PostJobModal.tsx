@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { JobPosting } from '../../../types'
 import { useToast } from '../../../context/ToastContext'
 import { jobPostingService } from '../../../services/jobPostingService'
@@ -114,7 +114,7 @@ export function PostJobModal({ isOpen, onClose, onSubmitted }: PostJobModalProps
             form="post-job-form"
             className="w-full rounded-xl bg-forest px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#104b38]"
           >
-            ✓ পোস্ট জমা দিন
+            পোস্ট জমা দিন
           </button>
           <button
             type="button"
@@ -286,7 +286,7 @@ export function PostJobModal({ isOpen, onClose, onSubmitted }: PostJobModalProps
         </div>
 
         <p className="rounded-xl bg-emerald-50 p-3 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200">
-          🔒 পোস্ট প্রকাশের আগে অ্যাডমিন যাচাই করবেন — এতে ভুয়া বিজ্ঞপ্তি ঠেকানো যায়।
+          পোস্ট প্রকাশের আগে অ্যাডমিন যাচাই করবেন — এতে ভুয়া বিজ্ঞপ্তি ঠেকানো যায়।
         </p>
       </form>
     </ModalShell>

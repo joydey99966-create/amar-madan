@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, MapPin, Trash2, XCircle } from 'lucide-react'
+﻿import { CheckCircle2, Clock, MapPin, Trash2, XCircle } from 'lucide-react'
 import { PriceSubmission } from '../../../types/priceModeration'
 
 interface PriceModerationAdminPanelProps {
@@ -71,7 +71,7 @@ export function PriceModerationAdminPanel({
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-blue-50 p-4 text-xs leading-5 text-blue-800 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-200">
-        💡 ব্যবহারকারীরা জমা দেওয়া দামগুলো এখানে যাচাই করে অনুমোদন বা বাতিল করুন।
+        ব্যবহারকারীরা জমা দেওয়া দামগুলো এখানে যাচাই করে অনুমোদন বা বাতিল করুন।
         অনুমোদন করলে লাইভ বাজার দর আপডেট হবে; বাতিল করলে কোনো পরিবর্তন হবে না।
       </div>
 

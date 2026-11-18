@@ -150,6 +150,7 @@ export function SearchBar({
         <Search size={21} className="shrink-0 text-forest transition-colors dark:text-emerald-400" />
         <input
           ref={inputRef}
+          id="site-search-input"
           aria-label="খুঁজুন"
           role="combobox"
           aria-expanded={showSuggestions}
