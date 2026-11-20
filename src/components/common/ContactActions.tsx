@@ -2,6 +2,7 @@ import { Check, Copy, MessageCircle, Phone } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import { copyToClipboard } from '../../utils/clipboard'
 import { cleanPhone } from '../../utils/formatters'
+import { isPlaceholderPhone, UNVERIFIED } from '../../utils/placeholderData'
 
 /**
  * ONE call-button pattern for the whole site. Every directory card, detail
@@ -13,12 +14,19 @@ export function CallButton({
   phone,
   dial,
   className = '',
+  label,
 }: {
   phone: string
   /** Dial digits, when the display number uses Bengali numerals. */
   dial?: string
   className?: string
+  /** Optional display text (e.g. masked number) — the call target stays the real number. */
+  label?: string
 }) {
+  // Placeholder numbers are never callable on the public site.
+  if (isPlaceholderPhone(dial ?? phone)) {
+    return <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{UNVERIFIED}</span>
+  }
   return (
     <a
       href={`tel:${cleanPhone(dial ?? phone)}`}
@@ -30,13 +38,14 @@ export function CallButton({
         <Phone size={14} />
         কল করুন
       </span>
-      <span className="text-[10px] font-medium opacity-90">{phone}</span>
+      <span className="text-[10px] font-medium opacity-90">{label ?? phone}</span>
     </a>
   )
 }
 
 export function CopyPhoneButton({ phone, copied }: { phone: string; copied?: boolean }) {
   const { addToast } = useToast()
+  if (isPlaceholderPhone(phone)) return null
   const handleCopy = () =>
     copyToClipboard(
       phone,
@@ -57,6 +66,7 @@ export function CopyPhoneButton({ phone, copied }: { phone: string; copied?: boo
 }
 
 export function WhatsAppButton({ phone }: { phone: string }) {
+  if (isPlaceholderPhone(phone)) return null
   return (
     <a
       href={`https://wa.me/${cleanPhone(phone)}`}

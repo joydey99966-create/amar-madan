@@ -8,8 +8,11 @@ import {
 } from '../../../services/dataSnapshotService'
 import { freshnessService } from '../../../services/freshnessService'
 import { analyticsService } from '../../../services/analyticsService'
+import { storageService } from '../../../services/storageService'
 import { useToast } from '../../../context/ToastContext'
 import { toBanglaNumber } from '../../../utils/formatters'
+import { isPlaceholderPhone, isPlaceholderEiin } from '../../../utils/placeholderData'
+import { STORAGE_KEYS } from '../../../constants'
 
 /** Data backup, freshness and privacy analytics — all admin-controlled. */
 export function DataOpsAdminPanel() {
@@ -54,6 +57,35 @@ export function DataOpsAdminPanel() {
 
   const totalViews = Object.values(stats.views).reduce((a, b) => a + b, 0)
 
+  /** Flag placeholder phone/EIIN values across every dataset in one place. */
+  const placeholderFlags = (() => {
+    const labels: Record<string, string> = {
+      [STORAGE_KEYS.BLOOD_DONORS]: 'রক্তদাতা',
+      [STORAGE_KEYS.DOCTORS]: 'ডাক্তার',
+      [STORAGE_KEYS.HOSPITALS]: 'হাসপাতাল',
+      [STORAGE_KEYS.EDUCATION]: 'শিক্ষা প্রতিষ্ঠান',
+      [STORAGE_KEYS.EMERGENCY_CONTACTS]: 'জরুরি নম্বর',
+      [STORAGE_KEYS.ROUTES]: 'যাতায়াত',
+      [STORAGE_KEYS.AGRO_DEALERS]: 'কৃষি ডিলার',
+      [STORAGE_KEYS.FISH_PRICES]: 'মাছ আড়ত',
+      [STORAGE_KEYS.CITIZENS]: 'নাগরিক সেবা',
+      [STORAGE_KEYS.LOST_FOUND]: 'হারানো ও প্রাপ্তি',
+    }
+    const rows: Array<{ section: string; count: number }> = []
+    Object.entries(labels).forEach(([key, label]) => {
+      const list = storageService.get<Array<Record<string, unknown>>>(key, [])
+      if (!Array.isArray(list)) return
+      let flagged = 0
+      list.forEach((record) => {
+        const phone = record.phone ?? record.contact ?? record.dial
+        if (phone !== undefined && isPlaceholderPhone(String(phone))) flagged++
+        if (record.eiin !== undefined && isPlaceholderEiin(String(record.eiin))) flagged++
+      })
+      if (flagged > 0) rows.push({ section: label, count: flagged })
+    })
+    return rows
+  })()
+
   return (
     <div className="space-y-4">
       <div>
@@ -80,6 +112,22 @@ export function DataOpsAdminPanel() {
             <> · {toBanglaNumber(snapshotStatus.attempts)} বার চেষ্টা করা হয়েছে</>
           )}
         </div>
+
+        {placeholderFlags.length > 0 && (
+          <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
+            <p className="font-bold">⚠ যাচাই প্রয়োজন — প্লেসহোল্ডার নম্বর</p>
+            <p className="mt-1 text-[11px] opacity-80">
+              এই নম্বরগুলো কলযোগ্য নয়; পাবলিক কার্ডে «তথ্য যাচাই চলছে» দেখানো হচ্ছে।
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {placeholderFlags.map((row) => (
+                <span key={row.section} className="rounded-full bg-white px-2 py-1 font-semibold dark:bg-white/10">
+                  {row.section}: {toBanglaNumber(row.count)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-3 flex flex-wrap gap-2">
           <button

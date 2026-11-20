@@ -3,6 +3,7 @@ import { CheckCircle2, Edit2, Eye, EyeOff, Plus, Trash2, XCircle } from 'lucide-
 import { BloodDonor } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
 import { getDonorStatus } from '../../../services/bloodDonorService'
+import { donorSettingsService, DonorSettings } from '../../../services/donorSettingsService'
 
 interface DonorAdminPanelProps {
   donors: BloodDonor[]
@@ -39,6 +40,11 @@ export function DonorAdminPanel({
   const [form, setForm] = useState(EMPTY_FORM)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [donorSettings, setDonorSettings] = useState<DonorSettings>(() => donorSettingsService.get())
+
+  const updatePhoneDisplay = (phoneDisplay: DonorSettings['phoneDisplay']) => {
+    setDonorSettings(donorSettingsService.save({ phoneDisplay }))
+  }
 
   const resetForm = () => {
     setForm(EMPTY_FORM)
@@ -102,6 +108,22 @@ export function DonorAdminPanel({
         শেষ রক্তদানের তারিখ বদলালে ৫৬-দিনের হিসাব সঙ্গে সঙ্গে বদলে যাবে। তারিখ না থাকলে দাতা «তথ্য যাচাই চলছে» থাকবেন — কখনো «প্রস্তুত» নয়।
         {pendingCount > 0 ? ` ${toBanglaNumber(pendingCount)} জন অনুমোদনের অপেক্ষায়।` : ''}
       </p>
+
+      {/* Admin-controlled donor phone privacy — default keeps current behaviour. */}
+      <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs dark:border-white/10 dark:bg-[#1a2420]">
+        <label htmlFor="donor-phone-display" className="font-semibold text-slate-700 dark:text-slate-200">
+          দাতার ফোন নম্বর প্রদর্শন
+        </label>
+        <select
+          id="donor-phone-display"
+          value={donorSettings.phoneDisplay}
+          onChange={(e) => updatePhoneDisplay(e.target.value as DonorSettings['phoneDisplay'])}
+          className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
+        >
+          <option value="full">সম্পূর্ণ নম্বর দেখান (বর্তমান আচরণ)</option>
+          <option value="masked">শেষ ৪ ডিজিট দেখান — ট্যাপে কল থাকবে</option>
+        </select>
+      </div>
 
       {showAddForm && (
         <form onSubmit={handleSubmit} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#1a2420]">

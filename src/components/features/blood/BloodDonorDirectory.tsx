@@ -11,6 +11,8 @@ import { ListingMeta } from '../../common/ListingMeta'
 import { matchesSectionQuery, SECTION_SUGGESTIONS } from '../../../utils/sectionSearch'
 import { useUrlFilter } from '../../../hooks/useUrlFilter'
 import { DonorDetailDialog } from './DonorDetailDialog'
+import { donorSettingsService } from '../../../services/donorSettingsService'
+import { useDataVersion } from '../../../hooks/useDataVersion'
 
 interface BloodDonorDirectoryProps {
   donors: BloodDonor[]
@@ -39,6 +41,10 @@ export function BloodDonorDirectory({
   const availableOnly = availableFilter === '1'
   const [textQuery, setTextQuery] = useState(query)
   const [selectedDonor, setSelectedDonor] = useState<BloodDonor | null>(null)
+  const donorSettingsVersion = useDataVersion('donor-settings')
+  const phoneMasked = useMemo(() => donorSettingsService.get().phoneDisplay === 'masked', [donorSettingsVersion])
+  const displayPhone = (phone: string) =>
+    phoneMasked ? `••••${String(phone ?? '').slice(-4)}` : phone
 
   // Keep the local filters in sync when the URL query changes (back/forward).
   useEffect(() => {
@@ -244,7 +250,7 @@ export function BloodDonorDirectory({
 
                 {status.canContact ? (
                   <div className="flex flex-col items-center gap-2">
-                    <CallButton phone={donor.phone} className="max-w-[84px]" />
+                    <CallButton phone={donor.phone} label={displayPhone(donor.phone)} className="max-w-[84px]" />
                     <CopyPhoneButton phone={donor.phone} />
                     <WhatsAppButton phone={donor.phone} />
                   </div>

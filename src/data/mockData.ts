@@ -145,7 +145,7 @@ export const initialAgroMachineryItems: AgroMachineryItem[] = [
 ]
 
 export const initialLostFound: LostFoundItem[] = [
-  { id: 'lf1', type: 'হারানো', itemName: 'এনআইডি কার্ড', location: 'মদন বাজার', date: '১২ নভেম্বর', description: 'নাম: করিম উদ্দিন, আইডি নং: ৯০১২ (শেষ ৪ ডিজিট)', phone: '01411111111', postedAt: '2026-11-12', isApproved: true, lastUpdated: '2026-11-12' },
+  { id: 'lf1', type: 'হারানো', itemName: 'এনআইডি কার্ড', location: 'মদন বাজার', date: '১২ নভেম্বর', description: 'নাম: করিম উদ্দিন — এনআইডি নম্বর প্রকাশ করা হয়নি', phone: '01411111111', postedAt: '2026-11-12', isApproved: true, lastUpdated: '2026-11-12' },
   { id: 'lf2', type: 'প্রাপ্তি', itemName: 'মোবাইল ফোন', location: 'কাইটাইল বাস স্ট্যান্ড', date: '১৩ নভেম্বর', description: 'স্যামসাং ব্র্যান্ড, কালো রঙ', phone: '01422222222', postedAt: '2026-11-13', isApproved: true, lastUpdated: '2026-11-13' },
   { id: 'lf3', type: 'হারানো', itemName: 'ওয়ালেট', location: 'উপজেলা চেয়ারম্যান অফিস', date: '১১ নভেম্বর', description: 'বাদামী রঙ, ভেতরে আইডি ও টাকা ছিল', phone: '01433333333', postedAt: '2026-11-11', isApproved: true, lastUpdated: '2026-11-11' },
   { id: 'lf4', type: 'প্রাপ্তি', itemName: 'স্কুল ব্যাগ', location: 'মদন সরকারি উচ্চ বিদ্যালয় গেট', date: '১৪ নভেম্বর', description: 'নীল রঙের ব্যাগ, ভেতরে ষষ্ঠ শ্রেণির বই', phone: '01444444444', postedAt: '2026-11-14', isApproved: true, lastUpdated: '2026-11-14' },

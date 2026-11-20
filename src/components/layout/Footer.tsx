@@ -82,9 +82,9 @@ export function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <Phone size={13} className="shrink-0 text-forest dark:text-emerald-300" />
-                <a href="tel:01700000000" className="transition hover:text-forest dark:hover:text-emerald-300">
-                  ০১৭০-০০০০০০
-                </a>
+                <span className="text-slate-500 dark:text-slate-400">
+                  যোগাযোগের তথ্য যাচাই চলছে
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={13} className="shrink-0 text-forest dark:text-emerald-300" />

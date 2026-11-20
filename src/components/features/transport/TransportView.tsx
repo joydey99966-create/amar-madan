@@ -6,6 +6,7 @@ import { EmptyState } from '../../common/EmptyState'
 import { SearchFilterBanner } from '../../common/SearchFilterBanner'
 import { ListingMeta } from '../../common/ListingMeta'
 import { cleanPhone, toBanglaNumber, parseFare, formatPrice } from '../../../utils/formatters'
+import { isPlaceholderPhone } from '../../../utils/placeholderData'
 import { TRANSPORT_MODES } from '../../../services/transportService'
 import { matchesSectionQuery, SECTION_SUGGESTIONS } from '../../../utils/sectionSearch'
 import { useSectionQuery } from '../../../hooks/useSectionQuery'
@@ -351,7 +352,7 @@ export function TransportView({
                     </p>
                   )}
 
-                  {route.phone && (
+                  {route.phone && !isPlaceholderPhone(route.phone) ? (
                     <a
                       href={`tel:${cleanPhone(route.phone)}`}
                       className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-forest px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#104b38]"
@@ -359,7 +360,11 @@ export function TransportView({
                       <Phone size={14} />
                       যোগাযোগ: {route.phone}
                     </a>
-                  )}
+                  ) : route.phone ? (
+                    <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
+                      যোগাযোগের তথ্য যাচাই চলছে
+                    </p>
+                  ) : null}
 
                   <ListingMeta
                     updated={route.lastUpdated}

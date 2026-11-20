@@ -37,9 +37,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
     if (!description) return ''
     const longNumber = /([\d০-৯]{4,})/g
     if (mode === 'hide') {
-      return description.replace(longNumber, (digits) =>
-        digits.length > 4 ? 'তথ্য যাচাই চলছে' : digits,
-      )
+      return description.replace(longNumber, () => 'তথ্য যাচাই চলছে')
     }
     // 'last4' (and the legacy 'full' value) never publish a full identifier.
     return description.replace(longNumber, (digits) =>

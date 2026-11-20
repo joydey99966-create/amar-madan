@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exportedAt": "2026-11-20T05:36:44.000Z",
+  "exportedAt": "2026-11-20T06:00:00.000Z",
   "data": {
     "amar-madan-theme": "light",
     "amar-madan-lost-found": [
@@ -10,7 +10,7 @@
         "itemName": "এনআইডি কার্ড",
         "location": "মদন বাজার",
         "date": "১২ নভেম্বর",
-        "description": "নাম: করিম উদ্দিন, আইডি নং: …৯০১২",
+        "description": "নাম: করিম উদ্দিন — এনআইডি নম্বর প্রকাশ করা হয়নি",
         "phone": "01411111111",
         "postedAt": "2026-11-12",
         "isApproved": true,
@@ -794,8 +794,8 @@
         "phone": "১০৬",
         "dial": "106",
         "category": "ambulance",
-        "visible": true,
-        "approved": true
+        "visible": false,
+        "approved": false
       },
       {
         "id": "helpline",
@@ -821,8 +821,8 @@
         "phone": "১৯১৬",
         "dial": "1916",
         "category": "gas",
-        "visible": true,
-        "approved": true
+        "visible": false,
+        "approved": false
       },
       {
         "id": "MDN-EMG-0003",

@@ -5,6 +5,7 @@ import { copyToClipboard } from '../../../utils/clipboard'
 import { useToast } from '../../../context/ToastContext'
 import { cleanPhone } from '../../../utils/formatters'
 import { CallButton, CopyPhoneButton } from '../../common/ContactActions'
+import { isPlaceholderPhone, UNVERIFIED } from '../../../utils/placeholderData'
 import { EmptyState } from '../../common/EmptyState'
 import { ListingMeta } from '../../common/ListingMeta'
 import { useEmergencyContacts } from '../../../hooks/useEmergencyContacts'
@@ -89,7 +90,7 @@ export function EmergencyContacts({ ambulances, doctors, technicians }: Emergenc
                 <div className="flex-1">
                   <h3 className="text-sm font-bold text-slate-800 dark:text-white">{contact.name}</h3>
                   <div className="mt-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
-                    {contact.phone}
+                    {isPlaceholderPhone(contact.dial ?? contact.phone) ? UNVERIFIED : contact.phone}
                   </div>
                 </div>
               </div>

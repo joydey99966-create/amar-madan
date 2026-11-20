@@ -9,7 +9,8 @@ export interface LostFoundSettings {
 }
 
 const DEFAULT_SETTINGS: LostFoundSettings = {
-  nidMaskMode: 'full',
+  // Privacy first: never show any NID digits unless the admin explicitly opts in.
+  nidMaskMode: 'hide',
 }
 
 function loadSettings(): LostFoundSettings {
