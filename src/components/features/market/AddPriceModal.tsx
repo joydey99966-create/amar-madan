@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Info, MapPin, ShieldCheck, Tag, X } from 'lucide-react'
+import { CheckCircle2, Info, MapPin, MessageCircle, ShieldCheck, Tag, X } from 'lucide-react'
 import { STORAGE_KEYS, unionAreas } from '../../../constants'
 import { useToast } from '../../../context/ToastContext'
 import { usePriceModerationQueue } from '../../../hooks/usePriceModerationQueue'
 import { marketService } from '../../../services'
 import { isValidBangladeshPhone } from '../../../utils/validation'
+import { submissionBridgeService } from '../../../services/submissionBridgeService'
 
 interface AddPriceModalProps {
   isOpen: boolean
@@ -102,6 +103,7 @@ export function AddPriceModal({ isOpen, onClose }: AddPriceModalProps) {
   const [errors, setErrors] = useState<FormErrors>({})
   const [blockMessage, setBlockMessage] = useState<string | null>(null)
   const [honeypot, setHoneypot] = useState('')
+  const [submittedUrl, setSubmittedUrl] = useState<string | null>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
   const currentPrice = useMemo(() => marketService.getCurrentPrice(form.productName), [form.productName])
@@ -130,6 +132,8 @@ export function AddPriceModal({ isOpen, onClose }: AddPriceModalProps) {
   const handleClose = () => {
     setErrors({})
     setBlockMessage(null)
+    setSubmittedUrl(null)
+    setForm(INITIAL_FORM)
     onClose()
   }
 
@@ -198,14 +202,21 @@ export function AddPriceModal({ isOpen, onClose }: AddPriceModalProps) {
       return
     }
 
+    const waUrl = submissionBridgeService.buildPriceWhatsAppUrl({
+      itemName: productName,
+      category: marketService.inferCategory(productName),
+      price: suggestedPrice,
+      unit: form.unit,
+      marketName: form.location,
+      reporterPhone: form.phone.trim() || undefined,
+    })
+
     addToast(
-      'ধন্যবাদ! আপনার দাম যাচাইয়ের জন্য পাঠানো হয়েছে — অনুমোদনের পর তালিকায় যোগ হবে।',
+      'ধন্যবাদ! আপনার দাম যাচাইয়ের জন্য জমা হয়েছে।',
       'success',
     )
 
-    setForm(INITIAL_FORM)
-    setErrors({})
-    onClose()
+    setSubmittedUrl(waUrl)
   }
 
   return (
@@ -237,10 +248,10 @@ export function AddPriceModal({ isOpen, onClose }: AddPriceModalProps) {
                 id="add-price-title"
                 className="text-lg font-bold text-slate-900 dark:text-white sm:text-xl"
               >
-                বাজারের দাম যোগ করুন
+                {submittedUrl ? 'দাম জমা সম্পন্ন' : 'বাজারের দাম যোগ করুন'}
               </h2>
               <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400 sm:text-sm">
-                আপনার এলাকার বাজার দর জানান — যাচাইয়ের পর প্রকাশ করা হবে।
+                {submittedUrl ? 'ভেরিফিকেশনের জন্য হোয়াটসঅ্যাপে পাঠান' : 'আপনার এলাকার বাজার দর জানান — যাচাইয়ের পর প্রকাশ করা হবে।'}
               </p>
             </div>
           </div>
@@ -255,13 +266,44 @@ export function AddPriceModal({ isOpen, onClose }: AddPriceModalProps) {
           </button>
         </div>
 
-        <div className="mb-5 flex items-start gap-2.5 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
-          <ShieldCheck size={16} className="mt-0.5 shrink-0" />
-          <p>
-            আপনার দাম সরাসরি তালিকায় যাবে না। প্রথমে অ্যাডমিন যাচাই করবেন, তারপর
-            ভেরিফায়েড তালিকায় যোগ করা হবে।
-          </p>
-        </div>
+        {submittedUrl ? (
+          <div className="flex flex-col items-center justify-center p-6 text-center space-y-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300">
+              <CheckCircle2 size={36} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+              দাম সফলভাবে জমা হয়েছে!
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              আপনার রিপোর্ট করা বাজারদর সংরক্ষিত হয়েছে। মদন বাজারদরে দ্রুত ভেরিফিকেশন ও প্রকাশের জন্য মদন অ্যাডমিনকে হোয়াটসঅ্যাপে পাঠিয়ে দিন।
+            </p>
+            <div className="w-full space-y-2 pt-2">
+              <a
+                href={submittedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700 active:scale-[0.98]"
+              >
+                <MessageCircle size={18} /> হোয়াটসঅ্যাপে সরাসরি পাঠান
+              </a>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="w-full rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              >
+                পরে পাঠাবো / বন্ধ করুন
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="mb-5 flex items-start gap-2.5 rounded-2xl bg-amber-50 p-3 text-xs leading-5 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+              <ShieldCheck size={16} className="mt-0.5 shrink-0" />
+              <p>
+                আপনার দাম সরাসরি তালিকায় যাবে না। প্রথমে অ্যাডমিন যাচাই করবেন, তারপর
+                ভেরিফায়েড তালিকায় যোগ করা হবে।
+              </p>
+            </div>
 
         {blockMessage && (
           <div className="mb-4 flex items-start gap-2.5 rounded-2xl bg-rose-50 p-3 text-xs leading-5 text-rose-800 dark:bg-rose-900/20 dark:text-rose-200">
@@ -494,7 +536,9 @@ export function AddPriceModal({ isOpen, onClose }: AddPriceModalProps) {
             </p>
           </div>
         </form>
-      </div>
-    </div>
+      </>
+    )}
+  </div>
+</div>
   )
 }

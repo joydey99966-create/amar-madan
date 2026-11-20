@@ -1,8 +1,10 @@
-const CACHE_NAME = 'amar-madan-v6';
+const CACHE_NAME = 'amar-madan-v7';
 // Derive the deploy base from where this service worker is served:
 // "/sw.js" locally, "/amar-madan/sw.js" on GitHub Pages.
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const STATIC_ASSETS = [
+  BASE + '/',
+  BASE + '/index.html',
   BASE + '/manifest.json',
   BASE + '/icons/icon-192.png',
   BASE + '/icons/icon-512.png',
@@ -12,7 +14,7 @@ const STATIC_ASSETS = [
   BASE + '/images/town.jpg'
 ];
 
-const DYNAMIC_CACHE = 'amar-madan-dynamic-v6';
+const DYNAMIC_CACHE = 'amar-madan-dynamic-v7';
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
@@ -49,11 +51,30 @@ self.addEventListener('fetch', (event) => {
   // Skip chrome-extension and other non-http requests
   if (!url.protocol.startsWith('http')) return;
 
-  // Never cache navigations or the ?p= deep-link handoff: index.html changes
-  // on every deploy and a cached copy would point to stale JS chunk names.
-  if (request.mode === 'navigate' || url.searchParams.has('p')) return;
+  // For navigation requests: try network first to guarantee fresh chunk hashes;
+  // if offline or network drops, fall back to the cached index.html shell so the PWA opens.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const fallback = await caches.match(BASE + '/index.html');
+          if (fallback) return fallback;
+          return (await caches.match(BASE + '/')) || new Response('Offline', { status: 503 });
+        })
+    );
+    return;
+  }
 
-  // Network first strategy for API-like requests
+  // Network first strategy for API-like and subresource requests
   event.respondWith(
     fetch(request)
       .then((response) => {
@@ -133,10 +154,10 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'আমার মদন';
   const options = {
     body: data.body || 'নতুন নোটিশ আপডেট',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    icon: BASE + '/icons/icon-192.png',
+    badge: BASE + '/icons/icon-192.png',
     tag: data.tag || 'default',
-    data: data.url || '/',
+    data: data.url || (BASE + '/'),
     actions: [
       { action: 'view', title: 'দেখুন' },
       { action: 'close', title: 'বন্ধ করুন' }

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { CheckCircle2, MessageCircle } from 'lucide-react'
 import { LostFoundItem } from '../../../types'
 import { useToast } from '../../../context/ToastContext'
 import { lostFoundService } from '../../../services/lostFoundService'
 import { formErrorClass, formFieldClass, formLabelClass, ModalShell } from '../../common/ModalShell'
 import { isValidBangladeshPhone } from '../../../utils/validation'
+import { submissionBridgeService } from '../../../services/submissionBridgeService'
 
 interface PostLostFoundModalProps {
   isOpen: boolean
@@ -14,6 +16,7 @@ interface PostLostFoundModalProps {
 /** Public "হারানো / প্রাপ্তি" board posting form (admin approved). */
 export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFoundModalProps) {
   const { addToast } = useToast()
+  const [submittedUrl, setSubmittedUrl] = useState<string | null>(null)
   const [form, setForm] = useState({
     type: 'হারানো' as LostFoundItem['type'],
     itemName: '',
@@ -27,7 +30,15 @@ export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFou
   useEffect(() => {
     if (!isOpen) return
     setErrors({})
+    setSubmittedUrl(null)
   }, [isOpen])
+
+  const handleResetAndClose = () => {
+    setSubmittedUrl(null)
+    setForm({ type: 'হারানো', itemName: '', location: '', date: '', description: '', phone: '' })
+    setErrors({})
+    onClose()
+  }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -46,6 +57,14 @@ export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFou
     if (Object.keys(nextErrors).length) return
 
     const today = new Date()
+    const waUrl = submissionBridgeService.buildLostFoundWhatsAppUrl({
+      title: form.itemName.trim(),
+      category: form.type === 'হারানো' ? 'lost' : 'found',
+      location: form.location.trim(),
+      contactPhone: form.phone.trim(),
+      description: form.description.trim() || undefined,
+    })
+
     lostFoundService.add({
       type: form.type,
       itemName: form.itemName.trim(),
@@ -55,39 +74,71 @@ export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFou
       phone: form.phone.trim(),
     })
 
-    addToast('বিজ্ঞপ্তি জমা হয়েছে — অনুমোদনের পর তালিকায় দেখা যাবে।', 'success')
+    addToast('বিজ্ঞপ্তি জমা হয়েছে! অ্যাডমিন অনুমোদনের পর তালিকায় দেখা যাবে।', 'success')
     onSubmitted()
-    onClose()
-    setForm({ type: 'হারানো', itemName: '', location: '', date: '', description: '', phone: '' })
+    setSubmittedUrl(waUrl)
   }
 
   return (
     <ModalShell
       isOpen={isOpen}
-      onClose={onClose}
-      title="নতুন বিজ্ঞপ্তি দিন"
-      description="হারানো বা পাওয়া জিনিসের তথ্য দিন — অ্যাডমিন যাচাই করে প্রকাশ করবেন।"
+      onClose={handleResetAndClose}
+      title={submittedUrl ? 'বিজ্ঞপ্তি জমা সম্পন্ন' : 'নতুন বিজ্ঞপ্তি দিন'}
+      description={submittedUrl ? 'ভেরিফিকেশনের জন্য হোয়াটসঅ্যাপে পাঠান' : 'হারানো বা পাওয়া জিনিসের তথ্য দিন — অ্যাডমিন যাচাই করে প্রকাশ করবেন।'}
       titleId="post-lostfound-title"
       footer={
-        <div className="space-y-2">
-          <button
-            type="submit"
-            form="post-lostfound-form"
-            className="w-full rounded-xl bg-forest px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#104b38]"
-          >
-            ✓ বিজ্ঞপ্তি জমা দিন
-          </button>
+        submittedUrl ? (
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleResetAndClose}
             className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
           >
-            বাতিল করুন
+            বন্ধ করুন
           </button>
-        </div>
+        ) : (
+          <div className="space-y-2">
+            <button
+              type="submit"
+              form="post-lostfound-form"
+              className="w-full rounded-xl bg-forest px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#104b38]"
+            >
+              ✓ বিজ্ঞপ্তি জমা দিন
+            </button>
+            <button
+              type="button"
+              onClick={handleResetAndClose}
+              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
+            >
+              বাতিল করুন
+            </button>
+          </div>
+        )
       }
     >
-      <form id="post-lostfound-form" onSubmit={handleSubmit} className="space-y-4">
+      {submittedUrl ? (
+        <div className="flex flex-col items-center justify-center p-6 text-center space-y-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300">
+            <CheckCircle2 size={36} />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+            বিজ্ঞপ্তি সফলভাবে জমা হয়েছে!
+          </h3>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            আপনার বিজ্ঞপ্তিটি সংরক্ষিত হয়েছে। মদন ডিরেক্টরিতে দ্রুত যাচাই ও সবার জন্য প্রকাশের জন্য মদন কোঅর্ডিনেটরকে হোয়াটসঅ্যাপে সরাসরি পাঠিয়ে দিন।
+          </p>
+          <div className="w-full space-y-2 pt-2">
+            <a
+              href={submittedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700 active:scale-[0.98]"
+            >
+              <MessageCircle size={18} /> হোয়াটসঅ্যাপে সরাসরি পাঠান
+            </a>
+          </div>
+        </div>
+      ) : (
+        <form id="post-lostfound-form" onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className={formLabelClass}>বিজ্ঞপ্তির ধরন</label>
           <div className="grid grid-cols-2 gap-2">
@@ -184,6 +235,7 @@ export function PostLostFoundModal({ isOpen, onClose, onSubmitted }: PostLostFou
           {errors.phone && <p className={formErrorClass}>{errors.phone}</p>}
         </div>
       </form>
+      )}
     </ModalShell>
   )
 }
