@@ -138,7 +138,13 @@ export const directoryService = {
   },
 
   getJournalists(): Journalist[] {
-    return initialJournalists
+    return storageService.get<Journalist[]>(STORAGE_KEYS.JOURNALISTS, initialJournalists)
+  },
+
+  saveJournalists(list: Journalist[]): Journalist[] {
+    storageService.set(STORAGE_KEYS.JOURNALISTS, list)
+    notifyDataChanged('directory')
+    return list
   },
 
   getEducation(): EducationInstitution[] {

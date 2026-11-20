@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ArrowDown, ArrowUp } from 'lucide-react'
+import { ArrowDown, ArrowUp, GripVertical } from 'lucide-react'
 import { toBanglaNumber } from '../../../utils/formatters'
 import { publishBlockers } from '../../../utils/placeholderData'
 import { CheckCircle2, Edit2, Eye, EyeOff, Plus, Trash2, XCircle } from 'lucide-react'
@@ -360,6 +360,7 @@ export function RecordsAdminPanel({ onChange }: RecordsAdminPanelProps) {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState('name')
+  const [dragId, setDragId] = useState<string | null>(null)
 
   const spec = SPECS[type]
   const allRecords = recordsService.all<ManagedRecord>(type)
@@ -548,10 +549,23 @@ export function RecordsAdminPanel({ onChange }: RecordsAdminPanelProps) {
           {records.map((record) => (
             <div
               key={record.id}
+              draggable
+              onDragStart={() => setDragId(String(record.id))}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => {
+                event.preventDefault()
+                if (dragId && dragId !== String(record.id)) {
+                  const target = allRecords.findIndex((item) => String(item.id) === String(record.id))
+                  recordsService.moveTo(type, dragId, target)
+                  setDragId(null)
+                  onChange()
+                }
+              }}
               className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#1a2420]"
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
+                  <GripVertical size={14} className="shrink-0 cursor-grab text-slate-400" aria-label="টানে সাজান" />
                   <span className="font-semibold text-slate-800 dark:text-white">
                     {String(record.name ?? record.itemName ?? '')}
                   </span>

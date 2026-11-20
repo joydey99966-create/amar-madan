@@ -20,6 +20,7 @@ import {
   ListChecks,
   Database as DataIcon,
   ListOrdered,
+  Newspaper,
 } from 'lucide-react'
 import {
   BloodDonor,
@@ -78,6 +79,7 @@ import { launchChecklistService } from '../../../services/launchChecklistService
 import { DataOpsAdminPanel } from './DataOpsAdminPanel'
 import { OrderAdminPanel } from './OrderAdminPanel'
 import { MANAGED_RECORD_TYPES, recordsService } from '../../../services/recordsService'
+import { JournalistAdminPanel } from './JournalistAdminPanel'
 
 export type AdminTab =
   | 'donors'
@@ -98,6 +100,8 @@ export type AdminTab =
   | 'launch'
   | 'dataops'
   | 'order'
+  | 'news'
+  | 'journalists'
 
 export function AdminDashboard() {
   const { isDashboardOpen, closeDashboard, isAuthenticated } = useAdmin()
@@ -125,6 +129,7 @@ export function AdminDashboard() {
     weatherService.getSettings(),
   )
   const [bookings, setBookings] = useState(() => machineryBookingService.getAll())
+  const [journalists, setJournalists] = useState(() => directoryService.getJournalists())
   const launchVersion = useDataVersion('launch')
   // Re-render the tab badge when Joy saves the launch checklist.
   void launchVersion
@@ -501,6 +506,8 @@ export function AdminDashboard() {
     { id: 'donors', label: 'রক্তদাতা', icon: Users, count: donors.length },
     { id: 'market', label: 'বাজারদর', icon: TrendingUp, count: marketPrices.length },
     { id: 'notices', label: 'নোটিশ', icon: Bell, count: notices.length },
+    { id: 'news', label: 'সংবাদ ও প্রেসক্লাব', icon: Newspaper, count: notices.length },
+    { id: 'journalists', label: 'সাংবাদিক', icon: Users, count: journalists.length },
     { id: 'lostfound', label: 'হারানো-প্রাপ্তি', icon: AlertCircle, count: lostFound.length },
     { id: 'directory', label: 'ডিরেক্টরি', icon: Stethoscope, count: doctors.length + ambulances.length + dealers.length },
     { id: 'moderation', label: 'দাম যাচাই', icon: ClipboardCheck, count: priceModerationCounts.pending },
@@ -667,6 +674,22 @@ export function AdminDashboard() {
                   onEdit={handleEditNotice}
                   onApprove={handleApproveNotice}
                   onVisibility={handleNoticeVisibility}
+                />
+              )}
+              {activeTab === 'news' && (
+                <NoticeAdminPanel
+                  notices={notices}
+                  onDelete={handleDeleteNotice}
+                  onAdd={handleAddNotice}
+                  onEdit={handleEditNotice}
+                  onApprove={handleApproveNotice}
+                  onVisibility={handleNoticeVisibility}
+                />
+              )}
+              {activeTab === 'journalists' && (
+                <JournalistAdminPanel
+                  journalists={journalists}
+                  onSave={(list) => { setJournalists(directoryService.saveJournalists(list)); addToast('সাংবাদিক তালিকা সেভ হয়েছে', 'success') }}
                 />
               )}
               {activeTab === 'lostfound' && (

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { assetUrl } from '../../../data/photos'
 import { Edit2, Image as ImageIcon, Plus, Trash2 } from 'lucide-react'
 import { GalleryPhoto } from '../../../types'
 import { formatBanglaToday } from '../../../utils/formatters'
@@ -30,6 +31,7 @@ export function GalleryAdminPanel({ photos, onAdd, onEdit, onDelete }: GalleryAd
   const [form, setForm] = useState(EMPTY_FORM)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
 
   const resetForm = () => {
     setForm(EMPTY_FORM)
@@ -48,6 +50,12 @@ export function GalleryAdminPanel({ photos, onAdd, onEdit, onDelete }: GalleryAd
     }
     if (!form.caption.trim()) {
       setError('ছবির ক্যাপশন দিন')
+      return
+    }
+    // Reject broken/multi-prefixed paths before saving.
+    const raw = form.src.trim()
+    if (!/^(https?:|data:|blob:)/i.test(raw) && assetUrl(raw).split('/amar-madan').length > 2) {
+      setError('ছবির পাথে একাধিক /amar-madan প্রিফিক্স আছে — সংশোধন করুন')
       return
     }
     const photo: Omit<GalleryPhoto, 'id'> = {
@@ -107,11 +115,33 @@ export function GalleryAdminPanel({ photos, onAdd, onEdit, onDelete }: GalleryAd
           <input
             type="text"
             placeholder="ছবির ঠিকানা (যেমন: /images/haor.jpg বা https://…)"
-            value={form.src}
+            value={form.src.startsWith('data:') ? '' : form.src}
             onChange={(e) => update({ src: e.target.value })}
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
-            required
           />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="rounded-lg border border-forest/30 bg-forest/5 px-3 py-2 text-xs font-semibold text-forest transition hover:bg-forest/10 dark:text-emerald-300"
+            >
+              ফাইল থেকে ছবি আপলোড
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+                const reader = new FileReader()
+                reader.onload = () => update({ src: String(reader.result ?? '') })
+                reader.readAsDataURL(file)
+              }}
+            />
+            {form.src.startsWith('data:') && <span className="text-[11px] text-emerald-600">ফাইল নির্বাচিত ✓</span>}
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <input
               type="text"

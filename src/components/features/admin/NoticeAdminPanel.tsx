@@ -4,6 +4,7 @@ import { AdminNotice } from '../../../types'
 import { NOTICE_CATEGORIES, noticeCategoryColor } from '../../../constants'
 import { formatBanglaDate, toBanglaNumber } from '../../../utils/formatters'
 import { countSentences } from '../../../data/noticeNewsSeed'
+import { hasDuplicateTitle, noticeService } from '../../../services/noticeService'
 
 export type { AdminNotice }
 
@@ -63,6 +64,10 @@ export function NoticeAdminPanel({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.title.trim() || !form.content.trim()) return
+    if (hasDuplicateTitle(notices, form.title, editingId)) {
+      window.alert('এই শিরোনামের একটি নোटিশ আগে থেকে আছে — duplicate এড়াতে শিরোনাম বদলান।')
+      return
+    }
     const notice: Omit<AdminNotice, 'id'> = {
       title: form.title.trim(),
       summary: form.summary.trim() || form.content.trim(),
@@ -281,12 +286,12 @@ export function NoticeAdminPanel({
                       লুকানো
                     </span>
                   )}
-                  {countSentences(notice.content) < 3 && (
+                  {noticeService.publishBlockers(notice).length > 0 && (
                     <span
-                      title="প্রকাশের আগে কমপক্ষে ৩টি বাক্যের বিবরণ যোগ করুন"
+                      title={noticeService.publishBlockers(notice).join(' · ')}
                       className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
                     >
-                      ⚠ সংক্ষিপ্ত বিবরণ
+                      ⚠ প্রকাশ ব্লক: {noticeService.publishBlockers(notice)[0]}
                     </span>
                   )}
                 </div>

@@ -1,6 +1,8 @@
 import { storageService } from './storageService'
 import { notifyDataChanged } from './dataEvents'
 import { citizenService } from './citizenService'
+import { jobPostingService } from './jobPostingService'
+import { recordsService } from './recordsService'
 
 /** A single launch-time task Joy ticks off when the real data is in place. */
 export interface LaunchCheckItem {
@@ -34,12 +36,12 @@ function defaultItems(): LaunchCheckItem[] {
     { id: 'unverified-donors', label: 'অযাচাইকৃত রক্তদাতা', detail: 'জাহিদ, কামরুল, জাফর, সাদ্দাম ও নজরুল — ৫জনের তথ্য যাচাই করুন।', checked: false },
     { id: 'doctor-phones', label: 'ডাক্তারের ফোন ও নিবন্ধন', detail: 'ডিরেক্টরির ডেমো ফোন নম্বর ও BMDC নিবন্ধন যাচাই করুন।', checked: false },
     { id: 'hospital-phones', label: 'হাসপাতালের ফোন নম্বর', detail: 'হাসপাতাল ও ক্লিনিকের placeholder নম্বর বাস্তব দিয়ে বদলান।', checked: false },
-    { id: 'eiin', label: 'শিক্ষা প্রতিষ্ঠান EIIN', detail: '৬টি প্রতিষ্ঠানের ডেমো EIIN (১২৩৪৫৬…) বাস্তব দিয়ে বদলান।', checked: false },
+    { id: 'eiin', label: 'শিক্ষা প্রতিষ্ঠান EIIN', detail: `${recordsService.all('education').length}টি প্রতিষ্ঠানের EIIN যাচাই করুন।`, checked: false },
     { id: 'market-prices', label: 'বাজারদর', detail: '১৬টি পণ্যের ডেমো দাম বাস্তব দাম দিয়ে আপডেট করুন।', checked: false },
     { id: 'fish-prices', label: 'হাওরের মাছের দর', detail: '৬টি মাছের ডেমো দাম ও তারিখ আপডেট করুন।', checked: false },
-    { id: 'transport-fares', label: 'যাতায়াত ভাড়া ও ফোন', detail: '১২টি রুটের ডেমো ভাড়া ও যোগাযোগ নম্বর যাচাই করুন।', checked: false },
+    { id: 'transport-fares', label: 'যাতায়াত ভাড়া ও ফোন', detail: `${recordsService.all('routes').length}টি রুটের ভাড়া ও যোগাযোগ নম্বর যাচাই করুন।`, checked: false },
     { id: 'machinery', label: 'কৃষি যন্ত্রপাতি', detail: '৪টি যন্ত্রপাতির মালিকের নম্বর ও ভাড়া যাচাই করুন।', checked: false },
-    { id: 'jobs', label: 'চাকরি ও টিউশনি', detail: '৯টি পোস্টের মেয়াদ ও যোগাযোগ তথ্য যাচাই করুন।', checked: false },
+    { id: 'jobs', label: 'চাকরি ও টিউশনি', detail: `${jobPostingService.getAll().length}টি পোস্টের মেয়াদ ও যোগাযোগ তথ্য যাচাই করুন।`, checked: false },
     { id: 'news', label: 'সংবাদ ও নোটিশ', detail: 'সংবাদের উৎস, তারিখ ও বিবরণ বাস্তব তথ্য দিয়ে বদলান।', checked: false },
     { id: 'emergency', label: 'জরুরি নম্বর', detail: 'পানি সরবরাহের placeholder নম্বর (০১৭০-০০০০০০) বদলান; ৯৯৯/১০২ অপরিবর্তিত রাখুন।', checked: false },
     { id: 'journalists', label: 'সাংবাদিকের ফোন', detail: 'প্রেসক্লাবের ৪জন সাংবাদিকের ডেমো নম্বর বদলান।', checked: false },

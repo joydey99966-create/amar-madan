@@ -177,6 +177,20 @@ export function DataOpsAdminPanel() {
             </select>
             <button
               type="button"
+              onClick={() => {
+                const rows = storageService.get<Array<Record<string, unknown>>>(csvType, [])
+                const headers = Array.isArray(rows) && rows.length
+                  ? Array.from(new Set(rows.flatMap((row) => Object.keys(row))))
+                  : ['id', 'name', 'phone', 'area']
+                downloadCsv(`${csvLabel(csvType)}-template.csv`, headers.join(','))
+                addToast('CSV টেমপ্লেট ডাউনলোড করা হয়েছে', 'success')
+              }}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-forest hover:text-forest dark:border-white/10 dark:text-slate-300"
+            >
+              টেমপ্লেট ডাউনলোড
+            </button>
+            <button
+              type="button"
               onClick={handleCsvExport}
               className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-forest hover:text-forest dark:border-white/10 dark:text-slate-300"
             >

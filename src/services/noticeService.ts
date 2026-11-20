@@ -3,7 +3,7 @@ import {
   DEFAULT_NOTICE_CATEGORY,
   noticeCategoryColor,
 } from '../constants'
-import { noticeNewsSeed, correctDemoNotice, toArticle } from '../data/noticeNewsSeed'
+import { noticeNewsSeed, correctDemoNotice, toArticle, countSentences } from '../data/noticeNewsSeed'
 import { assetUrl } from '../data/photos'
 import { AdminNotice, NewsItem, Notice } from '../types'
 import { storageService } from './storageService'
@@ -79,6 +79,21 @@ function toNewsItem(notice: AdminNotice): NewsItem {
     image: notice.image,
     lastUpdated: notice.lastUpdated,
   }
+}
+
+/** Case-insensitive duplicate-title check used by the admin forms. */
+export function hasDuplicateTitle(
+  list: Array<{ id: string; title: string }>,
+  title: string,
+  editingId?: string | null,
+): boolean {
+  const needle = title.trim().toLocaleLowerCase('bn').replace(/\s+/g, ' ')
+  if (!needle) return false
+  return list.some(
+    (item) =>
+      item.id !== editingId &&
+      item.title.trim().toLocaleLowerCase('bn').replace(/\s+/g, ' ') === needle,
+  )
 }
 
 export const noticeService = {
@@ -157,12 +172,21 @@ export const noticeService = {
   },
 
   /**
-   * Admin-visible publish rule: a notice cannot be published with an empty
-   * publication date or an empty body. Incomplete items stay pending so Joy
-   * can complete them first. Returns true when the item was publishable.
+   * Exact reasons why a notice/news item cannot be published. Shown verbatim
+   * in the admin panel so the owner knows what to fix.
    */
+  publishBlockers(notice: AdminNotice): string[] {
+    const reasons: string[] = []
+    if (!notice.date?.trim()) reasons.push('প্রকাশের তারিখ খালি')
+    const sentences = countSentences(notice.content || '')
+    if (sentences < 3) {
+      reasons.push(`সংক্ষিপ্ত বিবরণ — কমপক্ষে ৩টি বাক্য লিখুন (এখন ${sentences}টি)`)
+    }
+    return reasons
+  },
+
   canPublish(notice: AdminNotice): boolean {
-    return Boolean(notice.date?.trim()) && Boolean(notice.content?.trim())
+    return noticeService.publishBlockers(notice).length === 0
   },
 
   approveNotice(id: string, approved: boolean): AdminNotice[] {

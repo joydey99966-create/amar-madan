@@ -32,7 +32,10 @@ export const freshnessService = {
         return
       }
       const dates = list
-        .map((item) => (item as { lastUpdated?: string; date?: string })?.lastUpdated ?? (item as { date?: string })?.date ?? '')
+        .map((item) => {
+          const record = item as { lastUpdated?: string; date?: string; lastDonationDate?: string | null; postedAt?: string }
+          return record.lastUpdated ?? record.date ?? record.lastDonationDate ?? record.postedAt ?? ''
+        })
         .filter((d) => typeof d === 'string' && d.length > 0)
         .sort()
       rows.push({ section: key, label, oldest: dates[0] ?? '', count: list.length })

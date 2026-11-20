@@ -182,6 +182,16 @@ export const recordsService = {
     write(type, list)
   },
 
+  /** Move a record to an explicit target index (drag-and-drop). */
+  moveTo(type: ManagedRecordType, id: string, targetIndex: number): void {
+    const list = [...read<{ id: string }>(type)]
+    const from = list.findIndex((record) => record.id === id)
+    if (from < 0 || targetIndex < 0 || targetIndex >= list.length || from === targetIndex) return
+    const [item] = list.splice(from, 1)
+    list.splice(targetIndex, 0, item)
+    write(type, list)
+  },
+
   /** Only approved and visible records are shown on the public site. */
   published<T extends { approved?: boolean; visible?: boolean }>(
     type: ManagedRecordType,
