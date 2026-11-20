@@ -1,11 +1,31 @@
+const STORAGE_VERSION_KEY = 'amar-madan-storage-version'
+const CURRENT_STORAGE_VERSION = 2
+
 export const storageService = {
+  /** Checks and initializes the client storage version. */
+  initVersion(): void {
+    try {
+      const stored = localStorage.getItem(STORAGE_VERSION_KEY)
+      if (!stored) {
+        localStorage.setItem(STORAGE_VERSION_KEY, String(CURRENT_STORAGE_VERSION))
+      }
+    } catch {
+      // Ignore private browsing quota errors
+    }
+  },
+
   get<T>(key: string, defaultValue: T): T {
     try {
       const item = localStorage.getItem(key)
       if (item === null) return defaultValue
       return JSON.parse(item) as T
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error)
+      console.warn(`Error reading localStorage key "${key}", falling back to default:`, error)
+      try {
+        localStorage.removeItem(key)
+      } catch {
+        // Ignore
+      }
       return defaultValue
     }
   },

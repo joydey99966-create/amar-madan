@@ -1,6 +1,9 @@
+import { useMemo } from 'react'
 import { Calendar, Droplets, MapPin } from 'lucide-react'
 import { BloodDonor } from '../../../types'
 import { getDonorStatus } from '../../../services/bloodDonorService'
+import { donorSettingsService } from '../../../services/donorSettingsService'
+import { useDataVersion } from '../../../hooks/useDataVersion'
 import { formatDate } from '../../../utils/formatters'
 import { ModalShell } from '../../common/ModalShell'
 import { CallButton, CopyPhoneButton, WhatsAppButton } from '../../common/ContactActions'
@@ -14,8 +17,14 @@ interface DonorDetailDialogProps {
  * Full detail for a single donor, opened by tapping the donor's name. Uses the
  * shared ModalShell so it is capped at ~90vh, scrolls internally and closes on
  * Escape / backdrop click. Call & WhatsApp appear only for contactable donors.
+ * Respects the admin-controlled donor phone masking preference.
  */
 export function DonorDetailDialog({ donor, onClose }: DonorDetailDialogProps) {
+  const donorSettingsVersion = useDataVersion('donor-settings')
+  const phoneMasked = useMemo(() => donorSettingsService.get().phoneDisplay === 'masked', [donorSettingsVersion])
+  const displayPhone = (phone: string) =>
+    phoneMasked ? `••••${String(phone ?? '').slice(-4)}` : phone
+
   if (!donor) return null
   const status = getDonorStatus(donor)
 
@@ -64,15 +73,15 @@ export function DonorDetailDialog({ donor, onClose }: DonorDetailDialogProps) {
         </div>
         <div className="flex items-center gap-2">
           <Droplets size={16} className="shrink-0 text-rose-500" />
-          <span>মোবাইল: {donor.phone}</span>
+          <span>মোবাইল: {displayPhone(donor.phone)}</span>
         </div>
       </div>
 
       {status.canContact ? (
         <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4 dark:border-white/10">
-          <CallButton phone={donor.phone} />
-          <CopyPhoneButton phone={donor.phone} />
-          <WhatsAppButton phone={donor.phone} />
+          <CallButton phone={donor.phone} label={displayPhone(donor.phone)} />
+          {!phoneMasked && <CopyPhoneButton phone={donor.phone} />}
+          {!phoneMasked && <WhatsAppButton phone={donor.phone} />}
         </div>
       ) : (
         <p className="mt-5 rounded-xl border border-dashed border-slate-200 p-3 text-center text-xs font-semibold text-slate-500 dark:border-white/10 dark:text-slate-400">

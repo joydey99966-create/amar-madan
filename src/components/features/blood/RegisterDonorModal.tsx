@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { X } from 'lucide-react'
+import { CheckCircle2, MessageCircle, X } from 'lucide-react'
 import { BloodDonor, BloodGroup } from '../../../types'
 import { bloodGroups, unionAreas } from '../../../constants'
 import { useToast } from '../../../context/ToastContext'
 import { isValidBangladeshPhone } from '../../../utils/validation'
+import { submissionBridgeService } from '../../../services/submissionBridgeService'
 
 interface RegisterDonorModalProps {
   isOpen: boolean
@@ -23,6 +24,7 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submittedUrl, setSubmittedUrl] = useState<string | null>(null)
 
   // Escape closes the dialog and the page behind it stays put.
   useEffect(() => {
@@ -53,6 +55,21 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
     return Object.keys(newErrors).length === 0
   }
 
+  const handleResetAndClose = () => {
+    setSubmittedUrl(null)
+    setFormData({
+      name: '',
+      bloodGroup: 'O+',
+      unionArea: 'মদন পৌরসভা',
+      lastDonationDate: '',
+      phone: '',
+      availability: 'available',
+    })
+    setErrors({})
+    setIsSubmitting(false)
+    onClose()
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -60,30 +77,26 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
 
     setIsSubmitting(true)
 
-    setTimeout(() => {
-      onSubmit({
-        name: formData.name.trim(),
-        bloodGroup: formData.bloodGroup,
-        unionArea: formData.unionArea,
-        lastDonationDate: formData.lastDonationDate || null,
-        phone: formData.phone.trim(),
-        availability: formData.availability,
-      })
+    const waUrl = submissionBridgeService.buildDonorWhatsAppUrl({
+      name: formData.name.trim(),
+      bloodGroup: formData.bloodGroup,
+      unionArea: formData.unionArea,
+      phone: formData.phone.trim(),
+      lastDonationDate: formData.lastDonationDate || undefined,
+    })
 
-      addToast('রক্তদাতা হিসেবে সফলভাবে নিবন্ধিত হয়েছেন!', 'success')
+    onSubmit({
+      name: formData.name.trim(),
+      bloodGroup: formData.bloodGroup,
+      unionArea: formData.unionArea,
+      lastDonationDate: formData.lastDonationDate || null,
+      phone: formData.phone.trim(),
+      availability: formData.availability,
+    })
 
-      setFormData({
-        name: '',
-        bloodGroup: 'O+',
-        unionArea: 'মদন পৌরসভা',
-        lastDonationDate: '',
-        phone: '',
-        availability: 'available',
-      })
-      setErrors({})
-      setIsSubmitting(false)
-      onClose()
-    }, 400)
+    addToast('তথ্য জমা হয়েছে! অ্যাডমিন যাচাইয়ের পর সার্বজনীন তালিকায় যুক্ত হবে।', 'success')
+    setSubmittedUrl(waUrl)
+    setIsSubmitting(false)
   }
 
   if (!isOpen) return null
@@ -109,10 +122,10 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
             id="register-donor-title"
             className="text-lg font-bold text-slate-800 dark:text-white sm:text-xl"
           >
-            রক্তদাতা হোন
+            {submittedUrl ? 'নিবন্ধন সম্পন্ন' : 'রক্তদাতা হোন'}
           </h2>
           <button
-            onClick={onClose}
+            onClick={handleResetAndClose}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10"
             aria-label="বন্ধ করুন"
           >
@@ -120,8 +133,39 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
           </button>
         </div>
 
-        {/* Scrollable body */}
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6">
+        {submittedUrl ? (
+          <div className="flex flex-col items-center justify-center p-6 text-center space-y-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300">
+              <CheckCircle2 size={36} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+              নিবন্ধন সফলভাবে সম্পন্ন হয়েছে!
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              আপনার তথ্যটি সংরক্ষিত হয়েছে। মদন রক্তদাতা ডিরেক্টরিতে দ্রুত যাচাই ও সবার জন্য প্রকাশের জন্য মদন কোঅর্ডিনেটরকে হোয়াটসঅ্যাপে সরাসরি পাঠিয়ে দিন।
+            </p>
+            <div className="w-full space-y-2 pt-2">
+              <a
+                href={submittedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700 active:scale-[0.98]"
+              >
+                <MessageCircle size={18} /> হোয়াটসঅ্যাপে সরাসরি পাঠান
+              </a>
+              <button
+                type="button"
+                onClick={handleResetAndClose}
+                className="w-full rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              >
+                পরে পাঠাবো / বন্ধ করুন
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Scrollable body */}
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6">
           <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">
             আপনার তথ্য দিয়ে আমাদের রক্তদাতা তালিকায় যোগ হন এবং জরুরি সময়ে মানুষের সেবা করুন।
           </p>
@@ -247,13 +291,15 @@ export function RegisterDonorModal({ isOpen, onClose, onSubmit }: RegisterDonorM
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleResetAndClose}
             className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
           >
             বাতিল করুন
           </button>
         </div>
-      </div>
-    </div>
+      </>
+    )}
+  </div>
+</div>
   )
 }

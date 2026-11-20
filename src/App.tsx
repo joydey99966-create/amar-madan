@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react'
+﻿import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { categories, isViewId, NAV_TAB_BY_VIEW, VIEW_IDS, VIEW_META } from './constants'
 import { directoryService } from './services'
 import { noticeService } from './services/noticeService'
@@ -29,38 +29,36 @@ import { Header, Hero, BottomNav, Footer } from './components/layout'
 import { ToastContainer } from './components/common/Toast'
 import { ErrorBoundary } from './components/common/ErrorBoundary'
 import { EmptyState } from './components/common/EmptyState'
-import {
-  SearchBar,
-  SearchResults,
-  CulturalBanner,
-  CategoriesGrid,
-  NoticesSection,
-  CommunityBanner,
-  EmergencyBlood,
-  LocalDirectory,
-  JobsTuitions,
-  AgroMarket,
-  AddPriceModal,
-  RegisterDonorModal,
-  AdminDashboard,
-  NoticeDetailView,
-  AllServicesView,
-  ProfileView,
-  type ProfileStat,
-  TransportView,
-  LostFoundView,
-  NewsView,
-  FishMarketView,
-  CitizenServicesView,
-  PhotoGallery,
-} from './components/features'
+import { SearchBar } from './components/features/home/SearchBar'
+import { SearchResults } from './components/features/home/SearchResults'
+import { CulturalBanner } from './components/features/home/CulturalBanner'
+import { CategoriesGrid } from './components/features/home/CategoriesGrid'
+import { NoticesSection } from './components/features/home/NoticesSection'
+import { CommunityBanner } from './components/features/home/CommunityBanner'
+import { EmergencyBlood, EmergencyBloodTab } from './components/features/emergency/EmergencyBlood'
+import { AddPriceModal } from './components/features/market/AddPriceModal'
+import { RegisterDonorModal } from './components/features/blood/RegisterDonorModal'
+import type { ProfileStat } from './components/features/profile/ProfileView'
+
+const AdminDashboard = lazy(() => import('./components/features/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })))
+const PhotoGallery = lazy(() => import('./components/features/home/PhotoGallery').then((m) => ({ default: m.PhotoGallery })))
+const FishMarketView = lazy(() => import('./components/features/fish/FishMarketView').then((m) => ({ default: m.FishMarketView })))
+const TransportView = lazy(() => import('./components/features/transport/TransportView').then((m) => ({ default: m.TransportView })))
+const LostFoundView = lazy(() => import('./components/features/lostfound/LostFoundView').then((m) => ({ default: m.LostFoundView })))
+const NewsView = lazy(() => import('./components/features/news/NewsView').then((m) => ({ default: m.NewsView })))
+const CitizenServicesView = lazy(() => import('./components/features/citizen/CitizenServicesView').then((m) => ({ default: m.CitizenServicesView })))
+const JobsTuitions = lazy(() => import('./components/features/jobs/JobsTuitions').then((m) => ({ default: m.JobsTuitions })))
+const LocalDirectory = lazy(() => import('./components/features/directory/LocalDirectory').then((m) => ({ default: m.LocalDirectory })))
+const AgroMarket = lazy(() => import('./components/features/agro/AgroMarket').then((m) => ({ default: m.AgroMarket })))
+const AllServicesView = lazy(() => import('./components/features/services/AllServicesView').then((m) => ({ default: m.AllServicesView })))
+const ProfileView = lazy(() => import('./components/features/profile/ProfileView').then((m) => ({ default: m.ProfileView })))
+const NoticeDetailView = lazy(() => import('./components/features/notices/NoticeDetailView').then((m) => ({ default: m.NoticeDetailView })))
+const CommunityDirectoryView = lazy(() => import('./components/features/community/CommunityDirectoryView').then((m) => ({ default: m.CommunityDirectoryView })))
+
 import { Notice, NavTabId, NewsItem, ViewId } from './types'
-import {
-  DirectoryTab,
-} from './components/features/directory/LocalDirectory'
-import { EmergencyBloodTab } from './components/features/emergency/EmergencyBlood'
-import { JobsTab, canonicalJobsTab } from './components/features/jobs/JobsTuitions'
-import { AgroTab } from './components/features/agro/AgroMarket'
+import type { DirectoryTab } from './components/features/directory/LocalDirectory'
+import type { JobsTab } from './components/features/jobs/JobsTuitions'
+import type { AgroTab } from './components/features/agro/AgroMarket'
 import {
   bestSectionForQuery,
   countHits,
@@ -71,7 +69,6 @@ import {
 import { buildSectionCounts, totalsBySection } from './utils/counts'
 import { scrollToTop } from './utils/scroll'
 import { formatPrice } from './utils/formatters'
-import { CommunityDirectoryView } from './components/features/community/CommunityDirectoryView'
 import { analyticsService } from './services/analyticsService'
 import { displayOrderService } from './services/displayOrderService'
 
@@ -85,6 +82,15 @@ const CATEGORY_TABS: Record<string, string> = {
   market: 'prices',
   agro: 'dealers',
   tuition: 'tuition',
+}
+
+function ViewLoadingFallback() {
+  return (
+    <div className="flex flex-col items-center justify-center py-20 text-center animate-pulse">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-forest border-t-transparent dark:border-emerald-400 dark:border-t-transparent" />
+      <p className="mt-3 text-sm font-medium text-slate-500 dark:text-slate-400">লোড হচ্ছে...</p>
+    </div>
+  )
 }
 
 function AppContent() {
@@ -475,7 +481,8 @@ function AppContent() {
     route.tab === 'hospitals'
       ? (route.tab as DirectoryTab)
       : 'doctors'
-  const jobsTab: JobsTab = canonicalJobsTab(route.tab)
+  const jobsTab: JobsTab =
+    route.tab === 'employment' || route.tab === 'jobs' ? 'employment' : 'tuition'
   const marketTab: AgroTab =
     route.tab === 'dealers' || route.tab === 'machinery' ? (route.tab as AgroTab) : 'prices'
 
@@ -495,7 +502,8 @@ function AppContent() {
         }`}
       >
         <ErrorBoundary onBack={backHome} backLabel="হোমে ফিরে যান">
-          {selectedNotice ? (
+          <Suspense fallback={<ViewLoadingFallback />}>
+            {selectedNotice ? (
             <div className="mt-6 sm:mt-9">
               <NoticeDetailView notice={selectedNotice} onBack={backToNewsList} />
             </div>
@@ -728,6 +736,7 @@ function AppContent() {
               )}
             </>
           )}
+          </Suspense>
         </ErrorBoundary>
         <Footer onNavigate={handleNavigate} />
       </main>
@@ -742,7 +751,9 @@ function AppContent() {
 
       <AddPriceModal isOpen={showAddPriceModal} onClose={closeAddPriceModal} />
 
-      <AdminDashboard />
+      <Suspense fallback={null}>
+        <AdminDashboard />
+      </Suspense>
       <ToastContainer />
     </div>
   )

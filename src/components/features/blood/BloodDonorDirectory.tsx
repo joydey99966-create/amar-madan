@@ -255,8 +255,8 @@ export function BloodDonorDirectory({
                 {status.canContact ? (
                   <div className="flex flex-col items-center gap-2">
                     <CallButton phone={donor.phone} label={displayPhone(donor.phone)} className="max-w-[84px]" />
-                    <CopyPhoneButton phone={donor.phone} />
-                    <WhatsAppButton phone={donor.phone} />
+                    {!phoneMasked && <CopyPhoneButton phone={donor.phone} />}
+                    {!phoneMasked && <WhatsAppButton phone={donor.phone} />}
                   </div>
                 ) : (
                   <div className="flex w-20 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-slate-200 px-2 py-3 text-center dark:border-white/10">

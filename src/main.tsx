@@ -4,6 +4,9 @@ import App from './App'
 import './styles.css'
 import { ErrorBoundary } from './components/common/ErrorBoundary'
 import { dataSnapshotService } from './services/dataSnapshotService'
+import { storageService } from './services/storageService'
+
+storageService.initVersion()
 
 // Restore a deep link that arrived via the 404.html SPA fallback on GitHub
 // Pages. The 404 page encodes the original path as ?p=; put it back in the URL
