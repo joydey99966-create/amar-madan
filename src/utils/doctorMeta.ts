@@ -43,19 +43,23 @@ function dayIndex(word: string): number {
     .replace(/বার$/, '')
     .replace(/বন্ধ$/, '')
     .replace(/\s+$/, '')
-  // Match either direction: a short token "বুধ" against "বুধ", or a suffixed
-  // word "শুক্রবার" that starts with the canonical "শুক্র".
-  const bn = WEEKDAY_BN.findIndex((d) => cleaned === d || cleaned.startsWith(d))
+  // Match in either direction: a full/suffixed word "শুক্রবার" that starts
+  // with the canonical "শুক্র", or a short token "বৃহ" that is a prefix of the
+  // canonical "বৃহস্পতি" (used in ranges such as "শনি-বৃহ").
+  const bn = WEEKDAY_BN.findIndex(
+    (d) => cleaned === d || cleaned.startsWith(d) || d.startsWith(cleaned),
+  )
   if (bn >= 0) return bn
-  return WEEKDAY_EN.findIndex((d) => cleaned === d || cleaned.startsWith(d))
+  return WEEKDAY_EN.findIndex(
+    (d) => cleaned === d || cleaned.startsWith(d) || d.startsWith(cleaned),
+  )
 }
 
 /**
  * True when the doctor's chamber is open on a given weekday index (0=Sunday).
- * Works for the Bengali day names used in the demo schedules ("রবি, মঙ্গল,
- * বুধ"), "প্রতিদিন" (every day), the "(... বন্ধ)" closed-day pattern, and
- * English day names an admin might enter. Empty/unknown schedules return false
- * so "today" never falsely includes a doctor with no published schedule.
+ * Works for Bengali day names ("রবি, মঙ্গল, বুধ"), "প্রতিদিন" (every day),
+ * ranges such as "শনি-বৃহ" (Saturday–Thursday), the "(... বন্ধ)" closed-day
+ * pattern, and English day names. Empty/unknown schedules return false.
  */
 export function doctorVisitsOnDay(
   doctor: Pick<ServiceProvider, 'visitingDays'>,
@@ -71,11 +75,26 @@ export function doctorVisitsOnDay(
 
   if (days.includes('প্রতিদিন') || /every\s*day/i.test(days)) return true
 
-  const todayBn = WEEKDAY_BN[day]
-  return days
+  // Ranges like "শনি-বৃহ" mean every day from Saturday through Thursday.
+  // Walk the week cyclically so the range never accidentally includes Friday.
+  const body = closedMatch ? days.replace(/\([^)]*\)/g, ' ').trim() : days
+  return body
     .split(/[,\s]+/)
     .filter(Boolean)
-    .some((token) => dayIndex(token) === day || token.trim() === todayBn)
+    .some((token) => {
+      const [start, end] = token.split(/\s*[-–—]\s*/)
+      if (end) {
+        const from = dayIndex(start)
+        const to = dayIndex(end)
+        if (from < 0 || to < 0) return false
+        for (let i = 0, cursor = from; i <= 6; i++, cursor = (cursor + 1) % 7) {
+          if (cursor === day) return true
+          if (cursor === to) return false
+        }
+        return false
+      }
+      return dayIndex(token) === day
+    })
 }
 
 /** True when the doctor's chamber is open today. */

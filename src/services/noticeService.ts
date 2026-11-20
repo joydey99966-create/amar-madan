@@ -4,6 +4,7 @@ import {
   noticeCategoryColor,
 } from '../constants'
 import { noticeNewsSeed, correctDemoNotice, toArticle } from '../data/noticeNewsSeed'
+import { assetUrl } from '../data/photos'
 import { AdminNotice, NewsItem, Notice } from '../types'
 import { storageService } from './storageService'
 import { notifyDataChanged } from './dataEvents'
@@ -32,8 +33,15 @@ function normalize(notice: Partial<AdminNotice> & { id: string }): AdminNotice {
     date,
     source: (notice.source ?? '').trim() || seed?.source || FALLBACK_SOURCE,
     priority: notice.priority === 'urgent' ? 'urgent' : 'normal',
-    image: notice.image?.trim() || seed?.image || undefined,
+    image: (() => {
+      const image = notice.image?.trim() || seed?.image
+      if (!image) return undefined
+      // Bundled images are stored as "/images/…"; make them base-aware so they
+      // also load from the /amar-madan/ GitHub Pages deployment.
+      return image.startsWith('/') ? assetUrl(image) : image
+    })(),
     lastUpdated: notice.lastUpdated?.trim() || seed?.lastUpdated || undefined,
+    expiresAt: notice.expiresAt?.trim() || seed?.expiresAt || undefined,
     approved: notice.approved !== false,
     visible: notice.visible !== false,
   } as AdminNotice
@@ -91,9 +99,17 @@ export const noticeService = {
     return noticeNewsSeed
   },
 
-  /** Approved + visible records — the only list public pages read. */
+  /** Approved + visible + in-date records — the only list public pages read. */
   getPublished(): AdminNotice[] {
-    return noticeService.getAdminNotices().filter((notice) => notice.approved && notice.visible !== false)
+    const today = new Date().toISOString().slice(0, 10)
+    return noticeService.getAdminNotices().filter(
+      (notice) =>
+        notice.approved &&
+        notice.visible !== false &&
+        // An expired event stops being "আজকের নোটিশ" automatically. Expiry is
+        // inclusive (the event still shows on its last day).
+        (!notice.expiresAt || notice.expiresAt >= today),
+    )
   },
 
   /** Homepage notice board. */

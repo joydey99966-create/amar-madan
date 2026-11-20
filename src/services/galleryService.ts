@@ -1,5 +1,5 @@
 import { STORAGE_KEYS } from '../constants'
-import { sitePhotos } from '../data/photos'
+import { assetUrl, sitePhotos } from '../data/photos'
 import { GalleryPhoto } from '../types'
 import { storageService } from './storageService'
 import { notifyDataChanged } from './dataEvents'
@@ -14,9 +14,12 @@ import { notifyDataChanged } from './dataEvents'
  */
 function normalize(photo: Partial<GalleryPhoto> & { id: string }): GalleryPhoto {
   const caption = (photo.caption ?? '').trim()
+  // Base-aware URL so a stored photo keeps working on GitHub Pages.
+  const src = (photo.src ?? '').trim()
+  const finalSrc = src.startsWith('/') ? assetUrl(src) : src
   return {
     id: photo.id,
-    src: (photo.src ?? '').trim(),
+    src: finalSrc,
     caption: caption || 'মদনের একটি মুহূর্ত',
     alt: (photo.alt ?? '').trim() || caption || 'মদনের ছবি',
     credit: (photo.credit ?? '').trim() || 'অজানা',

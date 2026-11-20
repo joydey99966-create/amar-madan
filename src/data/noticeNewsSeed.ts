@@ -18,6 +18,16 @@ export function correctDemoNotice<T extends { id: string; category: string }>(no
   return { ...notice, category }
 }
 
+/**
+ * Expiry dates for time-bound demo notices, taken from the dates already in
+ * their demo text (18 / 20 November 2026). Admin-editable on every record.
+ */
+const DEMO_NOTICE_EXPIRY: Record<string, string> = {
+  'notice-eye-camp': '2026-11-18',
+  'notice-nid-correction': '2026-11-20',
+  'notice-college-admission': '2026-11-20',
+}
+
 /** Number of sentences in a body — the admin panel flags anything below 3. */
 export function countSentences(value: string): number {
   return (value || '')
@@ -98,6 +108,9 @@ export const noticeNewsSeed: AdminNotice[] = [
     date: notice.date,
     source: notice.source,
     priority: notice.priority ?? 'normal',
+    // Expiry derived from the event dates already present in the demo copy —
+    // no new date is invented. Past events leave the "আজকের নোটিশ" board.
+    expiresAt: DEMO_NOTICE_EXPIRY[notice.id],
     approved: true,
     visible: true,
   })),

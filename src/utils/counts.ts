@@ -82,7 +82,9 @@ export function buildSectionCounts(input: CountInput): Record<string, SectionCou
       ],
       'টি',
     ),
-    transport: build([part('গাড়ি ভাড়া', input.rentACars, 'টি')], 'টি'),
+    // The published route table (12) is the single source of truth for the
+    // transport count — the two rental providers are a sub-list, not the total.
+    transport: build([part('যাতায়াত রুট', input.routes, 'টি')], 'টি'),
     lostfound: build([part('বিজ্ঞপ্তি', input.lostFound, 'টি')], 'টি'),
     market: build([part('পণ্য', input.marketPrices, 'টি')], 'টি'),
     fish: build([part('মাছের দর', input.fishPrices, 'টি')], 'টি'),

@@ -50,6 +50,14 @@ export const PATH_TO_VIEW: Record<string, ViewId> = Object.entries(ROUTE_PATHS).
   {} as Record<string, ViewId>,
 )
 
+/**
+ * Legacy/alias URLs that must land on an existing section instead of the
+ * homepage. `/fish` was an old link for the haor fish market.
+ */
+export const PATH_ALIASES: Record<string, ViewId> = {
+  '/fish': 'fish',
+}
+
 /** Per-section Bengali page title / description (SEO + share previews). */
 export const ROUTE_META: Record<ViewId, { title: string; description: string }> = {
   home: {
@@ -149,6 +157,7 @@ export function viewFromPath(pathname: string): ViewId | null {
 
   const normalised = path.toLowerCase()
   if (normalised in PATH_TO_VIEW) return PATH_TO_VIEW[normalised]
+  if (normalised in PATH_ALIASES) return PATH_ALIASES[normalised]
 
   // Notice/news detail deep links: /news/:id still belong to the news section.
   if (normalised.startsWith('/news/') && normalised.length > '/news/'.length) return 'news'

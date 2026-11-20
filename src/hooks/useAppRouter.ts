@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { bloodGroups } from '../constants'
-import { noticeIdFromPath, pathForView, ROUTE_META, viewFromPath } from '../constants/routes'
+import {
+  noticeIdFromPath,
+  pathForView,
+  ROUTE_META,
+  stripBase,
+  viewFromPath,
+  PATH_ALIASES,
+} from '../constants/routes'
 import { BloodGroup, ViewId } from '../types'
 
 export interface RouteState {
@@ -97,6 +104,13 @@ export function useAppRouter() {
 
   // Normalise a legacy or unknown URL once, without adding a history entry.
   useEffect(() => {
+    const path = stripBase(window.location.pathname).toLowerCase().replace(/\/+$/, '') || '/'
+    // Alias URLs such as /fish point at an existing section: redirect to its
+    // canonical path so address bars and shared links show the real page.
+    if (path in PATH_ALIASES) {
+      window.history.replaceState({}, '', pathForView(PATH_ALIASES[path]))
+      return
+    }
     const resolved = viewFromPath(window.location.pathname)
     if (resolved === null) {
       window.history.replaceState({}, '', pathForView('home'))

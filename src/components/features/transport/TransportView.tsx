@@ -302,7 +302,7 @@ export function TransportView({
                     </div>
                     <div className="text-right">
                       <span className="block text-sm font-bold text-forest dark:text-emerald-300">
-                        {route.fare}
+                        {route.fare?.trim() ? formatPrice(route.fare) : 'ভাড়া যাচাই করা হয়নি'}
                       </span>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500">{route.mode}</span>
                     </div>

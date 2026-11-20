@@ -208,7 +208,7 @@ export function AgroMarket({
                   </div>
 
                   <div className="text-right">
-                    <div className="text-sm font-bold text-forest dark:text-emerald-300">{item.price}</div>
+                    <div className="text-sm font-bold text-forest dark:text-emerald-300">{formatPrice(item.price)}</div>
                     {item.availability && (
                       <div className={`mt-1 text-[10px] font-semibold ${
                         item.availability === 'available'
@@ -300,7 +300,7 @@ function PriceRow({ item }: { item: MarketPrice }) {
         </div>
         <div className="text-right">
           <div className="text-sm font-bold text-slate-800 dark:text-white">
-            {formatPrice(item.retailPrice)}
+            {formatPrice(item.retailPrice, item.unit)}
           </div>
           <div className={`mt-1 text-[10px] font-semibold ${trendColor}`}>
             {getTrendLabel(delta)}
@@ -311,7 +311,7 @@ function PriceRow({ item }: { item: MarketPrice }) {
       <div className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-2.5 text-[11px] dark:bg-white/5">
         <div>
           <span className="block text-slate-500 dark:text-slate-400">পাইকারি</span>
-          <span className="font-semibold text-slate-800 dark:text-slate-100">{formatPrice(item.wholesalePrice)}</span>
+          <span className="font-semibold text-slate-800 dark:text-slate-100">{formatPrice(item.wholesalePrice, item.unit)}</span>
         </div>
         <div>
           <span className="block text-slate-500 dark:text-slate-400">খুচরা</span>
@@ -378,7 +378,7 @@ function PriceRow({ item }: { item: MarketPrice }) {
                 <tr key={point.date} className="border-t border-slate-100 dark:border-white/10">
                   <td className="py-1 text-slate-600 dark:text-slate-300">{formatDate(point.date)}</td>
                   <td className="py-1 text-right font-semibold text-slate-800 dark:text-slate-100">
-                    {formatPrice(point.retail)}
+                    {formatPrice(point.retail, item.unit)}
                   </td>
                 </tr>
               ))}

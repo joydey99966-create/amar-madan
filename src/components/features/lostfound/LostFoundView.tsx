@@ -6,6 +6,7 @@ import { EmptyState } from '../../common/EmptyState'
 import { SearchFilterBanner } from '../../common/SearchFilterBanner'
 import { PostLostFoundModal } from './PostLostFoundModal'
 import { lostFoundService } from '../../../services/lostFoundService'
+import { lostFoundSettingsService } from '../../../services/lostFoundSettingsService'
 import { useDataVersion } from '../../../hooks/useDataVersion'
 import { toBanglaNumber, formatDate } from '../../../utils/formatters'
 import { matchesSectionQuery, SECTION_SUGGESTIONS } from '../../../utils/sectionSearch'
@@ -24,10 +25,27 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
   const [showPostModal, setShowPostModal] = useState(false)
   const [version, setVersion] = useState(0)
   const dataVersion = useDataVersion('lostfound')
+  const settingsVersion = useDataVersion('lostfound-settings')
 
   useEffect(() => {
     setBoard(lostFoundService.getPublic())
-  }, [items, dataVersion])
+  }, [items, dataVersion, settingsVersion])
+
+  /** Public descriptions never contain a full NID — honour the admin rule. */
+  const publicDescription = (description: string): string => {
+    const mode = lostFoundSettingsService.getSettings().nidMaskMode
+    if (!description) return ''
+    const longNumber = /([\d০-৯]{4,})/g
+    if (mode === 'hide') {
+      return description.replace(longNumber, (digits) =>
+        digits.length > 4 ? 'তথ্য যাচাই চলছে' : digits,
+      )
+    }
+    // 'last4' (and the legacy 'full' value) never publish a full identifier.
+    return description.replace(longNumber, (digits) =>
+      digits.length > 4 ? `…${digits.slice(-4)}` : digits,
+    )
+  }
 
   // Re-read the board after a submission so the new count is honest even while
   // the item waits for approval.
@@ -119,7 +137,7 @@ export function LostFoundView({ items, onBack, query = '', onClearQuery }: LostF
                   <ServiceCard
                     key={item.id}
                     title={item.itemName}
-                    subtitle={`${item.description || 'বিস্তারিত নেই'} • ${formatDate(item.date)}`}
+                    subtitle={`${publicDescription(item.description) || 'বিস্তারিত নেই'} • ${formatDate(item.date)}`}
                     location={item.location}
                     phone={item.phone}
                     category="হারানো ও প্রাপ্তি"

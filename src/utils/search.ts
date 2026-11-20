@@ -297,8 +297,11 @@ function fieldScore(term: string, value: string): number {
   if (hay.startsWith(term)) return 7
   if (hay.includes(term)) return 4
 
-  // Latin spelling of a Bengali name: "Rafiq" -> "রফিকুল".
-  if (term.length >= 3) {
+  // Latin spelling of a Bengali name: "Rafiq" -> "রফিকুল". This is only for
+  // Latin input — a Bengali term already matches by exact word/substring, and
+  // folding it to a consonant skeleton creates false positives (e.g. "রক্ত"
+  // matching an unrelated news item through a shared consonant skeleton).
+  if (term.length >= 3 && /^[a-z]+$/.test(term)) {
     const key = phoneticKey(term)
     if (key.length >= 2 && phoneticKey(hay).includes(key)) return 5
   }

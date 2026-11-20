@@ -33,9 +33,11 @@ export function formatDate(dateStr: string | null | undefined): string {
     // fall through to the string normalisers below
   }
 
-  // Already a full Bengali date — normalise a missing comma before the year.
+  // Already a full Bengali date — normalise to exactly ONE comma before the
+  // final 4-digit year. Strips any existing commas/spaces first so a value that
+  // already has ",," or "  " never gets a second comma appended.
   if (/[০-৯]{4}/.test(value) || /\d{4}/.test(value)) {
-    return value.replace(/([০-৯]{4})(?!.*[০-৯]{4})/, '$1').replace(/\s+([০-৯]{4})$/, ', $1')
+    return value.replace(/[,.\s]+([০-৯]{4})$/, ', $1')
   }
 
   // Bengali day + month without a year — append the site's data year.
@@ -92,12 +94,16 @@ export function parseFare(fare: string): number {
 }
 
 /**
- * The ONE price format used across the site: ৳ + Bengali digits + unit.
- * E.g. `formatPrice(70)` -> "৳৭০ টাকা". The numeric value is never changed.
+ * The ONE price format used across the site: ৳ symbol + Bengali digits +
+ * optional unit, with NO separate "টাকা" word (which doubled the unit).
+ * E.g. `formatPrice(70, 'কেজি')` -> "৳৭০/কেজি"; `formatPrice(70)` -> "৳৭০".
+ * The numeric value is never changed.
  */
-export function formatPrice(value: number | string): string {
+export function formatPrice(value: number | string, unit?: string | null): string {
   const numeric = typeof value === 'number' ? value : parseFare(value)
-  return `৳${toBanglaNumber(numeric)} টাকা`
+  // Data stores units as "প্রতি কেজি"; the published format is "৳৭০/কেজি".
+  const cleanUnit = (unit ?? '').trim().replace(/^প্রতি\s+/, '')
+  return `৳${toBanglaNumber(numeric)}${cleanUnit ? `/${cleanUnit}` : ''}`
 }
 
 /**
@@ -106,4 +112,18 @@ export function formatPrice(value: number | string): string {
 export function toBanglaCount(value: number, unit?: string): string {
   const number = toBanglaNumber(value)
   return unit ? `${number} ${unit}` : number
+}
+
+/**
+ * Masks an NID-like identifier for public display. Keeps at most the last four
+ * digits when `maskToLast4` is true; otherwise hides it entirely. Never publishes
+ * a full NID number.
+ */
+export function maskNid(value: string | null | undefined, maskToLast4 = false): string {
+  if (!value) return ''
+  const digits = String(value).replace(/\D/g, '')
+  if (digits.length === 0) return ''
+  if (!maskToLast4) return 'তথ্য যাচাই চলছে'
+  if (digits.length <= 4) return digits
+  return '…' + digits.slice(-4)
 }

@@ -59,7 +59,7 @@ export const categories: Category[] = [
   },
   {
     id: 'transport',
-    name: 'গাড়ি ভাড়া',
+    name: 'যাতায়াত',
     english: 'Transport',
     icon: Truck,
     color: '#6366f1',

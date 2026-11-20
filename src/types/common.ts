@@ -97,6 +97,11 @@ export interface AdminNotice {
   image?: string
   /** ISO date the record was last confirmed. */
   lastUpdated?: string
+  /**
+   * Optional ISO expiry date. A past event automatically leaves the public
+   * notice board and the "আজ" wording until an admin renews or removes it.
+   */
+  expiresAt?: string
   /** New records stay hidden from the public until an admin approves them. */
   approved?: boolean
   /** Admin-controlled visibility. */

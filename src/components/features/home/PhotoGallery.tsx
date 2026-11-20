@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ImageOff } from 'lucide-react'
 import { useGalleryPhotos } from '../../../hooks/useGalleryPhotos'
 
@@ -8,6 +9,39 @@ import { useGalleryPhotos } from '../../../hooks/useGalleryPhotos'
  * gallery list, so publishing a new photo (or removing one) updates this
  * section right away.
  */
+/** One gallery card with a resilient gradient fallback if the image fails. */
+function GalleryCard({ photo }: { photo: ReturnType<typeof useGalleryPhotos>[number] }) {
+  const [failed, setFailed] = useState(false)
+  return (
+    <figure className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-white/[0.07] dark:bg-[#1a2420]">
+      <div className="relative h-24 w-full bg-gradient-to-br from-emerald-100 via-teal-100 to-sky-100 dark:from-emerald-950/60 dark:via-teal-950/50 dark:to-sky-950/60 sm:h-40">
+        {!failed && (
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            width={400}
+            height={160}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+            onError={() => setFailed(true)}
+          />
+        )}
+        {failed && (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-emerald-700/70 dark:text-emerald-300/70">
+            <ImageOff size={22} />
+            <span className="text-[10px] font-medium">ছবি লোড হয়নি</span>
+          </div>
+        )}
+      </div>
+      <figcaption className="px-2.5 py-2 sm:px-3 sm:py-2.5">
+        <p className="text-xs font-semibold leading-5 text-slate-700 dark:text-slate-200">{photo.caption}</p>
+        <p className="mt-1 truncate text-[10px] text-slate-400 dark:text-slate-500">{photo.credit} · {photo.license}</p>
+      </figcaption>
+    </figure>
+  )
+}
+
 export function PhotoGallery() {
   const photos = useGalleryPhotos()
 
@@ -38,32 +72,7 @@ export function PhotoGallery() {
       ) : (
         <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
           {photos.map((photo) => (
-            <figure
-              key={photo.id}
-              className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-white/[0.07] dark:bg-[#1a2420]"
-            >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                width={400}
-                height={160}
-                loading="lazy"
-                decoding="async"
-                className="h-24 w-full object-cover sm:h-40"
-                onError={(event) => {
-                  // A broken URL must not leave a hole in the grid.
-                  event.currentTarget.style.display = 'none'
-                }}
-              />
-              <figcaption className="px-2.5 py-2 sm:px-3 sm:py-2.5">
-                <p className="text-xs font-semibold leading-5 text-slate-700 dark:text-slate-200">
-                  {photo.caption}
-                </p>
-                <p className="mt-1 truncate text-[10px] text-slate-400 dark:text-slate-500">
-                  {photo.credit} · {photo.license}
-                </p>
-              </figcaption>
-            </figure>
+            <GalleryCard key={photo.id} photo={photo} />
           ))}
         </div>
       )}

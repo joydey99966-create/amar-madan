@@ -22,4 +22,5 @@ export const STORAGE_KEYS = {
   REPORTS: 'amar-madan-reports',
   PROFILE_TEXT: 'amar-madan-profile-text',
   ADMIN_AUTH: 'amar-madan-admin',
+  LOST_FOUND_SETTINGS: 'amar-madan-lost-found-settings',
 } as const

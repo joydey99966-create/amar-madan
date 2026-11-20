@@ -12,10 +12,21 @@ import { GalleryPhoto } from '../types'
  */
 export type SitePhoto = GalleryPhoto
 
+/**
+ * Resolves a bundled image path against the Vite base so the gallery works on
+ * GitHub Pages (served from `/amar-madan/`) as well as locally (`/`).
+ */
+export function assetUrl(path: string): string {
+  const base = import.meta.env.BASE_URL || '/'
+  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
+}
+
+const withBase = (path: string) => assetUrl(path)
+
 export const sitePhotos: SitePhoto[] = [
   {
     id: 'haor',
-    src: '/images/haor.jpg',
+    src: withBase('images/haor.jpg'),
     caption: 'হাওরের ভোর — নীল হাওরের পানিতে ভাসমান নৌকা',
     alt: 'হাওরের পানিতে সারিবদ্ধ নৌকা ও দিগন্তে গ্রাম',
     credit: 'Abdul Momin',

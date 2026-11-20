@@ -43,7 +43,7 @@ export interface ProfileText {
 
 export const DEFAULT_PROFILE_TEXT: ProfileText = {
   heroEyebrow: 'সাইটের তথ্য',
-  heroTitle: 'মদনবাসীর সেবামেঞ্জলী',
+  heroTitle: 'মদনবাসীর সেবামঞ্জলি',
   heroBody:
     'এই পেজে আপনি নিজের জমা দেওয়া তথ্য ও সাইটে প্রকাশিত তথ্যের সংখ্যা দেখতে পারবেন। নিজের এলাকার সঠিক তথ্য যোগ করে পাশে থাকুন।',
   registerDonorLabel: '+ রক্তদাতা হোন',

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CheckCircle, Trash2, Eye, Plus } from 'lucide-react'
 import { LostFoundItem } from '../../../types'
+import { lostFoundSettingsService, LostFoundSettings } from '../../../services/lostFoundSettingsService'
 
 interface LostFoundAdminPanelProps {
   items: LostFoundItem[]
@@ -17,6 +18,11 @@ export function LostFoundAdminPanel({ items, onDelete, onApprove, onAdd }: LostF
   const [date, setDate] = useState('')
   const [description, setDescription] = useState('')
   const [phone, setPhone] = useState('')
+  const [settings, setSettings] = useState<LostFoundSettings>(() => lostFoundSettingsService.getSettings())
+
+  const handleMaskMode = (mode: LostFoundSettings['nidMaskMode']) => {
+    setSettings(lostFoundSettingsService.saveSettings({ ...settings, nidMaskMode: mode }))
+  }
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,6 +53,21 @@ export function LostFoundAdminPanel({ items, onDelete, onApprove, onAdd }: LostF
         >
           <Plus size={16} /> {showAddForm ? 'ফর্ম বন্ধ' : 'নতুন যোগ'}
         </button>
+      </div>
+
+      {/* Admin-controlled NID privacy rule — public cards never show a full NID. */}
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
+        <label htmlFor="nid-mask-mode" className="font-semibold">এনআইডি নম্বর প্রদর্শন নীতি</label>
+        <p className="mt-0.5 text-[11px] opacity-80">পাবলিক কার্ডে কখনো পুরো এনআইডি নম্বর দেখানো হয় না।</p>
+        <select
+          id="nid-mask-mode"
+          value={settings.nidMaskMode}
+          onChange={(e) => handleMaskMode(e.target.value as LostFoundSettings['nidMaskMode'])}
+          className="mt-2 w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm dark:border-amber-800 dark:bg-[#0f1411] dark:text-white"
+        >
+          <option value="hide">কোনো নম্বর দেখাবেন না (তথ্য যাচাই চলছে)</option>
+          <option value="last4">শেষ ৪ ডিজিট মাস্ক করে দেখান</option>
+        </select>
       </div>
 
       {showAddForm && (

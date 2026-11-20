@@ -149,11 +149,11 @@ export function PriceCard({
       <div className="grid grid-cols-2 gap-3">
         <div>
           <span className="block text-[10px] text-slate-500">পাইকারি</span>
-          <span className="text-sm font-bold text-slate-800 dark:text-white">{formatPrice(wholesalePrice)}</span>
+          <span className="text-sm font-bold text-slate-800 dark:text-white">{formatPrice(wholesalePrice, unit)}</span>
         </div>
         <div>
           <span className="block text-[10px] text-slate-500">খুচরা</span>
-          <span className="text-sm font-bold text-slate-800 dark:text-white">{formatPrice(retailPrice)}</span>
+          <span className="text-sm font-bold text-slate-800 dark:text-white">{formatPrice(retailPrice, unit)}</span>
         </div>
       </div>
       <div className="mt-2 text-xs text-slate-400">{unit}</div>

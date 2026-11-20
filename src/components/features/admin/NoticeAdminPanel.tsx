@@ -28,6 +28,7 @@ const EMPTY_FORM = {
   date: '',
   source: '',
   image: '',
+  expiresAt: '',
   priority: 'normal' as AdminNotice['priority'],
   visible: true,
 }
@@ -70,6 +71,7 @@ export function NoticeAdminPanel({
       date: form.date ? formatBanglaDate(form.date) : editingDate || formatBanglaDate(new Date()),
       source: form.source.trim() || 'উপজেলা কার্যালয়, মদন',
       image: form.image.trim() || undefined,
+      expiresAt: form.expiresAt || undefined,
       priority: form.priority,
       visible: form.visible,
     }
@@ -89,6 +91,7 @@ export function NoticeAdminPanel({
       date: '',
       source: notice.source,
       image: notice.image ?? '',
+      expiresAt: notice.expiresAt ?? '',
       priority: notice.priority,
       visible: notice.visible !== false,
     })
@@ -185,6 +188,14 @@ export function NoticeAdminPanel({
               value={form.source}
               onChange={(e) => update({ source: e.target.value })}
               className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
+            />
+            <input
+              type="date"
+              value={form.expiresAt}
+              onChange={(e) => update({ expiresAt: e.target.value })}
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
+              aria-label="মেয়াদ শেষের তারিখ (ঐচ্ছিক)"
+              title="মেয়াদ শেষের তারিখ — এই তারিখের পর আইটেমটি ‘আজকের নোটিশ’ থেকে বাদ যাবে"
             />
           </div>
           <input
