@@ -38,6 +38,28 @@ interface AgroMarketProps {
 
 const agroMachinery = recordsService.machinery()
 
+// Filler words in price queries ("আলুর দাম") must not block a product match.
+const PRICE_FILLER = new Set(['দাম', 'দর', 'মূল্য', 'রেট', 'price', 'কত', 'কতটা'])
+
+function stem(word: string): string {
+  //Strip common Bengali genitive/possessive suffixes: আলুর -> আলু, চালের -> চাল
+  return word.replace(/ের$|র$|টা$|ট$/u, '')
+}
+
+function matchesProductQuery(query: string, values: Array<string | undefined>): boolean {
+  const terms = query
+    .toLocaleLowerCase('bn')
+    .split(/[\s,،;:|]+/)
+    .map((term) => stem(term.trim()))
+    .filter((term) => term.length > 1 && !PRICE_FILLER.has(term))
+  if (terms.length === 0) return matchesSectionQuery('market', query, values)
+  const hay = values
+    .filter(Boolean)
+    .map((value) => stem(value!.toLocaleLowerCase('bn')))
+    .join(' ')
+  return terms.some((term) => hay.includes(term))
+}
+
 function matchesQuery(query: string, values: Array<string | undefined>): boolean {
   return matchesSectionQuery('market', query, values)
 }
@@ -56,7 +78,7 @@ export function AgroMarket({
   const [bookingItem, setBookingItem] = useState<import('../../../types').AgroMachineryItem | null>(null)
 
   const filteredPrices = useMemo(
-    () => prices.filter((item) => matchesQuery(activeQuery, [item.itemName, item.unit])),
+    () => prices.filter((item) => matchesProductQuery(activeQuery, [item.itemName, item.unit])),
     [prices, activeQuery],
   )
   const filteredDealers = useMemo(

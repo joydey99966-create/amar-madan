@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { EducationInstitution, Hospital, ServiceProvider } from '../../../types'
-import { formatDate } from '../../../utils/formatters'
+import { formatDate, toBanglaNumber } from '../../../utils/formatters'
 import { lostFoundService } from '../../../services/lostFoundService'
 import { useDataVersion } from '../../../hooks/useDataVersion'
 import { SubTabBar } from '../../common/SubTabBar'
@@ -15,6 +15,8 @@ interface LocalDirectoryProps {
   hospitals: Hospital[]
   institutions: EducationInstitution[]
   transport: ServiceProvider[]
+  /** Published route count — shown so directory/home/profile counts agree. */
+  routeCount?: number
   /** Controlled sub-tab, so a tile can open the list it actually points at. */
   activeTab?: DirectoryTab
   onTabChange?: (tab: DirectoryTab) => void
@@ -30,6 +32,7 @@ export function LocalDirectory({
   hospitals,
   institutions,
   transport,
+  routeCount = 0,
   activeTab,
   onTabChange,
   query = '',
@@ -89,6 +92,9 @@ export function LocalDirectory({
 
       {currentTab === 'transport' && (
         <div role="tabpanel" className="grid gap-3 sm:gap-4">
+          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-3 text-xs text-indigo-800 dark:border-indigo-900/40 dark:bg-indigo-900/20 dark:text-indigo-200">
+            🚌 {toBanglaNumber(routeCount)} টি যাতায়াত রুট প্রকাশিত আছে — সম্পূর্ণ রুট ও ভাড়া দেখতে যাতায়াত পেজে যান।
+          </div>
           {transport.length === 0 ? (
             <EmptyState
               title="কোনো গাড়ি ভাড়ার তথ্য পাওয়া যায়নি"

@@ -603,6 +603,7 @@ function AppContent() {
                     hospitals={hospitals}
                     institutions={educationInstitutions}
                     transport={emergencyServices.rentacar}
+                    routeCount={transportRoutes.length}
                     activeTab={directoryTab}
                     onTabChange={handleTabChange}
                     query={route.query}

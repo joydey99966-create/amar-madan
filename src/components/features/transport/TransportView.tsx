@@ -23,6 +23,27 @@ interface TransportViewProps {
   onClearQuery?: () => void
 }
 
+/**
+ * Fares from the real dataset can be prose such as
+ * "২০১৮ সালে ভাড়া ছিল ৬০ টাকা (হালনাগাদ ভাড়া যাচাই হয়নি)". That is NOT a
+ * current fare — never render the year as ৳২০১৮. Show "ভাড়া যাচাই করা হয়নি"
+ * unless the field is a plain, current amount.
+ */
+function displayFare(fare: string | undefined): string {
+  const value = (fare ?? '').trim()
+  if (!value) return 'ভাড়া যাচাই করা হয়নি'
+  if (/যাচাই হয়নি|যাচাই করা হয়নি|অজানা|unknown/i.test(value)) return 'ভাড়া যাচাই করা হয়নি'
+  // A plain amount may include commas/Bengali digits and an optional /unit or
+  // short qualifier in parentheses, but must not start with a 4-digit year.
+  const digits = value.replace(/[^০-৯0-9]/g, '')
+  if (!digits) return 'ভাড়া যাচাই করা হয়নি'
+  if (/^(19|20)\d{2}$/.test(digits.replace(/[০-৯]/g, (d) => String('০১২৩৪৫৬৭৮৯'.indexOf(d))))) {
+    return 'ভাড়া যাচাই করা হয়নি'
+  }
+  if (/\d{4}\s*সালে/.test(value) || /[০-৯]{4}\s*সালে/.test(value)) return 'ভাড়া যাচাই করা হয়নি'
+  return formatPrice(value)
+}
+
 const MODE_ICONS: Record<TransportMode, typeof Bus> = {
   বাস: Bus,
   বোট: Ship,
@@ -118,7 +139,9 @@ export function TransportView({
     [routes, estName],
   )
   const estRoute = estName && estMode ? routes.find((r) => r.name === estName && r.mode === estMode) : undefined
-  const farePerPerson = estRoute ? parseFare(estRoute.fare) : 0
+  const farePerPerson = estRoute && !displayFare(estRoute.fare).startsWith('ভাড়া')
+    ? parseFare(estRoute.fare)
+    : 0
   const passengers = Number.isFinite(estPassengers) && estPassengers > 0 ? Math.floor(estPassengers) : 1
   const estTotal = farePerPerson * passengers
 
@@ -252,7 +275,7 @@ export function TransportView({
                 className="w-24 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
               />
             </label>
-            {estRoute && (
+            {estRoute && farePerPerson > 0 && (
               <div className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-forest shadow-sm dark:bg-[#0f1411] dark:text-emerald-300">
                 আনুমানিক মোট ভাড়া: {formatPrice(estTotal)}
               </div>
@@ -260,7 +283,7 @@ export function TransportView({
           </div>
           {estRoute && (
             <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 dark:text-slate-300">
-              <span>প্রতি জন: {formatPrice(estRoute.fare)}</span>
+              <span>প্রতি জন: {displayFare(estRoute.fare)}</span>
               {estRoute.duration && <span>সময়: {estRoute.duration}</span>}
               <span>দূরত্ব: {estRoute.distance}</span>
             </div>
@@ -307,7 +330,7 @@ export function TransportView({
                     </div>
                     <div className="text-right">
                       <span className="block text-sm font-bold text-forest dark:text-emerald-300">
-                        {route.fare?.trim() ? formatPrice(route.fare) : 'ভাড়া যাচাই করা হয়নি'}
+                        {displayFare(route.fare)}
                       </span>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500">{route.mode}</span>
                     </div>

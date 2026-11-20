@@ -99,22 +99,24 @@ export const noticeService = {
     return noticeNewsSeed
   },
 
-  /** Approved + visible + in-date records — the only list public pages read. */
+  /** Approved + visible records — shared by every public list. */
   getPublished(): AdminNotice[] {
-    const today = new Date().toISOString().slice(0, 10)
-    return noticeService.getAdminNotices().filter(
-      (notice) =>
-        notice.approved &&
-        notice.visible !== false &&
-        // An expired event stops being "আজকের নোটিশ" automatically. Expiry is
-        // inclusive (the event still shows on its last day).
-        (!notice.expiresAt || notice.expiresAt >= today),
-    )
+    return noticeService
+      .getAdminNotices()
+      .filter((notice) => notice.approved && notice.visible !== false)
   },
 
-  /** Homepage notice board. */
+  /**
+   * Homepage "আজকের নোটিশ" board: expired events drop out here automatically,
+   * but the same records stay in the /news archive so counts and deep links
+   * remain stable (expiry is inclusive of its last day).
+   */
   getPublishedNotices(): Notice[] {
-    return noticeService.getPublished().map(toNotice)
+    const today = new Date().toISOString().slice(0, 10)
+    return noticeService
+      .getPublished()
+      .filter((notice) => !notice.expiresAt || notice.expiresAt >= today)
+      .map(toNotice)
   },
 
   /** /news list — same items, same dates, same categories. */
