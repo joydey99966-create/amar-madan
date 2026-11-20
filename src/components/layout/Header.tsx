@@ -19,6 +19,7 @@ import {
 import { navItems } from '../../constants'
 import { NavTabId, ViewId } from '../../types'
 import { useTheme } from '../../context/ThemeContext'
+import { useLanguage } from '../../context/LanguageContext'
 import { useAdmin } from '../../context/AdminContext'
 import { displayOrderService } from '../../services/displayOrderService'
 import { useDataVersion } from '../../hooks/useDataVersion'
@@ -52,6 +53,7 @@ interface HeaderProps {
 
 export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderProps) {
   const { darkMode, toggleTheme } = useTheme()
+  const { language, toggleLanguage, t } = useLanguage()
   const { requestAdminAccess } = useAdmin()
   const orderVersion = useDataVersion('order')
   const orderedNav = useMemo(
@@ -86,11 +88,11 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
             <MapPin size={22} strokeWidth={2.2} />
           </div>
           <div className="min-w-0">
-            <div className="lg-heading whitespace-nowrap text-[19px] font-extrabold leading-6 text-[#111827] transition-colors dark:text-white sm:text-[21px]">
-              আমার মদন
+            <div className="lg-heading max-w-[110px] truncate whitespace-nowrap text-[19px] font-extrabold leading-6 text-[#111827] transition-colors dark:text-white sm:max-w-none sm:text-[21px]">
+              {t('app.name')}
             </div>
-            <div className="mt-0.5 hidden whitespace-nowrap text-xs font-medium text-slate-600/70 transition-colors dark:text-white/70 xs:block">
-              মদন উপজেলা সেবা ও তথ্য
+            <div className="mt-0.5 hidden max-w-[120px] truncate whitespace-nowrap text-xs font-medium text-slate-600/70 transition-colors dark:text-white/70 xs:block sm:max-w-none">
+              {t('app.tagline')}
             </div>
           </div>
         </a>
@@ -101,7 +103,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
               key={item.id}
               type="button"
               onClick={() => handleNavClick(item.id)}
-              title={item.label}
+              title={t(`nav.${item.id}`)}
               aria-current={activeNav === item.id ? 'page' : undefined}
               className={`tap-scale whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-500 lg:px-4 ${
                 activeNav === item.id
@@ -109,7 +111,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
                   : 'text-slate-700/80 hover:bg-white/15 hover:text-[#111827] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white'
               }`}
             >
-              {item.shortLabel ?? item.label}
+              {language === 'bn' ? (item.shortLabel ?? item.label) : t(`nav.${item.id}.short`)}
             </button>
           ))}
         </nav>
@@ -119,9 +121,9 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
           <button
             type="button"
             onClick={() => handleNavClick('profile')}
-            className="tap-scale flex h-10 w-10 items-center justify-center rounded-[14px] border border-white/25 bg-white/40 text-slate-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] transition-all duration-500 hover:bg-white/60 hover:text-[#111827] dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/20 dark:hover:text-white"
-            title="প্রোফাইল"
-            aria-label="প্রোফাইল"
+            className="tap-scale hidden h-10 w-10 items-center justify-center rounded-[14px] border border-white/25 bg-white/40 text-slate-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] transition-all duration-500 hover:bg-white/60 hover:text-[#111827] dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/20 dark:hover:text-white sm:flex"
+            title={t('header.profile')}
+            aria-label={t('header.profile')}
           >
             <UserRound size={19} />
           </button>
@@ -143,11 +145,22 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
             </div>
           </button>
 
+          {/* Bangla / English toggle — same glass pill treatment as the theme control. */}
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            aria-label={language === 'bn' ? 'Switch to English' : 'বাংলায় যান'}
+            title={language === 'bn' ? 'Switch to English' : 'বাংলায় যান'}
+            className="flex h-10 min-w-10 items-center justify-center rounded-[14px] border border-white/25 bg-white/40 px-2 text-xs font-bold text-slate-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)] transition-all duration-500 hover:bg-white/60 active:scale-90 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/20"
+          >
+            {language === 'bn' ? 'EN' : 'বাং'}
+          </button>
+
           <button
             onClick={onOpenRegisterModal}
-            className="tap-scale hidden whitespace-nowrap items-center gap-2 rounded-xl bg-forest px-4 py-2.5 text-sm font-semibold text-white shadow-forest transition-all duration-200 hover:bg-forest-dark hover:shadow-lg hover:-translate-y-0.5 sm:flex"
+            className="tap-scale hidden whitespace-nowrap items-center gap-2 rounded-xl bg-forest px-4 py-2.5 text-sm font-semibold text-white shadow-forest transition-all duration-200 hover:bg-forest-dark hover:shadow-lg hover:-translate-y-0.5 lg:flex"
           >
-            <Droplets size={16} className="text-rose-200" /> + রক্তদাতা হোন
+            <Droplets size={16} className="text-rose-200" /> + {t('header.register')}
           </button>
 
           <button
@@ -183,7 +196,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
             ))}
 
             <p className="mt-3 px-4 text-[11px] font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-              অন্যান্য সেবা
+              {t('header.otherServices')}
             </p>
             {orderedMore.map((item) => (
               <button
@@ -207,17 +220,27 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
               className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/5"
             >
               <Lock size={18} className="text-slate-400" />
-              অ্যাডমিন অ্যাক্সেস
+              {t('header.adminAccess')}
             </button>
 
             <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/10">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">থিম নির্বাচন:</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('header.theme')}</span>
               <button
                 onClick={toggleTheme}
                 className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
               >
                 {darkMode ? <Sun size={15} className="text-amber-300" /> : <Moon size={15} />}
-                {darkMode ? 'লাইট মোড' : 'ডার্ক মোড'}
+                {darkMode ? t('header.light') : t('header.dark')}
+              </button>
+            </div>
+
+            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/10">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('header.language')}:</span>
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
+              >
+                {language === 'bn' ? 'English' : 'বাংলা'}
               </button>
             </div>
 
@@ -228,7 +251,7 @@ export function Header({ activeNav, onNavigate, onOpenRegisterModal }: HeaderPro
               }}
               className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-forest px-4 py-3 font-semibold text-white shadow-forest"
             >
-              <Droplets size={17} className="text-rose-200" />+ রক্তদাতা হোন
+              <Droplets size={17} className="text-rose-200" />+ {t('header.register')}
             </button>
           </div>
         </div>

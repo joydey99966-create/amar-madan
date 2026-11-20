@@ -31,4 +31,6 @@ export const STORAGE_KEYS = {
   VETERINARY: 'amar-madan-veterinary',
   POSTAL: 'amar-madan-postal',
   JOURNALISTS: 'amar-madan-journalists',
+  LANGUAGE: 'amar-madan-language',
+  TRANSLATIONS: 'amar-madan-translations',
 } as const

@@ -21,6 +21,7 @@ import {
   Database as DataIcon,
   ListOrdered,
   Newspaper,
+  Languages,
 } from 'lucide-react'
 import {
   BloodDonor,
@@ -81,6 +82,7 @@ import { OrderAdminPanel } from './OrderAdminPanel'
 import { MANAGED_RECORD_TYPES, recordsService } from '../../../services/recordsService'
 import { JournalistAdminPanel } from './JournalistAdminPanel'
 import { HomeHotlineAdminPanel } from './HomeHotlineAdminPanel'
+import { TranslationAdminPanel } from './TranslationAdminPanel'
 
 export type AdminTab =
   | 'donors'
@@ -104,6 +106,7 @@ export type AdminTab =
   | 'news'
   | 'journalists'
   | 'homeHotlines'
+  | 'translations'
 
 export function AdminDashboard() {
   const { isDashboardOpen, closeDashboard, isAuthenticated } = useAdmin()
@@ -565,6 +568,7 @@ export function AdminDashboard() {
       count: launchChecklistService.get().items.filter((item) => !item.checked).length,
     },
     { id: 'dataops', label: 'ডেটা ও ব্যাকআপ', icon: DataIcon, count: 0 },
+    { id: 'translations', label: 'অনুবাদ', icon: Languages, count: 0 },
     { id: 'order', label: 'সেবার অর্ডার', icon: ListOrdered, count: 0 },
   ]
 
@@ -659,6 +663,7 @@ export function AdminDashboard() {
                   onVisibility={handleContactVisibility}
                 />
               )}
+              {activeTab === 'translations' && <TranslationAdminPanel />}
               {activeTab === 'donors' && (
                 <DonorAdminPanel
                   donors={donors}

@@ -2,6 +2,7 @@ import { ArrowUpRight, Bell } from 'lucide-react'
 import { Notice } from '../../../types'
 import { defaultNotices } from '../../../constants'
 import { formatBanglaToday, formatDate } from '../../../utils/formatters'
+import { useLanguage } from '../../../context/LanguageContext'
 
 interface NoticesSectionProps {
   notices?: Notice[]
@@ -11,6 +12,7 @@ interface NoticesSectionProps {
 
 export function NoticesSection({ notices = defaultNotices, onSelectNotice }: NoticesSectionProps) {
   const today = formatBanglaToday()
+  const { t } = useLanguage()
 
   return (
     <div className="rounded-[28px] border border-amber-200/70 bg-[#fffbef] p-4 dark:border-amber-900/35 dark:bg-[#272318] sm:p-8">
@@ -20,8 +22,8 @@ export function NoticesSection({ notices = defaultNotices, onSelectNotice }: Not
             <Bell size={22} />
           </span>
           <div>
-            <div className="section-eyebrow !text-amber-700 dark:!text-amber-300">আপডেট থাকুন</div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">আজকের নোটিশ</h2>
+            <div className="section-eyebrow !text-amber-700 dark:!text-amber-300">{t('notices.eyebrow')}</div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">{t('notices.title')}</h2>
           </div>
         </div>
         <span className="rounded-full bg-amber-100/80 px-3 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">

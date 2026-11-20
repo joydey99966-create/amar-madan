@@ -3,6 +3,7 @@ import { CornerDownLeft, Mic, Search, X } from 'lucide-react'
 import { SearchGroup, SearchHit } from '../../../utils/search'
 import { toBanglaNumber } from '../../../utils/formatters'
 import { storageService } from '../../../services/storageService'
+import { useLanguage } from '../../../context/LanguageContext'
 
 /** Recent searches, kept locally and admin-agnostic (a convenience, not data). */
 const RECENT_KEY = 'amar-madan-recent-searches'
@@ -44,11 +45,16 @@ export function SearchBar({
   value,
   onChange,
   onSubmit,
-  placeholder = 'কী খুঁজছেন? (যেমন: O+ রক্ত, ডাক্তার, আলুর দাম...)',
+  placeholder,
   resultCount,
   groups = [],
   onSelectHit,
 }: SearchBarProps) {
+  const { language } = useLanguage()
+  const resolvedPlaceholder = placeholder ??
+    (language === 'en'
+      ? 'What are you looking for? (e.g. O+ blood, doctor, potato price...)'
+      : 'কী খুঁজছেন? (যেমন: O+ রক্ত, ডাক্তার, আলুর দাম...)')
   const hasQuery = value.trim().length > 0
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
@@ -165,7 +171,7 @@ export function SearchBar({
           onFocus={() => setOpen(true)}
           onBlur={() => setOpen(false)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 transition-colors dark:text-white dark:placeholder:text-slate-500 sm:text-base"
         />
         {hasQuery && (

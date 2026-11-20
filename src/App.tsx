@@ -22,6 +22,7 @@ import { useAppRouter } from './hooks/useAppRouter'
 import { useDataVersion } from './hooks/useDataVersion'
 import { useDebouncedValue } from './hooks/useDebouncedValue'
 import { ThemeProvider } from './context/ThemeContext'
+import { LanguageProvider } from './context/LanguageContext'
 import { ToastProvider } from './context/ToastContext'
 import { AdminProvider } from './context/AdminContext'
 import { ReportProvider } from './context/ReportContext'
@@ -780,14 +781,16 @@ function SectionHeading({ view }: { view: ViewId }) {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <AdminProvider>
-          <ReportProvider>
-            <AppContent />
-          </ReportProvider>
-        </AdminProvider>
-      </ToastProvider>
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AdminProvider>
+            <ReportProvider>
+              <AppContent />
+            </ReportProvider>
+          </AdminProvider>
+        </ToastProvider>
+      </ThemeProvider>
+    </LanguageProvider>
   )
 }

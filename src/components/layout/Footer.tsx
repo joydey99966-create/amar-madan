@@ -5,6 +5,7 @@ import { displayOrderService } from '../../services/displayOrderService'
 import { useDataVersion } from '../../hooks/useDataVersion'
 import { emergencyVisual } from '../../constants'
 import { useEmergencyContacts } from '../../hooks/useEmergencyContacts'
+import { useLanguage } from '../../context/LanguageContext'
 import { ViewId } from '../../types'
 import { InstallAppButton } from '../common/InstallAppButton'
 
@@ -28,8 +29,26 @@ const quickLinks: { key: string; label: string; id: ViewId }[] = [
   { key: 'profile', label: 'প্রোফাইল', id: 'profile' },
 ]
 
+/** English labels for the footer quick links (Bangla stays in the constants). */
+const LINK_EN: Record<string, string> = {
+  home: 'Home',
+  services: 'All services',
+  blood: 'Blood donors',
+  hotline: 'Emergency',
+  market: 'Market prices',
+  fish: 'Haor fish',
+  transport: 'Transport',
+  lostfound: 'Lost & found',
+  news: 'News & press club',
+  jobs: 'Jobs & tuition',
+  citizens: 'Citizen services',
+  doctors: 'Directory',
+  profile: 'Profile',
+}
+
 export function Footer({ onNavigate }: FooterProps) {
   const { requestAdminAccess, isAuthenticated } = useAdmin()
+  const { language, t } = useLanguage()
   const contacts = useEmergencyContacts()
   // Homepage quick-dial shows only the admin-selected important hotlines (max 6).
   const homeHotlines = useMemo(
@@ -53,8 +72,8 @@ export function Footer({ onNavigate }: FooterProps) {
               <AlertTriangle size={18} />
             </span>
             <div>
-              <h3 className="text-sm font-bold text-rose-700 dark:text-rose-300">জরুরি হটলাইন</h3>
-              <p className="text-[11px] text-rose-600/80 dark:text-rose-400/80">যেকোনো সময় সরাসরি কল করুন</p>
+              <h3 className="text-sm font-bold text-rose-700 dark:text-rose-300">{t('footer.hotline')}</h3>
+              <p className="text-[11px] text-rose-600/80 dark:text-rose-400/80">{t('footer.hotlineNote')}</p>
             </div>
           </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -82,7 +101,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-forest/10 text-forest dark:bg-emerald-900/40 dark:text-emerald-300">
                 <Phone size={16} />
               </span>
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">যোগাযোগ</h3>
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">{t('footer.contact')}</h3>
             </div>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
@@ -106,7 +125,7 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
             </ul>
             <div className="pt-1">
-              <h4 className="mb-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">দ্রুত লিংক</h4>
+              <h4 className="mb-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">{t('footer.quickLinks')}</h4>
               <div className="flex flex-wrap gap-1.5">
                 {orderedQuick.map((link) => (
                   <button
@@ -115,7 +134,7 @@ export function Footer({ onNavigate }: FooterProps) {
                     onClick={() => onNavigate(link.id)}
                     className="min-h-[32px] rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition hover:border-forest hover:text-forest dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-emerald-300"
                   >
-                    {link.label}
+                    {language === 'en' ? (LINK_EN[link.key] ?? link.label) : link.label}
                   </button>
                 ))}
               </div>
@@ -128,11 +147,11 @@ export function Footer({ onNavigate }: FooterProps) {
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
                 <Heart size={16} />
               </span>
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">আমার মদন</h3>
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">{t('app.name')}</h3>
             </div>
             <p className="leading-5">
-              মদন উপজেলার স্থানীয় সেবা, তথ্য ও জরুরি যোগাযোগের একটি ডিজিটাল প্ল্যাটফর্ম।
-              স্থানীয় মানুষের জন্য, স্থানীয় মানুষের দ্বারা।
+              {t('footer.description')}
+              {language === 'bn' ? ' স্থানীয় মানুষের জন্য, স্থানীয় মানুষের দ্বারা।' : ' By locals, for locals.'}
             </p>
             <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
               <MapPin size={13} className="shrink-0" />

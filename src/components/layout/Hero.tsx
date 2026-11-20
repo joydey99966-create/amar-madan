@@ -1,7 +1,9 @@
 import { MapPin, ShieldCheck } from 'lucide-react'
 import { WeatherTicker } from './WeatherTicker'
+import { useLanguage } from '../../context/LanguageContext'
 
 export function Hero() {
+  const { t } = useLanguage()
   return (
     <section className="relative overflow-hidden rounded-[28px] border border-white/25 bg-gradient-to-br from-[#175c46]/90 via-[#14503d]/90 to-[#0e3a2b]/90 px-4 py-5 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150 sm:px-8 sm:py-9 lg:px-10">
       {/* Decorative Orbs with subtle glow */}
@@ -16,23 +18,23 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[#a7e5a0]" />
             </span>
-            আপনার এলাকার পাশে, সবসময়
+            {t('hero.badge')}
           </div>
 
           <h1 className="lg-heading text-[26px] font-extrabold leading-[1.2] text-white sm:text-3xl md:text-4xl lg:text-[40px]">
-            মদনের সব সেবা,{' '}<br className="sm:hidden" />এখন হাতের মুঠোয়
+            {t('hero.title')}
           </h1>
 
           <p className="mt-2 max-w-lg text-sm leading-6 text-white/70 sm:mt-2.5 sm:text-base">
-            জরুরি সহায়তা, রক্তদাতা, হাসপাতাল ও প্রয়োজনীয় সব নাগরিক সেবা খুঁজুন সহজেই।
+            {t('hero.description')}
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-emerald-100/90 sm:mt-6 sm:text-sm">
             <span className="inline-flex items-center gap-1.5 rounded-lg bg-black/15 px-2.5 py-1 backdrop-blur-sm">
-              <MapPin size={15} className="text-[#a7e5a0]" /> মদন, নেত্রকোণা
+              <MapPin size={15} className="text-[#a7e5a0]" /> {t('hero.location')}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-lg bg-black/15 px-2.5 py-1 backdrop-blur-sm">
-              <ShieldCheck size={15} className="text-[#a7e5a0]" /> ২৪/৭ সেবা ও তথ্য
+              <ShieldCheck size={15} className="text-[#a7e5a0]" /> {t('hero.available')}
             </span>
           </div>
         </div>

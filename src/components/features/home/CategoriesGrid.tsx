@@ -3,6 +3,7 @@ import { Category, ViewId } from '../../../types'
 import { CATEGORY_COUNT_UNITS, CATEGORY_VIEW_MAP } from '../../../constants'
 import { toBanglaNumber } from '../../../utils/formatters'
 import { formatCount } from '../../../utils/counts'
+import { useLanguage } from '../../../context/LanguageContext'
 
 interface CategoriesGridProps {
   categories: Category[]
@@ -22,22 +23,23 @@ export function CategoriesGrid({
   countUnits,
   onSelectCategory,
 }: CategoriesGridProps) {
+  const { language, t } = useLanguage()
   const getTargetView = (categoryId: string): ViewId => CATEGORY_VIEW_MAP[categoryId] ?? 'home'
 
   return (
     <section id="categories" className="scroll-mt-24 mt-6 sm:mt-9">
       <div className="mb-3 flex items-end justify-between sm:mb-4">
         <div>
-          <div className="section-eyebrow">আপনার প্রয়োজন</div>
+          <div className="section-eyebrow">{t('categories.eyebrow')}</div>
           <h2 className="mt-1 text-xl font-bold tracking-tight sm:text-2xl text-slate-900 dark:text-white">
-            সেবা খুঁজুন
+            {t('categories.title')}
           </h2>
         </div>
         <button
           onClick={() => onSelectCategory('services', 'all')}
           className="flex items-center gap-1 text-sm font-semibold text-forest hover:text-emerald-800 dark:text-emerald-300"
         >
-          সব সেবা <ChevronRight size={17} />
+          {t('categories.all')} <ChevronRight size={17} />
         </button>
       </div>
 
@@ -67,10 +69,10 @@ export function CategoriesGrid({
                 <category.icon size={26} color={category.color} strokeWidth={1.8} />
               </span>
               <span className="text-[14px] font-bold leading-5 text-slate-800 transition-colors group-hover:text-forest dark:text-slate-100 dark:group-hover:text-emerald-300">
-                {category.name}
+                {language === 'en' ? category.english : category.name}
               </span>
               <span className="mt-1 text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-500 dark:text-slate-500 dark:group-hover:text-slate-400">
-                {category.english}
+                {language === 'en' ? category.name : category.english}
               </span>
             </button>
           )
@@ -79,7 +81,7 @@ export function CategoriesGrid({
 
       {categories.length === 0 && (
         <div className="rounded-2xl border border-dashed border-slate-300 py-10 text-center text-sm text-slate-500 dark:border-white/10 dark:text-slate-400">
-          কোনো সেবা পাওয়া যায়নি। অন্য কিছু লিখে খুঁজুন।
+          {t('categories.empty')}
         </div>
       )}
     </section>

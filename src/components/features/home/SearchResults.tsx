@@ -2,6 +2,7 @@ import { ArrowRight, Compass, SearchX } from 'lucide-react'
 import { SearchGroup, SearchHit } from '../../../utils/search'
 import { ViewId } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
+import { useLanguage } from '../../../context/LanguageContext'
 
 interface SearchResultsProps {
   query: string
@@ -32,12 +33,13 @@ export function SearchResults({
   onClear,
   onSuggestQuery,
 }: SearchResultsProps) {
+  const { t } = useLanguage()
   return (
     <section className="mx-auto mt-3 max-w-4xl px-2 sm:mt-4 sm:px-4" aria-label="সার্চ ফলাফল">
       <div className="rounded-[24px] border border-slate-200/80 bg-white p-3.5 shadow-soft dark:border-white/10 dark:bg-[#182420] sm:p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="section-eyebrow">সার্চ ফলাফল</div>
+            <div className="section-eyebrow">{t('search.title')}</div>
             <h2 className="mt-1 text-base font-bold text-slate-900 dark:text-white sm:text-lg">
               “{query}” — {toBanglaNumber(total)} টি ফলাফল
             </h2>
@@ -47,7 +49,7 @@ export function SearchResults({
             onClick={onClear}
             className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-500 transition hover:border-forest hover:text-forest dark:border-white/10 dark:text-slate-400 dark:hover:text-emerald-300"
           >
-            মুছুন
+            {t('search.clear')}
           </button>
         </div>
 
@@ -70,7 +72,7 @@ export function SearchResults({
           <div className="mt-4 flex flex-col items-center justify-center py-4 text-center sm:mt-6 sm:py-6">
             <SearchX size={32} className="text-slate-300 dark:text-slate-600" />
             <p className="mt-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
-              কোনো ফলাফল পাওয়া যায়নি
+              {t('search.empty')}
             </p>
             <p className="mt-1 max-w-xs text-xs text-slate-500 dark:text-slate-400">
               রক্তের গ্রুপ (যেমন O+), ডাক্তারের নাম, পণ্যের নাম বা প্রতিষ্ঠানের নাম দিয়ে খুঁজুন।
@@ -103,7 +105,7 @@ export function SearchResults({
                     onClick={() => onSelectIntent({ view: group.view, tab: group.tab })}
                     className="flex items-center gap-1 text-[11px] font-semibold text-forest hover:underline dark:text-emerald-300"
                   >
-                    সব দেখুন <ArrowRight size={12} />
+                    {t('search.viewAll')} <ArrowRight size={12} />
                   </button>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
