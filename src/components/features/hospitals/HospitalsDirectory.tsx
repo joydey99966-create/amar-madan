@@ -7,6 +7,9 @@ import { ContactCard } from '../../common/ContactCard'
 import { useEmergencyContacts } from '../../../hooks/useEmergencyContacts'
 import { matchesSectionQuery, SECTION_SUGGESTIONS } from '../../../utils/sectionSearch'
 import { toBanglaNumber } from '../../../utils/formatters'
+import { Pagination } from '../../common/Pagination'
+
+const PAGE_SIZE = 20
 
 interface HospitalsDirectoryProps {
   hospitals: Hospital[]
@@ -18,9 +21,11 @@ interface HospitalsDirectoryProps {
 export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: HospitalsDirectoryProps) {
   const police = useEmergencyContacts().find((contact) => contact.category === 'police')
   const [searchTerm, setSearchTerm] = useState(query)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     setSearchTerm(query)
+    setPage(1)
   }, [query])
 
   const filtered = useMemo(() => {
@@ -34,6 +39,11 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
     )
   }, [hospitals, searchTerm])
 
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, pageCount)
+  const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  const resetPage = () => setPage(1)
+
   return (
     <section className="space-y-5">
       <div className="rounded-[24px] bg-white p-4 shadow-md dark:bg-[#1a2420]">
@@ -42,13 +52,13 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
           <input
             type="text"
             value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
+            onChange={(event) => { setSearchTerm(event.target.value); resetPage() }}
             placeholder="হাসপাতাল, ঠিকানা বা সেবা খুঁজুন..."
             className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
           />
           {searchTerm && (
             <button
-              onClick={() => setSearchTerm('')}
+              onClick={() => { setSearchTerm(''); resetPage() }}
               className="text-slate-400 hover:text-slate-700 dark:hover:text-white"
               aria-label="সার্চ মুছুন"
             >
@@ -63,7 +73,7 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
           </span>
           {searchTerm && (
             <button
-              onClick={() => setSearchTerm('')}
+              onClick={() => { setSearchTerm(''); resetPage() }}
               className="font-semibold text-forest hover:underline dark:text-emerald-300"
             >
               মুছে ফেলুন
@@ -78,6 +88,7 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
         label="হাসপাতাল"
         onClear={() => {
           setSearchTerm('')
+          resetPage()
           onClearQuery?.()
         }}
       />
@@ -86,13 +97,13 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
         <EmptyState
           title="কোনো হাসপাতাল পাওয়া যায়নি"
           description="অন্য নাম, এলাকা বা সেবার নাম লিখে আবার খুঁজুন।"
-          onReset={() => setSearchTerm('')}
+          onReset={() => { setSearchTerm(''); resetPage() }}
           suggestions={SECTION_SUGGESTIONS.hospitals}
-          onSuggest={setSearchTerm}
+          onSuggest={(value) => { setSearchTerm(value); resetPage() }}
         />
       ) : (
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
-          {filtered.map((hospital) => (
+          {paged.map((hospital) => (
             <ContactCard
               key={hospital.id}
               title={hospital.name}
@@ -138,6 +149,16 @@ export function HospitalsDirectory({ hospitals, query = '', onClearQuery }: Hosp
             />
           ))}
         </div>
+      )}
+
+      {filtered.length > PAGE_SIZE && (
+        <Pagination
+          total={filtered.length}
+          page={safePage}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+          label="হাসপাতাল"
+        />
       )}
 
       <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-xs text-blue-800 dark:border-blue-900/40 dark:bg-blue-900/20 dark:text-blue-200">

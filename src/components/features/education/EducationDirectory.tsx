@@ -5,7 +5,10 @@ import { CallButton, CopyPhoneButton, WhatsAppButton } from '../../common/Contac
 import { EmptyState } from '../../common/EmptyState'
 import { SearchFilterBanner } from '../../common/SearchFilterBanner'
 import { ListingMeta } from '../../common/ListingMeta'
+import { Pagination } from '../../common/Pagination'
 import { matchesSectionQuery, SECTION_SUGGESTIONS } from '../../../utils/sectionSearch'
+
+const PAGE_SIZE = 20
 
 interface EducationDirectoryProps {
   institutions: EducationInstitution[]
@@ -20,9 +23,11 @@ export function EducationDirectory({
   onClearQuery,
 }: EducationDirectoryProps) {
   const [searchTerm, setSearchTerm] = useState(query)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     setSearchTerm(query)
+    setPage(1)
   }, [query])
 
   const filtered = useMemo(() => {
@@ -37,6 +42,12 @@ export function EducationDirectory({
     )
   }, [institutions, searchTerm])
 
+  // 300 institutions render 20 at a time so mobile stays responsive.
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, pageCount)
+  const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  const resetPage = () => setPage(1)
+
   return (
     <section className="scroll-mt-24 space-y-6">
       <div className="sticky top-20 z-20 rounded-[24px] bg-white p-4 shadow-md dark:bg-[#1a2420] sm:p-6">
@@ -45,13 +56,13 @@ export function EducationDirectory({
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setSearchTerm(e.target.value); resetPage() }}
             placeholder="প্রতিষ্ঠান, ধরন বা এলাকা খুঁজুন..."
             className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
           />
           {searchTerm && (
             <button
-              onClick={() => setSearchTerm('')}
+              onClick={() => { setSearchTerm(''); resetPage() }}
               className="text-slate-400 hover:text-slate-700 dark:hover:text-white"
               aria-label="সার্চ মুছুন"
             >
@@ -63,7 +74,7 @@ export function EducationDirectory({
           <span>{filtered.length} টি প্রতিষ্ঠান পাওয়া গেছে</span>
           {searchTerm && (
             <button
-              onClick={() => setSearchTerm('')}
+              onClick={() => { setSearchTerm(''); resetPage() }}
               className="font-semibold text-forest hover:underline dark:text-emerald-300"
             >
               মুছে ফেলুন
@@ -78,6 +89,7 @@ export function EducationDirectory({
         label="শিক্ষা প্রতিষ্ঠান"
         onClear={() => {
           setSearchTerm('')
+          resetPage()
           onClearQuery?.()
         }}
       />
@@ -87,12 +99,12 @@ export function EducationDirectory({
           <EmptyState
             title="কোনো প্রতিষ্ঠান পাওয়া যায়নি"
             description="অন্য নাম বা এলাকা লিখে পুনরায় অনুসন্ধান করুন।"
-            onReset={() => setSearchTerm('')}
+            onReset={() => { setSearchTerm(''); resetPage() }}
             suggestions={SECTION_SUGGESTIONS.education}
-            onSuggest={setSearchTerm}
+            onSuggest={(value) => { setSearchTerm(value); resetPage() }}
           />
         ) : (
-          filtered.map((inst) => (
+          paged.map((inst) => (
             <div
               key={inst.id}
               className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-4 dark:border-white/[0.07] dark:bg-[#1a2420] sm:p-5"
@@ -138,6 +150,16 @@ export function EducationDirectory({
           ))
         )}
       </div>
+
+      {filtered.length > PAGE_SIZE && (
+        <Pagination
+          total={filtered.length}
+          page={safePage}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+          label="প্রতিষ্ঠান"
+        />
+      )}
     </section>
   )
 }

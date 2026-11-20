@@ -8,7 +8,10 @@ import { SearchFilterBanner } from '../../common/SearchFilterBanner'
 import { matchesSectionQuery, SECTION_SUGGESTIONS } from '../../../utils/sectionSearch'
 import { PillRow } from '../../common/PillRow'
 import { ListingMeta } from '../../common/ListingMeta'
+import { Pagination } from '../../common/Pagination'
 import { doctorSpecialty, doctorVisitsToday } from '../../../utils/doctorMeta'
+
+const PAGE_SIZE = 20
 
 interface DoctorsDirectoryProps {
   doctors: ServiceProvider[]
@@ -21,9 +24,11 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
   const [searchTerm, setSearchTerm] = useState(query)
   const [specialty, setSpecialty] = useState('সব')
   const [todayOnly, setTodayOnly] = useState(false)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     setSearchTerm(query)
+    setPage(1)
   }, [query])
 
   /** Chips come from the same field every card shows, so no specialty is hidden. */
@@ -48,6 +53,13 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
     })
   }, [doctors, searchTerm, specialty, todayOnly])
 
+  // Render only one page at a time so 135 doctors stay smooth on mobile.
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, pageCount)
+  const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+
+  const resetPage = () => setPage(1)
+
   return (
     <section className="scroll-mt-24 space-y-6">
       <div className="rounded-[24px] bg-white p-4 shadow-md dark:bg-[#1a2420] sm:p-5">
@@ -56,13 +68,13 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setSearchTerm(e.target.value); resetPage() }}
             placeholder="ডাক্তার, বিশেষত্ব, চেম্বার বা এলাকা খুঁজুন..."
             className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-500"
           />
           {searchTerm && (
             <button
-              onClick={() => setSearchTerm('')}
+              onClick={() => { setSearchTerm(''); resetPage() }}
               className="text-slate-400 hover:text-slate-700 dark:hover:text-white"
               aria-label="সার্চ মুছুন"
             >
@@ -73,7 +85,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
 
         <button
           type="button"
-          onClick={() => setTodayOnly((value) => !value)}
+          onClick={() => { setTodayOnly((value) => !value); resetPage() }}
           aria-pressed={todayOnly}
           className={`mt-3 flex w-full items-center justify-between rounded-xl border px-3 py-2 text-xs font-semibold transition ${
             todayOnly
@@ -91,7 +103,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
               key={item}
               type="button"
               data-active={specialty === item ? 'true' : 'false'}
-              onClick={() => setSpecialty(item)}
+              onClick={() => { setSpecialty(item); resetPage() }}
               aria-pressed={specialty === item}
               className={`min-h-[34px] shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold transition ${
                 specialty === item
@@ -112,6 +124,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
                 setSearchTerm('')
                 setSpecialty('সব')
                 setTodayOnly(false)
+                resetPage()
               }}
               className="font-semibold text-forest hover:underline dark:text-emerald-300"
             >
@@ -127,6 +140,7 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
         label="ডাক্তার"
         onClear={() => {
           setSearchTerm('')
+          resetPage()
           onClearQuery?.()
         }}
       />
@@ -140,12 +154,13 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
               setSearchTerm('')
               setSpecialty('সব')
               setTodayOnly(false)
+              resetPage()
             }}
             suggestions={SECTION_SUGGESTIONS.doctors}
-            onSuggest={setSearchTerm}
+            onSuggest={(value) => { setSearchTerm(value); resetPage() }}
           />
         ) : (
-          filtered.map((doctor) => (
+          paged.map((doctor) => (
             <div
               key={doctor.id}
               className="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-4 dark:border-white/[0.07] dark:bg-[#1a2420] sm:p-5"
@@ -222,6 +237,16 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
           ))
         )}
       </div>
+
+      {filtered.length > PAGE_SIZE && (
+        <Pagination
+          total={filtered.length}
+          page={safePage}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+          label="ডাক্তার"
+        />
+      )}
     </section>
   )
 }
