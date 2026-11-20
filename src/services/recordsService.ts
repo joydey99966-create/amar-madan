@@ -171,6 +171,17 @@ export const recordsService = {
     return read<T>(type)
   },
 
+  /** Move a record one step up (-1) or down (+1) in its list. */
+  move(type: ManagedRecordType, id: string, direction: -1 | 1): void {
+    const list = [...read<{ id: string }>(type)]
+    const index = list.findIndex((record) => record.id === id)
+    const target = index + direction
+    if (index < 0 || target < 0 || target >= list.length) return
+    const [item] = list.splice(index, 1)
+    list.splice(target, 0, item)
+    write(type, list)
+  },
+
   /** Only approved and visible records are shown on the public site. */
   published<T extends { approved?: boolean; visible?: boolean }>(
     type: ManagedRecordType,

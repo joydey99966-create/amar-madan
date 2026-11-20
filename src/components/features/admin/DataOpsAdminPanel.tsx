@@ -11,6 +11,8 @@ import { analyticsService } from '../../../services/analyticsService'
 import { storageService } from '../../../services/storageService'
 import { useToast } from '../../../context/ToastContext'
 import { toBanglaNumber } from '../../../utils/formatters'
+import { fromCsv, toCsv, downloadCsv } from '../../../services/csvService'
+import { notifyDataChanged } from '../../../services/dataEvents'
 import { isPlaceholderPhone, isPlaceholderEiin } from '../../../utils/placeholderData'
 import { STORAGE_KEYS } from '../../../constants'
 
@@ -22,6 +24,9 @@ export function DataOpsAdminPanel() {
   const [stats, setStats] = useState(() => analyticsService.get())
   const [snapshotStatus, setSnapshotStatus] = useState<SnapshotStatus>(() => getSnapshotStatus())
   const [syncing, setSyncing] = useState(false)
+  const [csvType, setCsvType] = useState<string>(STORAGE_KEYS.BLOOD_DONORS)
+  const [csvReport, setCsvReport] = useState('')
+  const csvRef = useRef<HTMLInputElement>(null)
 
   const refresh = () => {
     setRows(freshnessService.scan())
@@ -53,6 +58,46 @@ export function DataOpsAdminPanel() {
       addToast('ফাইলটি সঠিক স্ন্যাপশট নয়', 'error')
     }
     if (fileRef.current) fileRef.current.value = ''
+  }
+
+  const csvDatasets = Object.values(STORAGE_KEYS).filter((key) => key !== STORAGE_KEYS.ADMIN_AUTH && key !== STORAGE_KEYS.WEATHER_CACHE && key !== STORAGE_KEYS.THEME && key !== STORAGE_KEYS.LOST_FOUND_SETTINGS)
+
+  const csvLabel = (key: string) => key.replace('amar-madan-', '').replace(/-/g, ' ')
+
+  const handleCsvExport = () => {
+    const rows = storageService.get<Array<Record<string, unknown>>>(csvType, [])
+    if (!Array.isArray(rows) || rows.length === 0) {
+      addToast('এই তালিকায় রপ্তানি করার মতো তথ্য নেই', 'error')
+      return
+    }
+    downloadCsv(`${csvLabel(csvType)}.csv`, toCsv(rows))
+    addToast('CSV ডাউনলোড করা হয়েছে', 'success')
+  }
+
+  const handleCsvImport = async (file: File | undefined) => {
+    if (!file) return
+    try {
+      const { rows, errors } = fromCsv(await file.text())
+      if (rows.length === 0) {
+        setCsvReport(`কোনো সারি পড়া যায়নি। ${errors.slice(0, 3).join(' · ')}`)
+        addToast('CSV আমদানি ব্যর্থ', 'error')
+      } else {
+        const existing = storageService.get<Array<Record<string, unknown>>>(csvType, [])
+        const merged = [...rows.map((row, i) => ({
+          ...row,
+          id: String(row.id || `${csvType}-${Date.now()}-${i}`),
+        })), ...(Array.isArray(existing) ? existing : [])]
+        storageService.set(csvType, merged)
+        notifyDataChanged('all')
+        setCsvReport(`${toBanglaNumber(rows.length)} টি সারি যোগ করা হয়েছে${errors.length ? ` · ${toBanglaNumber(errors.length)} টি ত্রুটি: ${errors.slice(0, 2).join(', ')}` : ''}`)
+        addToast('CSV আমদানি সম্পন্ন', 'success')
+        refresh()
+      }
+    } catch {
+      setCsvReport('ফাইল পড়তে ব্যর্থ')
+      addToast('CSV আমদানি ব্যর্থ', 'error')
+    }
+    if (csvRef.current) csvRef.current.value = ''
   }
 
   const totalViews = Object.values(stats.views).reduce((a, b) => a + b, 0)
@@ -111,6 +156,48 @@ export function DataOpsAdminPanel() {
           {snapshotStatus.state === 'error' && snapshotStatus.attempts > 0 && (
             <> · {toBanglaNumber(snapshotStatus.attempts)} বার চেষ্টা করা হয়েছে</>
           )}
+        </div>
+
+        {/* CSV bulk import/export for every admin list. */}
+        <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#1a2420]">
+          <h3 className="text-sm font-bold text-slate-800 dark:text-white">বাল্ক CSV আমদানি / রপ্তানি</h3>
+          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+            যেকোনো তালিকা CSV তে নামান বা CSV ফাইল থেকে নতুন সারি যোগ করুন। প্রতিটি সারির ত্রুটি এখানেই দেখানো হয় — কোনো সারি নীরবভাবে বাদ দেওয়া হয় না।
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <select
+              value={csvType}
+              onChange={(e) => setCsvType(e.target.value)}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
+              aria-label="CSV তালিকা নির্বাচন"
+            >
+              {csvDatasets.map((key) => (
+                <option key={key} value={key}>{csvLabel(key)}</option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={handleCsvExport}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-forest hover:text-forest dark:border-white/10 dark:text-slate-300"
+            >
+              CSV রপ্তানি
+            </button>
+            <button
+              type="button"
+              onClick={() => csvRef.current?.click()}
+              className="rounded-lg border border-forest/30 bg-forest/5 px-3 py-2 text-xs font-semibold text-forest transition hover:bg-forest/10 dark:text-emerald-300"
+            >
+              CSV আমদানি
+            </button>
+            <input
+              ref={csvRef}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={(e) => handleCsvImport(e.target.files?.[0])}
+            />
+          </div>
+          {csvReport && <p className="mt-2 text-[11px] text-amber-700 dark:text-amber-300">{csvReport}</p>}
         </div>
 
         {placeholderFlags.length > 0 && (

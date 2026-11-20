@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { ArrowDown, ArrowUp } from 'lucide-react'
+import { toBanglaNumber } from '../../../utils/formatters'
 import { CheckCircle2, Edit2, Eye, EyeOff, Plus, Trash2, XCircle } from 'lucide-react'
 import {
   MANAGED_RECORD_TYPES,
@@ -355,9 +357,23 @@ export function RecordsAdminPanel({ onChange }: RecordsAdminPanelProps) {
   const [values, setValues] = useState<Record<string, string | boolean>>({})
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [sortKey, setSortKey] = useState('name')
 
   const spec = SPECS[type]
-  const records = recordsService.all<ManagedRecord>(type)
+  const allRecords = recordsService.all<ManagedRecord>(type)
+  const records = useMemo(() => {
+    const terms = search.toLocaleLowerCase('bn').split(/\s+/).filter(Boolean)
+    const filtered = terms.length
+      ? allRecords.filter((record) => terms.every((term) => JSON.stringify(record).toLocaleLowerCase('bn').includes(term)))
+      : [...allRecords]
+    if (sortKey === 'name') {
+      filtered.sort((a, b) => String(a.name ?? a.itemName ?? '').localeCompare(String(b.name ?? b.itemName ?? ''), 'bn'))
+    } else {
+      filtered.sort((a, b) => String(a[sortKey] ?? '').localeCompare(String(b[sortKey] ?? ''), 'bn'))
+    }
+    return filtered
+  }, [allRecords, search, sortKey])
 
   const resetForm = () => {
     setValues({})
@@ -428,6 +444,30 @@ export function RecordsAdminPanel({ onChange }: RecordsAdminPanelProps) {
             {info.label} ({recordsService.all<ManagedRecord>(info.id).length})
           </button>
         ))}
+      </div>
+
+      {/* In-panel search, sort and reorder — works for 300+ records. */}
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-[#1a2420]">
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="এই তালিকায় খুঁজুন..."
+          className="min-w-[180px] flex-1 rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
+          aria-label="তালিকায় খুঁজুন"
+        />
+        <select
+          value={sortKey}
+          onChange={(e) => setSortKey(e.target.value)}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-white/10 dark:bg-[#0f1411] dark:text-white"
+          aria-label="সাজান"
+        >
+          <option value="name">নাম অনুযায়ী</option>
+          <option value="date">তারিখ অনুযায়ী</option>
+          <option value="price">দাম অনুযায়ী</option>
+          <option value="lastUpdated">নতুন আগে</option>
+        </select>
+        <span className="text-[11px] text-slate-500 dark:text-slate-400">{toBanglaNumber(records.length)} টি দেখানো হচ্ছে</span>
       </div>
 
       {showForm && (
@@ -529,6 +569,22 @@ export function RecordsAdminPanel({ onChange }: RecordsAdminPanelProps) {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1">
+                <button
+                  onClick={() => { recordsService.move(type, record.id, -1); onChange() }}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                  title="উপরে"
+                  aria-label="উপরে সরান"
+                >
+                  <ArrowUp size={14} />
+                </button>
+                <button
+                  onClick={() => { recordsService.move(type, record.id, 1); onChange() }}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                  title="নিচে"
+                  aria-label="নিচে সরান"
+                >
+                  <ArrowDown size={14} />
+                </button>
                 <button
                   onClick={() => {
                     recordsService.update(type, record.id, { approved: record.approved === false })

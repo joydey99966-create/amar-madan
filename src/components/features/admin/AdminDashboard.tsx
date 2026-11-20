@@ -77,6 +77,7 @@ import { LaunchChecklistAdminPanel } from './LaunchChecklistAdminPanel'
 import { launchChecklistService } from '../../../services/launchChecklistService'
 import { DataOpsAdminPanel } from './DataOpsAdminPanel'
 import { OrderAdminPanel } from './OrderAdminPanel'
+import { MANAGED_RECORD_TYPES, recordsService } from '../../../services/recordsService'
 
 export type AdminTab =
   | 'donors'
@@ -507,7 +508,7 @@ export function AdminDashboard() {
       id: 'jobs',
       label: 'চাকরি পোস্ট',
       icon: Briefcase,
-      count: jobPostings.filter((posting) => posting.isApproved === false && !posting.isRejected).length,
+      count: jobPostings.length,
     },
     {
       id: 'reports',
@@ -526,9 +527,14 @@ export function AdminDashboard() {
       id: 'emergency',
       label: 'জরুরি নম্বর',
       icon: Siren,
-      count: contacts.filter((contact) => !contact.approved).length,
+      count: contacts.length,
     },
-    { id: 'records', label: 'সেবার তথ্য', icon: Database, count: 0 },
+    {
+      id: 'records',
+      label: 'সেবার তথ্য',
+      icon: Database,
+      count: MANAGED_RECORD_TYPES.reduce((sum, type) => sum + recordsService.all(type.id).length, 0),
+    },
     {
       id: 'weather',
       label: 'আবহাওয়া',
