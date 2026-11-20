@@ -33,6 +33,13 @@ export type ManagedRecordType =
   | 'routes'
   | 'citizens'
   | 'machinery'
+  | 'banks'
+  | 'pharmacies'
+  | 'government'
+  | 'mechanics'
+  | 'agriculture'
+  | 'veterinary'
+  | 'postal'
 
 export interface ManagedRecordTypeInfo {
   id: ManagedRecordType
@@ -86,6 +93,16 @@ export const MANAGED_RECORD_TYPES: ManagedRecordTypeInfo[] = [
     storageKey: STORAGE_KEYS.MACHINERY,
     seed: initialAgroMachineryItems,
   },
+  // New community sections — seeded EMPTY. The owner loads real records via
+  // the admin bulk import; until then the public page shows an honest empty
+  // state. No placeholder entries are invented.
+  { id: 'banks', label: 'ব্যাংক ও এটিএম', unit: 'টি', storageKey: STORAGE_KEYS.BANKS, seed: [] },
+  { id: 'pharmacies', label: 'ফার্মাসি', unit: 'টি', storageKey: STORAGE_KEYS.PHARMACIES, seed: [] },
+  { id: 'government', label: 'সরকারি অফিস', unit: 'টি', storageKey: STORAGE_KEYS.GOVERNMENT, seed: [] },
+  { id: 'mechanics', label: 'মিস্ত্রি ও মেরামত', unit: 'জন', storageKey: STORAGE_KEYS.MECHANICS, seed: [] },
+  { id: 'agriculture', label: 'কৃষি কর্মকর্তা', unit: 'জন', storageKey: STORAGE_KEYS.AGRICULTURE, seed: [] },
+  { id: 'veterinary', label: 'ভেটেরিনারি', unit: 'টি', storageKey: STORAGE_KEYS.VETERINARY, seed: [] },
+  { id: 'postal', label: 'পোস্টাল ও কুরিয়ার', unit: 'টি', storageKey: STORAGE_KEYS.POSTAL, seed: [] },
 ]
 
 function typeInfo(type: ManagedRecordType): ManagedRecordTypeInfo {

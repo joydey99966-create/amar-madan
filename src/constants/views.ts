@@ -20,6 +20,13 @@ export const VIEW_IDS: ViewId[] = [
   'news',
   'fish',
   'citizens',
+  'banks',
+  'pharmacies',
+  'government',
+  'mechanics',
+  'agriculture',
+  'veterinary',
+  'postal',
 ]
 
 export const VIEW_META: Record<ViewId, { eyebrow: string; title: string; description: string }> = {
@@ -78,6 +85,41 @@ export const VIEW_META: Record<ViewId, { eyebrow: string; title: string; descrip
     title: 'হাওরের মাছ বাজার',
     description: 'নীল হাওরের মাছের দৈনিক দর এবং মাছ আড়তের তালিকা।',
   },
+  banks: {
+    eyebrow: 'ব্যাংক ও এটিএম',
+    title: 'ব্যাংক, এটিএম ও আর্থিক সেবা',
+    description: 'মদন উপজেলার ব্যাংক শাখা ও এটিএম তথ্য — যখন প্রকাশিত হবে তখন দেখা যাবে।',
+  },
+  pharmacies: {
+    eyebrow: 'ফার্মাসি',
+    title: 'ফার্মাসি ও ওষুধের দোকান',
+    description: 'স্থানীয় ফার্মাসি ও ওষুধের দোকানের তালিকা।',
+  },
+  government: {
+    eyebrow: 'সরকারি অফিস',
+    title: 'সরকারি অফিস',
+    description: 'ইউএনও সহ উপজেলার সরকারি অফিস ও দপ্তরের তালিকা।',
+  },
+  mechanics: {
+    eyebrow: 'মিস্ত্রি ও মেরামত',
+    title: 'মিস্ত্রি ও মেরামত সেবা',
+    description: 'ইলেকট্রিক, প্লাম্বার, মেকানিকসহ স্থানীয় মিস্ত্রির তালিকা।',
+  },
+  agriculture: {
+    eyebrow: 'কৃষি কর্মকর্তা',
+    title: 'কৃষি কর্মকর্তা ও সেবা',
+    description: 'কৃষি সম্প্রসারণ কর্মকর্তা ও সংশ্লিষ্ট সেবার তালিকা।',
+  },
+  veterinary: {
+    eyebrow: 'ভেটেরিনারি',
+    title: 'ভেটেরিনারি ও পশু স্বাস্থ্য',
+    description: 'পশু চিকিৎসা ও ভেটেরিনারি সেবার তালিকা।',
+  },
+  postal: {
+    eyebrow: 'পোস্টাল ও কুরিয়ার',
+    title: 'পোস্টাল ও কুরিয়ার',
+    description: 'পোস্ট অফিস ও কুরিয়ার সেবার তালিকা।',
+  },
   citizens: {
     eyebrow: 'সরকারি সেবা',
     title: 'নাগরিক সেবা',
@@ -122,6 +164,13 @@ export const NAV_TAB_BY_VIEW: Record<ViewId, NavTabId | null> = {
   news: null,
   fish: null,
   citizens: null,
+  banks: null,
+  pharmacies: null,
+  government: null,
+  mechanics: null,
+  agriculture: null,
+  veterinary: null,
+  postal: null,
 }
 
 /** Unit shown after the live count badge of a category tile. */

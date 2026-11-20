@@ -18,6 +18,13 @@ export type ViewId =
   | 'news'
   | 'fish'
   | 'citizens'
+  | 'banks'
+  | 'pharmacies'
+  | 'government'
+  | 'mechanics'
+  | 'agriculture'
+  | 'veterinary'
+  | 'postal'
 
 export interface NavItem {
   id: NavTabId

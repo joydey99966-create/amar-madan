@@ -71,6 +71,7 @@ import {
 import { buildSectionCounts, totalsBySection } from './utils/counts'
 import { scrollToTop } from './utils/scroll'
 import { formatPrice } from './utils/formatters'
+import { CommunityDirectoryView } from './components/features/community/CommunityDirectoryView'
 import { analyticsService } from './services/analyticsService'
 import { displayOrderService } from './services/displayOrderService'
 
@@ -697,6 +698,19 @@ function AppContent() {
                     onBack={backHome}
                     query={route.query}
                     onClearQuery={clearSearch}
+                  />
+                </div>
+              )}
+
+              {(activeView === 'banks' || activeView === 'pharmacies' || activeView === 'government' ||
+                activeView === 'mechanics' || activeView === 'agriculture' ||
+                activeView === 'veterinary' || activeView === 'postal') && (
+                <div className="mt-6 sm:mt-9">
+                  <SectionHeading view={activeView} />
+                  <CommunityDirectoryView
+                    type={activeView}
+                    title={VIEW_META[activeView].title}
+                    description={VIEW_META[activeView].description}
                   />
                 </div>
               )}

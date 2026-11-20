@@ -5,7 +5,8 @@ import { useEmergencyContacts } from '../../../hooks/useEmergencyContacts'
 import { displayOrderService } from '../../../services/displayOrderService'
 import { useDataVersion } from '../../../hooks/useDataVersion'
 import { cleanPhone } from '../../../utils/formatters'
-import { CATEGORY_COUNT_UNITS, CATEGORY_VIEW_MAP } from '../../../constants'
+import { CATEGORY_COUNT_UNITS, CATEGORY_VIEW_MAP, VIEW_META } from '../../../constants'
+import { ManagedRecordType, recordsService } from '../../../services/recordsService'
 import { ViewId } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
 import { formatCount } from '../../../utils/counts'
@@ -33,6 +34,13 @@ export function AllServicesView({ counts, countDetails, countUnits, onSelectView
     [orderVersion],
   )
   const quickDial = contacts.filter((c) => c.category === 'police' || c.category === 'fire' || c.category === 'ambulance' || c.category === 'women')
+  const recordVersion = useDataVersion('records')
+  const newSections: ViewId[] = ['banks', 'pharmacies', 'government', 'mechanics', 'agriculture', 'veterinary', 'postal']
+  const newSectionCounts = useMemo(
+    () => Object.fromEntries(newSections.map((id) => [id, recordsService.all(id as ManagedRecordType).length])),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [recordVersion],
+  )
 
   return (
     <section className="space-y-4">
@@ -60,6 +68,26 @@ export function AllServicesView({ counts, countDetails, countUnits, onSelectView
 
       <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-600 shadow-soft-sm dark:border-white/10 dark:bg-[#182420] dark:text-slate-300">
         ℹ️ মোট {toBanglaNumber(ordered.length)} টি সেবা — প্রতিটির সাথে বর্তমান তথ্যের সংখ্যা দেওয়া হয়েছে।
+      </div>
+
+      {/* Additional community directories — empty until the owner publishes data. */}
+      <div>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-white">অন্যান্য সেবা ও ডিরেক্টরি</h3>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {newSections.map((id) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onSelectView(id)}
+              className="tap-scale flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-left text-xs font-semibold text-slate-700 transition hover:border-forest/40 dark:border-white/10 dark:bg-[#182420] dark:text-slate-200"
+            >
+              <span>{VIEW_META[id].title}</span>
+              <span className="shrink-0 rounded-full bg-forest/10 px-2 py-0.5 text-[10px] text-forest dark:bg-emerald-900/30 dark:text-emerald-300">
+                {toBanglaNumber(newSectionCounts[id] ?? 0)}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">

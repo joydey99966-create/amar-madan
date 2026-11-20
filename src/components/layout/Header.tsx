@@ -33,6 +33,13 @@ const MORE_SECTIONS: Array<{ key: string; id: ViewId; label: string; icon: typeo
   { key: 'lostfound', id: 'lostfound', label: 'হারানো ও প্রাপ্তি', icon: Search },
   { key: 'transport', id: 'transport', label: 'যাতায়াত', icon: TramFront },
   { key: 'services', id: 'services', label: 'সব সেবা', icon: LayoutGrid },
+  { key: 'banks', id: 'banks', label: 'ব্যাংক ও এটিএম', icon: LayoutGrid },
+  { key: 'pharmacies', id: 'pharmacies', label: 'ফার্মাসি', icon: LayoutGrid },
+  { key: 'government', id: 'government', label: 'সরকারি অফিস', icon: LayoutGrid },
+  { key: 'mechanics', id: 'mechanics', label: 'মিস্ত্রি ও মেরামত', icon: LayoutGrid },
+  { key: 'agriculture', id: 'agriculture', label: 'কৃষি কর্মকর্তা', icon: LayoutGrid },
+  { key: 'veterinary', id: 'veterinary', label: 'ভেটেরিনারি', icon: LayoutGrid },
+  { key: 'postal', id: 'postal', label: 'পোস্টাল ও কুরিয়ার', icon: LayoutGrid },
   { key: 'profile', id: 'profile', label: 'প্রোফাইল', icon: UserRound },
 ]
 

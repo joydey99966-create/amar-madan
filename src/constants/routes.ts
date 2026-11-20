@@ -39,6 +39,13 @@ export const ROUTE_PATHS: Record<ViewId, string> = {
   news: '/news',
   fish: '/haoar-mach',
   citizens: '/nagorik-seba',
+  banks: '/banks',
+  pharmacies: '/pharmacies',
+  government: '/government',
+  mechanics: '/mechanics',
+  agriculture: '/agriculture',
+  veterinary: '/veterinary',
+  postal: '/postal',
 }
 
 /** Reverse lookup used to resolve a URL back to a section. */
@@ -103,6 +110,34 @@ export const ROUTE_META: Record<ViewId, { title: string; description: string }> 
   fish: {
     title: 'হাওরের মাছ বাজার — আমার মদন',
     description: 'নীল হাওরের মাছের দৈনিক দর ও মাছ আড়তের তালিকা।',
+  },
+  banks: {
+    title: 'ব্যাংক ও এটিএম — আমার মদন',
+    description: 'মদন উপজেলার ব্যাংক শাখা ও এটিএম তথ্য।'
+  },
+  pharmacies: {
+    title: 'ফার্মাসি — আমার মদন',
+    description: 'স্থানীয় ফার্মাসি ও ওষুধের দোকান।'
+  },
+  government: {
+    title: 'সরকারি অফিস — আমার মদন',
+    description: 'ইউএনও সহ উপজেলার সরকারি অফিস।'
+  },
+  mechanics: {
+    title: 'মিস্ত্রি ও মেরামত — আমার মদন',
+    description: 'স্থানীয় মিস্ত্রি ও মেরামত সেবা।'
+  },
+  agriculture: {
+    title: 'কৃষি কর্মকর্তা — আমার মদন',
+    description: 'কৃষি সম্প্রসারণ কর্মকর্তা ও সেবা।'
+  },
+  veterinary: {
+    title: 'ভেটেরিনারি — আমার মদন',
+    description: 'পশু চিকিৎসা ও ভেটেরিনারি সেবা।'
+  },
+  postal: {
+    title: 'পোস্টাল ও কুরিয়ার — আমার মদন',
+    description: 'পোস্ট অফিস ও কুরিয়ার সেবা।'
   },
   citizens: {
     title: 'নাগরিক সেবা — আমার মদন',
