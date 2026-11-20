@@ -487,7 +487,7 @@ function AppContent() {
     route.tab === 'dealers' || route.tab === 'machinery' ? (route.tab as AgroTab) : 'prices'
 
   return (
-    <div id="home" className="min-h-screen bg-[#f7f9f8] text-slate-800 transition-colors dark:bg-[#101816] dark:text-slate-100">
+    <div id="home" className="lg-ambient lg-font min-h-screen text-[#111827] transition-colors dark:text-white">
       <ErrorBoundary onBack={backHome} backLabel="হোমে ফিরে যান">
         <Header
           activeNav={activeNav}

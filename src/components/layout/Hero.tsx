@@ -3,7 +3,7 @@ import { WeatherTicker } from './WeatherTicker'
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#175c46] via-[#14503d] to-[#0e3a2b] px-4 py-5 text-white shadow-xl shadow-emerald-950/20 sm:px-8 sm:py-9 lg:px-10">
+    <section className="relative overflow-hidden rounded-[28px] border border-white/25 bg-gradient-to-br from-[#175c46]/90 via-[#14503d]/90 to-[#0e3a2b]/90 px-4 py-5 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.25)] backdrop-blur-2xl backdrop-saturate-150 sm:px-8 sm:py-9 lg:px-10">
       {/* Decorative Orbs with subtle glow */}
       <div className="hero-orb absolute -right-10 -top-20 h-72 w-72 rounded-full border-[35px] border-white/[0.05] blur-[1px]" />
       <div className="hero-orb absolute -bottom-28 right-40 h-64 w-64 rounded-full bg-emerald-400/[0.07] blur-2xl" />
@@ -19,11 +19,11 @@ export function Hero() {
             আপনার এলাকার পাশে, সবসময়
           </div>
 
-          <h1 className="text-[26px] font-bold leading-[1.25] tracking-tight sm:text-3xl md:text-4xl lg:text-[40px]">
+          <h1 className="lg-heading text-[26px] font-extrabold leading-[1.2] text-white sm:text-3xl md:text-4xl lg:text-[40px]">
             মদনের সব সেবা,{' '}<br className="sm:hidden" />এখন হাতের মুঠোয়
           </h1>
 
-          <p className="mt-2 max-w-lg text-sm leading-6 text-emerald-50/85 sm:mt-2.5 sm:text-base">
+          <p className="mt-2 max-w-lg text-sm leading-6 text-white/70 sm:mt-2.5 sm:text-base">
             জরুরি সহায়তা, রক্তদাতা, হাসপাতাল ও প্রয়োজনীয় সব নাগরিক সেবা খুঁজুন সহজেই।
           </p>
 
