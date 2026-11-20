@@ -4,6 +4,7 @@ import { BloodDonor } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
 import { getDonorStatus } from '../../../services/bloodDonorService'
 import { donorSettingsService, DonorSettings } from '../../../services/donorSettingsService'
+import { publishBlockers } from '../../../utils/placeholderData'
 
 interface DonorAdminPanelProps {
   donors: BloodDonor[]
@@ -59,6 +60,11 @@ export function DonorAdminPanel({
     e.preventDefault()
     if (!form.name.trim() || !form.phone.trim()) {
       setError('নাম ও ফোন নম্বর আবশ্যক')
+      return
+    }
+    const blockers = publishBlockers(form)
+    if (blockers.length) {
+      setError(`প্রকাশ ব্লক করা হয়েছে — ${blockers.join(' · ')}`)
       return
     }
     const payload = {

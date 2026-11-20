@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CheckCircle, Trash2, Eye, Plus } from 'lucide-react'
 import { LostFoundItem } from '../../../types'
 import { lostFoundSettingsService, LostFoundSettings } from '../../../services/lostFoundSettingsService'
+import { publishBlockers } from '../../../utils/placeholderData'
 
 interface LostFoundAdminPanelProps {
   items: LostFoundItem[]
@@ -18,6 +19,7 @@ export function LostFoundAdminPanel({ items, onDelete, onApprove, onAdd }: LostF
   const [date, setDate] = useState('')
   const [description, setDescription] = useState('')
   const [phone, setPhone] = useState('')
+  const [error, setError] = useState('')
   const [settings, setSettings] = useState<LostFoundSettings>(() => lostFoundSettingsService.getSettings())
 
   const handleMaskMode = (mode: LostFoundSettings['nidMaskMode']) => {
@@ -27,6 +29,12 @@ export function LostFoundAdminPanel({ items, onDelete, onApprove, onAdd }: LostF
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!itemName.trim() || !phone.trim()) return
+    const blockers = publishBlockers({ phone: phone.trim() })
+    if (blockers.length) {
+      setError(`প্রকাশ ব্লক করা হয়েছে — ${blockers.join(' · ')}`)
+      return
+    }
+    setError('')
     onAdd({
       type,
       itemName: itemName.trim(),
@@ -69,6 +77,12 @@ export function LostFoundAdminPanel({ items, onDelete, onApprove, onAdd }: LostF
           <option value="last4">শেষ ৪ ডিজিট মাস্ক করে দেখান</option>
         </select>
       </div>
+
+      {error && (
+        <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-300">
+          {error}
+        </p>
+      )}
 
       {showAddForm && (
         <form onSubmit={handleAddSubmit} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#1a2420]">

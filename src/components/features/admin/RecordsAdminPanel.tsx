@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { toBanglaNumber } from '../../../utils/formatters'
+import { publishBlockers } from '../../../utils/placeholderData'
 import { CheckCircle2, Edit2, Eye, EyeOff, Plus, Trash2, XCircle } from 'lucide-react'
 import {
   MANAGED_RECORD_TYPES,
@@ -389,6 +390,11 @@ export function RecordsAdminPanel({ onChange }: RecordsAdminPanelProps) {
     event.preventDefault()
     if (!String(values.name ?? values.itemName ?? '').trim()) {
       setError('নাম লিখে দিন')
+      return
+    }
+    const blockers = publishBlockers(values)
+    if (blockers.length) {
+      setError(`প্রকাশ ব্লক করা হয়েছে — ${blockers.join(' · ')}`)
       return
     }
     const record = spec.build(values)

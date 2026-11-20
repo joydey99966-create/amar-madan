@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check, CheckCircle2, Edit2, Eye, EyeOff, Phone, Plus, Trash2, XCircle } from 'lucide-react'
 import { EmergencyContact } from '../../../types'
 import { toBanglaNumber } from '../../../utils/formatters'
+import { publishBlockers } from '../../../utils/placeholderData'
 import { EMERGENCY_CATEGORIES, emergencyVisual } from '../../../constants'
 
 interface EmergencyContactsAdminPanelProps {
@@ -57,6 +58,11 @@ export function EmergencyContactsAdminPanel({
     }
     if (!form.phone.trim()) {
       setError('ফোন নম্বর দিন')
+      return
+    }
+    const blockers = publishBlockers({ phone: form.phone, dial: form.dial || form.phone })
+    if (blockers.length) {
+      setError(`প্রকাশ ব্লক করা হয়েছে — ${blockers.join(' · ')}`)
       return
     }
     const payload = {

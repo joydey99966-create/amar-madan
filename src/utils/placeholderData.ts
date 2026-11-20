@@ -33,12 +33,17 @@ function sequential(value: string): boolean {
 export function isPlaceholderPhone(phone: string | null | undefined): boolean {
   const d = digits(phone)
   if (!d) return true
-  if (d.length < 10 || d.length > 13) return true
-  if (allSame(d) || sequential(d)) return true
-  // Known demo families: 0170-000000, 014xxxxxxxxxxxx sequential tails, etc.
-  if (/^1700000000/.test(d)) return true
-  if (/^(17|15|16|18|19)\d{8}$/.test(d)) {
-    const tail = d.slice(-8)
+  if (d.length < 3 || d.length > 13) return true
+  // Short official hotlines (999, 102, 109, 333, 16899 …) are valid — do not
+  // flag them as placeholders just for being short.
+  if (d.length <= 6) return /^0+$/.test(d)
+  // Bangladeshi mobiles are often stored with a leading 0 (018…, 017…).
+  const local = d.startsWith('0') && d.length > 6 ? d.slice(1) : d
+  if (allSame(local) || sequential(local)) return true
+  // Known demo families: 0170-000000, 01411111111, 01511111111, 01811111111, 01900000000 …
+  if (/^1700000/.test(local)) return true
+  if (/^(14|17|15|16|18|19)\d{8}$/.test(local)) {
+    const tail = local.slice(-8)
     if (allSame(tail) || sequential(tail)) return true
     // Repeated blocks like 11111111 / 22222222 / 44444444.
     if (/^(\d)\1{7}$/.test(tail)) return true
@@ -61,3 +66,24 @@ export function containsFullNid(value: string | null | undefined): boolean {
 }
 
 export const UNVERIFIED = 'তথ্য যাচাই চলছে'
+
+/**
+ * Admin-side publish guard. Returns the exact reasons why a record must not be
+ * published as-is. Empty/missing contacts are allowed (shown as "তথ্য যাচাই
+ * চলছে" publicly) — only fake-looking values are blocked.
+ */
+export function publishBlockers(record: Record<string, unknown>): string[] {
+  const reasons: string[] = []
+  const phones = ['phone', 'contact', 'dial', 'mobile', 'telephone']
+  for (const key of phones) {
+    const value = record[key]
+    if (value != null && String(value).trim() && isPlaceholderPhone(String(value))) {
+      reasons.push(`${key}: প্লেসহোল্ডার নম্বর — প্রকাশের আগে বাস্তব নম্বর দিন`)
+    }
+  }
+  const eiin = record.eiin
+  if (eiin != null && String(eiin).trim() && isPlaceholderEiin(String(eiin))) {
+    reasons.push('EIIN: ক্রমিক/পুনরাবৃত্ত সংখ্যা — যাচাই করুন')
+  }
+  return reasons
+}

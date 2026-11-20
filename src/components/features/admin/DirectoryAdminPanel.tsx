@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { publishBlockers } from '../../../utils/placeholderData'
 import { Plus, Trash2, Check, Eye, EyeOff, Pencil, X } from 'lucide-react'
 import { Doctor, Ambulance, ServiceProvider } from '../../../types'
 import { DOCTOR_SPECIALTIES, doctorSpecialty } from '../../../utils/doctorMeta'
@@ -41,10 +42,17 @@ export function DirectoryAdminPanel({
   const [newSpecialty, setNewSpecialty] = useState<string>(DOCTOR_SPECIALTIES[0])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draft, setDraft] = useState<Partial<Doctor>>({})
+  const [error, setError] = useState('')
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim() || !phone.trim()) return
+    const blockers = publishBlockers({ phone: phone.trim() })
+    if (blockers.length) {
+      setError(`প্রকাশ ব্লক করা হয়েছে — ${blockers.join(' · ')}`)
+      return
+    }
+    setError('')
     if (subTab === 'doctors') {
       onAddDoctor({
         name: name.trim(),
@@ -141,6 +149,12 @@ export function DirectoryAdminPanel({
           </button>
         </div>
       </div>
+
+      {error && (
+        <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-300">
+          {error}
+        </p>
+      )}
 
       {showAddForm && (
         <form onSubmit={handleAddSubmit} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#1a2420]">
