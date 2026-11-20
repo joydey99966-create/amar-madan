@@ -20,19 +20,24 @@ function restoreDeepLink() {
 }
 restoreDeepLink()
 
-// Render immediately — never block first paint on a network fetch.
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>,
-)
-
-// Seed an empty browser from a published snapshot in the background, so
-// admin-published data reaches every visitor on a static host without a server.
-// applyPublished() notifies listeners if it seeds anything.
-dataSnapshotService.applyPublished()
+/**
+ * Seed the published snapshot BEFORE the first render.
+ *
+ * The data services write their bundled demo seed into localStorage on first
+ * read. If we render first and fetch the snapshot in the background, those
+ * seeds occupy every key before applyPublished() can run, so admin-published
+ * data would never reach a fresh visitor. The snapshot is a small same-origin
+ * file, so awaiting it here is quick and guarantees the real data wins.
+ */
+dataSnapshotService.applyPublished().finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </React.StrictMode>,
+  )
+})
 
 // Register Service Worker for PWA (base-aware for GitHub Pages).
 if ('serviceWorker' in navigator) {
