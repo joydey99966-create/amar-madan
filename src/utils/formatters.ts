@@ -71,8 +71,8 @@ export function formatBanglaDate(value: string | Date | null | undefined): strin
   return formatDate(value)
 }
 
-export function cleanPhone(phone: string): string {
-  return phone.replace(/[^0-9+]/g, '')
+export function cleanPhone(phone: string | null | undefined): string {
+  return String(phone ?? '').replace(/[^0-9+]/g, '')
 }
 
 const BENGALI_DIGITS = '০১২৩৪৫৬৭৮৯'

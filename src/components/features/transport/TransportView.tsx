@@ -28,6 +28,8 @@ const MODE_ICONS: Record<TransportMode, typeof Bus> = {
   রিকশা: Bike,
   সিএনজি: CarTaxiFront,
   মাইক্রোবাস: Car,
+  অটোরিকশা: CarTaxiFront,
+  'মিশ্র যাতায়াত': Bus,
 }
 
 const MODE_STYLES: Record<TransportMode, string> = {
@@ -36,6 +38,8 @@ const MODE_STYLES: Record<TransportMode, string> = {
   রিকশা: 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
   সিএনজি: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
   মাইক্রোবাস: 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300',
+  অটোরিকশা: 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+  'মিশ্র যাতায়াত': 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300',
 }
 
 export function TransportView({
@@ -70,7 +74,7 @@ export function TransportView({
         route.mode,
         route.from,
         route.to,
-        route.schedule.join(' '),
+        (route.schedule ?? []).join(' '),
       ])
     })
   }, [routes, mode, query])
@@ -324,14 +328,20 @@ export function TransportView({
                       ছাড়ার সময়
                     </p>
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
-                      {route.schedule.map((time) => (
-                        <span
-                          key={time}
-                          className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300"
-                        >
-                          {time}
+                      {(route.schedule ?? []).length ? (
+                        (route.schedule ?? []).map((time) => (
+                          <span
+                            key={time}
+                            className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300"
+                          >
+                            {time}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                          সময়সূচি যাচাই চলছে
                         </span>
-                      ))}
+                      )}
                     </div>
                   </div>
 

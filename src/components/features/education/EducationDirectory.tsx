@@ -105,7 +105,7 @@ export function EducationDirectory({
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  প্রধান: {inst.headName}
+                  প্রধান: {inst.headName || 'তথ্য যাচাই চলছে'}
                   {inst.eiin ? ` • EIIN: ${inst.eiin}` : ''}
                 </p>
               </div>
@@ -116,9 +116,17 @@ export function EducationDirectory({
               </div>
 
               <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-white/10">
-                <CallButton phone={inst.phone} />
-                <CopyPhoneButton phone={inst.phone} />
-                <WhatsAppButton phone={inst.phone} />
+                {inst.phone?.trim() ? (
+                  <>
+                    <CallButton phone={inst.phone} />
+                    <CopyPhoneButton phone={inst.phone} />
+                    <WhatsAppButton phone={inst.phone} />
+                  </>
+                ) : (
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    যোগাযোগের তথ্য যাচাই চলছে
+                  </span>
+                )}
               </div>
 
               <ListingMeta

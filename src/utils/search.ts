@@ -519,7 +519,7 @@ export function searchEverything(
     simpleHits(
       'hospital',
       data.hospitals,
-      (h) => [h.name, h.type, h.address, h.services.join(' ')],
+      (h) => [h.name, h.type, h.address, (h.services ?? []).join(' ')],
       (h, score) => ({
         key: `hospital-${h.id}`,
         kind: 'hospital',
@@ -540,7 +540,7 @@ export function searchEverything(
     simpleHits(
       'route',
       data.routes,
-      (r) => [r.name, r.mode, r.from, r.to, r.schedule.join(' ')],
+      (r) => [r.name, r.mode, r.from, r.to, (r.schedule ?? []).join(' ')],
       (r, score) => ({
         key: `route-${r.id}`,
         kind: 'route',
@@ -560,7 +560,7 @@ export function searchEverything(
     simpleHits(
       'citizen',
       data.citizens,
-      (s) => [s.name, s.office, s.address, s.requiredDocs.join(' ')],
+      (s) => [s.name, s.office, s.address, (s.requiredDocs ?? []).join(' ')],
       (s, score) => ({
         key: `citizen-${s.id}`,
         kind: 'citizen',

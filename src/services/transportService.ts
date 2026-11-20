@@ -2,7 +2,15 @@ import { initialTransportRoutes } from '../data'
 import { TransportMode, TransportRoute } from '../types'
 import { recordsService } from './recordsService'
 
-export const TRANSPORT_MODES: TransportMode[] = ['বাস', 'বোট', 'রিকশা', 'সিএনজি', 'মাইক্রোবাস']
+export const TRANSPORT_MODES: TransportMode[] = [
+  'বাস',
+  'বোট',
+  'রিকশা',
+  'সিএনজি',
+  'মাইক্রোবাস',
+  'অটোরিকশা',
+  'মিশ্র যাতায়াত',
+]
 
 export const transportService = {
   getRoutes(): TransportRoute[] {

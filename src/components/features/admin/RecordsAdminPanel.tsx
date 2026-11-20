@@ -42,7 +42,7 @@ const HOSPITAL_TYPES = [
 
 const EDUCATION_TYPES = ['কলেজ', 'স্কুল', 'মাদরাসা', 'কোচিং', 'আইটি সেন্টার']
 
-const TRANSPORT_MODES = ['বাস', 'বোট', 'রিকশা', 'সিএনজি', 'মাইক্রোবাস']
+const TRANSPORT_MODES = ['বাস', 'বোট', 'রিকশা', 'সিএনজি', 'মাইক্রোবাস', 'অটোরিকশা', 'মিশ্র যাতায়াত']
 
 const SPECS: Record<ManagedRecordType, TypeSpec> = {
   hospitals: {

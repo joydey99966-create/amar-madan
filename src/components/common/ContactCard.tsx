@@ -66,9 +66,17 @@ export function ContactCard({
         {details}
 
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-white/10">
-          <CallButton phone={phone} className="flex-1" />
-          <CopyPhoneButton phone={phone} />
-          <WhatsAppButton phone={phone} />
+          {phone?.trim() ? (
+            <>
+              <CallButton phone={phone} className="flex-1" />
+              <CopyPhoneButton phone={phone} />
+              <WhatsAppButton phone={phone} />
+            </>
+          ) : (
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              যোগাযোগের তথ্য যাচাই চলছে
+            </span>
+          )}
         </div>
 
         <ListingMeta

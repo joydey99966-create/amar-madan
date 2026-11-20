@@ -199,9 +199,17 @@ export function DoctorsDirectory({ doctors, query = '', onClearQuery }: DoctorsD
               </div>
 
               <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-white/10">
-                <CallButton phone={doctor.phone} />
-                <CopyPhoneButton phone={doctor.phone} />
-                <WhatsAppButton phone={doctor.phone} />
+                {doctor.phone?.trim() ? (
+                  <>
+                    <CallButton phone={doctor.phone} />
+                    <CopyPhoneButton phone={doctor.phone} />
+                    <WhatsAppButton phone={doctor.phone} />
+                  </>
+                ) : (
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    যোগাযোগের তথ্য যাচাই চলছে
+                  </span>
+                )}
               </div>
 
               <ListingMeta

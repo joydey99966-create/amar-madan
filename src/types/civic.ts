@@ -50,7 +50,14 @@ export interface CitizenService {
   visible?: boolean
 }
 
-export type TransportMode = 'বাস' | 'বোট' | 'রিকশা' | 'সিএনজি' | 'মাইক্রোবাস'
+export type TransportMode =
+  | 'বাস'
+  | 'বোট'
+  | 'রিকশা'
+  | 'সিএনজি'
+  | 'মাইক্রোবাস'
+  | 'অটোরিকশা'
+  | 'মিশ্র যাতায়াত'
 
 export interface TransportRoute {
   id: string
