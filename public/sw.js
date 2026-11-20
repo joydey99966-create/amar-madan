@@ -1,4 +1,4 @@
-const CACHE_NAME = 'amar-madan-v5';
+const CACHE_NAME = 'amar-madan-v6';
 // Derive the deploy base from where this service worker is served:
 // "/sw.js" locally, "/amar-madan/sw.js" on GitHub Pages.
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
@@ -12,7 +12,7 @@ const STATIC_ASSETS = [
   BASE + '/images/town.jpg'
 ];
 
-const DYNAMIC_CACHE = 'amar-madan-dynamic-v5';
+const DYNAMIC_CACHE = 'amar-madan-dynamic-v6';
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
