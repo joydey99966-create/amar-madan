@@ -20,7 +20,7 @@ export function Hero() {
           </div>
 
           <h1 className="text-[26px] font-bold leading-[1.25] tracking-tight sm:text-3xl md:text-4xl lg:text-[40px]">
-            মদনের সব সেবা,<br className="sm:hidden" /> এখন হাতের মুঠোয়
+            মদনের সব সেবা,{' '}<br className="sm:hidden" />এখন হাতের মুঠোয়
           </h1>
 
           <p className="mt-2 max-w-lg text-sm leading-6 text-emerald-50/85 sm:mt-2.5 sm:text-base">

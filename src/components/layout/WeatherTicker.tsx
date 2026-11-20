@@ -115,10 +115,9 @@ export function WeatherTicker() {
             // No temperature is shown while a request is in flight — neither
             // on first load nor when returning with a cached value.
             <div className="flex items-center gap-2">
-              <CloudSun size={24} className="shrink-0 animate-pulse text-[#fde68a]/60" />
-              <div>
-                <div className="h-4 w-12 animate-pulse rounded bg-white/25" />
-                <div className="mt-1.5 h-2.5 w-24 animate-pulse rounded bg-white/15" />
+              <CloudSun size={24} className="shrink-0 text-[#fde68a]" />
+              <div className="text-[11px] leading-4 text-emerald-100/90">
+                আবহাওয়া তথ্য লোড হচ্ছে…
               </div>
             </div>
           ) : (

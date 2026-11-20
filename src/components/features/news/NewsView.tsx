@@ -1,4 +1,4 @@
-import { CalendarDays, MapPin, Newspaper } from 'lucide-react'
+import { CalendarDays, MapPin } from 'lucide-react'
 import { Journalist, NewsItem } from '../../../types'
 import { ServiceCard } from '../../common/ContactCard'
 import { EmptyState } from '../../common/EmptyState'
@@ -89,12 +89,9 @@ export function NewsView({
                       height={64}
                       loading="lazy"
                       className="h-16 w-20 shrink-0 rounded-xl object-cover sm:h-20 sm:w-28"
+                      onError={(event) => { event.currentTarget.style.display = 'none' }}
                     />
-                  ) : (
-                    <span className="flex h-16 w-20 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300 sm:h-20 sm:w-28">
-                      <Newspaper size={20} />
-                    </span>
-                  )}
+                  ) : null}
                   <span className="min-w-0 flex-1">
                     <span className="block text-[11px] font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300">
                       {item.category}

@@ -107,6 +107,9 @@ export const noticeNewsSeed: AdminNotice[] = [
     category: notice.tag,
     date: notice.date,
     source: notice.source,
+    // Each notice/news item carries its own publication date as its freshness
+    // stamp — never a single bulk-stamped date for the whole list.
+    lastUpdated: notice.date,
     priority: notice.priority ?? 'normal',
     // Expiry derived from the event dates already present in the demo copy —
     // no new date is invented. Past events leave the "আজকের নোটিশ" board.

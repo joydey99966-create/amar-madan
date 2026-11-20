@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exportedAt": "2026-11-20T06:00:00.000Z",
+  "exportedAt": "2026-11-20T06:30:00.000Z",
   "data": {
     "amar-madan-theme": "light",
     "amar-madan-lost-found": [
@@ -559,7 +559,8 @@
         "priority": "urgent",
         "approved": true,
         "visible": true,
-        "expiresAt": "2026-11-18"
+        "expiresAt": "2026-11-18",
+        "lastUpdated": "১২ নভেম্বর ২০২৬"
       },
       {
         "id": "notice-seed-distribution",
@@ -571,7 +572,8 @@
         "source": "উপজেলা কৃষি অফিস, মদন",
         "priority": "normal",
         "approved": true,
-        "visible": true
+        "visible": true,
+        "lastUpdated": "১৩ নভেম্বর ২০২৬"
       },
       {
         "id": "notice-college-admission",
@@ -584,7 +586,8 @@
         "priority": "normal",
         "approved": true,
         "visible": true,
-        "expiresAt": "2026-11-20"
+        "expiresAt": "2026-11-20",
+        "lastUpdated": "১০ নভেম্বর ২০২৬"
       },
       {
         "id": "notice-nid-correction",
@@ -597,7 +600,8 @@
         "priority": "normal",
         "approved": true,
         "visible": true,
-        "expiresAt": "2026-11-20"
+        "expiresAt": "2026-11-20",
+        "lastUpdated": "১৪ নভেম্বর ২০২৬"
       },
       {
         "id": "notice-cultural-event",
@@ -609,7 +613,8 @@
         "source": "উপজেলা পরিষদ, মদন",
         "priority": "normal",
         "approved": true,
-        "visible": true
+        "visible": true,
+        "lastUpdated": "১১ নভেম্বর ২০২৬"
       },
       {
         "id": "n1",

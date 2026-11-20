@@ -171,6 +171,10 @@ export function BloodDonorDirectory({
         </div>
       </div>
 
+      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-800 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200">
+        🩸 রক্তদানের ৫৬ দিন পর আবার দেওয়া যায় — দাতার শেষ রক্তদানের তারিখ অনুযায়ী নিচে প্রস্তুতি দেখানো হয়েছে।
+      </div>
+
       <SearchFilterBanner
         query={query}
         count={filtered.length}

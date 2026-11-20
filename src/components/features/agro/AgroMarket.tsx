@@ -132,7 +132,7 @@ export function AgroMarket({
       {activeTab === 'prices' && (
         <div className="grid gap-3 sm:gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-amber-50 p-4 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
-            <span>📊 দৈনিক স্থানীয় বাজার দর — মোট {toBanglaNumber(filteredPrices.length)} টি পণ্য</span>
+            <span>📊 সর্বশেষ যাচাইকৃত বাজার দর — মোট {toBanglaNumber(filteredPrices.length)} টি পণ্য</span>
             {onAddPrice && (
               <button
                 type="button"

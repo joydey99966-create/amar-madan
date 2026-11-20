@@ -79,7 +79,7 @@ export const categories: Category[] = [
   },
   {
     id: 'market',
-    name: 'আজকের বাজারদর',
+    name: 'বাজার দর',
     english: 'Daily market prices',
     icon: Wheat,
     color: '#55a04d',

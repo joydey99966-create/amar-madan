@@ -17,8 +17,18 @@ export type SitePhoto = GalleryPhoto
  * GitHub Pages (served from `/amar-madan/`) as well as locally (`/`).
  */
 export function assetUrl(path: string): string {
-  const base = import.meta.env.BASE_URL || '/'
-  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
+  const value = path.trim()
+  // External/data URLs are returned untouched.
+  if (/^(https?:|data:|blob:)/i.test(value)) return value
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
+  let rest = value.replace(/^\/+/, '')
+  // Repair legacy multi-prefixed paths such as
+  // /amar-madan/amar-madan/amar-madan/images/haor.jpg (also on the dev server,
+  // where the deploy base is "/"). Keep only the final images/... segment.
+  while (rest.startsWith('amar-madan/')) rest = rest.slice('amar-madan/'.length)
+  const imagesIndex = rest.indexOf('images/')
+  if (imagesIndex > 0) rest = rest.slice(imagesIndex)
+  return base ? `${base}/${rest}` : `/${rest}`
 }
 
 const withBase = (path: string) => assetUrl(path)
