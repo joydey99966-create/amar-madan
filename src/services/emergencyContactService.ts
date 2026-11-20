@@ -5,6 +5,19 @@ import { storageService } from './storageService'
 import { notifyDataChanged } from './dataEvents'
 
 /**
+ * The six canonical hotlines shown on the homepage by default. The admin can
+ * change this selection from the "হোমপেজ হটলাইন" panel.
+ */
+export const HOME_HOTLINE_IDS = [
+  'police',
+  'fire',
+  'electricity',
+  'helpline',
+  'women',
+  'MDN-EMG-0007', // শিশু হেল্পলাইন — replaces the unverified 106 ambulance entry
+]
+
+/**
  * The single source of truth for emergency contacts.
  *
  * Every public surface reads this service. The bundled seed is used only when
@@ -20,6 +33,7 @@ function normalize(contact: Partial<EmergencyContact> & { id: string }): Emergen
     category: contact.category ?? 'other',
     visible: contact.visible !== false,
     approved: contact.approved !== false,
+    homepage: contact.homepage ?? HOME_HOTLINE_IDS.includes(contact.id),
   }
 }
 
@@ -78,5 +92,27 @@ export const emergencyContactService = {
 
   setVisible(id: string, visible: boolean): EmergencyContact[] {
     return emergencyContactService.update(id, { visible })
+  },
+
+  /** Up to six admin-selected hotlines for the homepage quick-dial block. */
+  getHomeHotlines(): EmergencyContact[] {
+    return emergencyContactService
+      .getPublic()
+      .filter((contact) => contact.homepage)
+      .slice(0, 6)
+  },
+
+  setHomepage(id: string, homepage: boolean): EmergencyContact[] {
+    return emergencyContactService.update(id, { homepage })
+  },
+
+  /** Reorder a contact within the stored list (drives homepage order). */
+  moveTo(id: string, targetIndex: number): EmergencyContact[] {
+    const list = [...emergencyContactService.getAll()]
+    const from = list.findIndex((contact) => contact.id === id)
+    if (from < 0 || targetIndex < 0 || targetIndex >= list.length || from === targetIndex) return list
+    const [item] = list.splice(from, 1)
+    list.splice(targetIndex, 0, item)
+    return emergencyContactService.saveAll(list)
   },
 }

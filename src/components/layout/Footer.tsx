@@ -31,6 +31,11 @@ const quickLinks: { key: string; label: string; id: ViewId }[] = [
 export function Footer({ onNavigate }: FooterProps) {
   const { requestAdminAccess, isAuthenticated } = useAdmin()
   const contacts = useEmergencyContacts()
+  // Homepage quick-dial shows only the admin-selected important hotlines (max 6).
+  const homeHotlines = useMemo(
+    () => contacts.filter((contact) => contact.homepage).slice(0, 6),
+    [contacts],
+  )
   const orderVersion = useDataVersion('order')
   const orderedQuick = useMemo(
     () => displayOrderService.sortByKey(quickLinks, displayOrderService.get().footer),
@@ -53,7 +58,7 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
           </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {contacts.map((contact) => {
+            {homeHotlines.map((contact) => {
               const { icon: Icon } = emergencyVisual(contact.category)
               return (
                 <a

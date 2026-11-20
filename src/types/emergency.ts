@@ -29,6 +29,8 @@ export interface EmergencyContact {
   visible: boolean
   /** New contacts stay hidden from the public until an admin approves them. */
   approved: boolean
+  /** Admin-controlled: show this contact in the homepage quick-dial block. */
+  homepage?: boolean
 }
 
 /** Icon mapping only — never contains a phone number. */

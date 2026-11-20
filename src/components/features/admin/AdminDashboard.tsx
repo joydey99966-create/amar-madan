@@ -80,6 +80,7 @@ import { DataOpsAdminPanel } from './DataOpsAdminPanel'
 import { OrderAdminPanel } from './OrderAdminPanel'
 import { MANAGED_RECORD_TYPES, recordsService } from '../../../services/recordsService'
 import { JournalistAdminPanel } from './JournalistAdminPanel'
+import { HomeHotlineAdminPanel } from './HomeHotlineAdminPanel'
 
 export type AdminTab =
   | 'donors'
@@ -102,6 +103,7 @@ export type AdminTab =
   | 'order'
   | 'news'
   | 'journalists'
+  | 'homeHotlines'
 
 export function AdminDashboard() {
   const { isDashboardOpen, closeDashboard, isAuthenticated } = useAdmin()
@@ -508,6 +510,7 @@ export function AdminDashboard() {
     { id: 'notices', label: 'নোটিশ', icon: Bell, count: notices.length },
     { id: 'news', label: 'সংবাদ ও প্রেসক্লাব', icon: Newspaper, count: notices.length },
     { id: 'journalists', label: 'সাংবাদিক', icon: Users, count: journalists.length },
+    { id: 'homeHotlines', label: 'হোমপেজ হটলাইন', icon: Siren, count: contacts.filter((item) => item.homepage).length },
     { id: 'lostfound', label: 'হারানো-প্রাপ্তি', icon: AlertCircle, count: lostFound.length },
     { id: 'directory', label: 'ডিরেক্টরি', icon: Stethoscope, count: doctors.length + ambulances.length + dealers.length },
     { id: 'moderation', label: 'দাম যাচাই', icon: ClipboardCheck, count: priceModerationCounts.pending },
@@ -644,6 +647,18 @@ export function AdminDashboard() {
 
             {/* Content Container */}
             <div className="mx-auto max-w-5xl p-4 sm:p-6">
+              {activeTab === 'homeHotlines' && (
+                <HomeHotlineAdminPanel
+                  contacts={contacts}
+                  onToggle={(id, homepage) => setContacts(emergencyContactService.setHomepage(id, homepage))}
+                  onMove={(id, target) => setContacts(emergencyContactService.moveTo(id, target))}
+                  onAdd={handleAddContact}
+                  onEdit={handleEditContact}
+                  onDelete={handleDeleteContact}
+                  onApprove={handleApproveContact}
+                  onVisibility={handleContactVisibility}
+                />
+              )}
               {activeTab === 'donors' && (
                 <DonorAdminPanel
                   donors={donors}
